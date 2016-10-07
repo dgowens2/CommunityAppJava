@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * Created by bearden-tellez on 10/7/16.
  */
-//only to myrepo
+//only to myrepo - trying again
 
 @Entity
 @Table(name = "users")
