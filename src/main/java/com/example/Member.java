@@ -1,8 +1,6 @@
 package com.example;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by bearden-tellez on 10/7/16.
@@ -10,8 +8,11 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "members")
 public class Member {
+    @Id
+    @GeneratedValue
+    int id;
 
     @Column(nullable = false)
     String firstName;
