@@ -13,4 +13,13 @@ public class CommunityAppApplicationTests {
 	public void contextLoads() {
 	}
 
+	@Test
+	public void testCreateMember(){
+
+	}
+
+	@Test
+	public void testCreateEvent(){
+
+	}
 }
