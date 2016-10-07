@@ -7,8 +7,8 @@ import javax.persistence.Table;
 /**
  * Created by bearden-tellez on 10/7/16.
  */
-//this change to test my github
-    
+
+
 @Entity
 @Table(name = "users")
 public class Member {
