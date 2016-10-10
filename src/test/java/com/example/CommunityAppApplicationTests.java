@@ -18,6 +18,9 @@ public class CommunityAppApplicationTests {
 	@Autowired
 	MemberRepository members;
 
+	@Autowired
+	EventRepository events;
+
 
 	@Test
 	public void contextLoads() {
@@ -49,13 +52,12 @@ public class CommunityAppApplicationTests {
 	public void testCreateUserThatExists() throws Exception {
 		boolean thrown = false;
 		Member tester = new Member();
-		tester.firstName = "Rebecca";
-		tester.lastName = "Bearden-Tellez";
-		tester.email = "r@gmail.com";
+		tester.firstName = "Tu Wong";
+		tester.lastName = "Foo";
+		tester.email = "taka@gmail.com";
 		tester.password = "JavaBeanForLife";
 		tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 		members.save(tester);
-
 		try {
 			Member testerTwo = new Member();
 			testerTwo.firstName = "Rebecca";
@@ -64,11 +66,11 @@ public class CommunityAppApplicationTests {
 			testerTwo.password = "JavaBeanForLife";
 			testerTwo.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(testerTwo);
-
-		} catch (DataIntegrityViolationException exception) {
+		} catch (Exception exception) {
 			thrown = true;
 		}
 		assertTrue(thrown);
+		members.delete(tester);
 	}
 
 	@Test
@@ -91,10 +93,25 @@ public class CommunityAppApplicationTests {
 	}
 
 
-//	@Test
-//	public void testCreateEvent() {
-//
-//	}
+	@Test
+	public void testCreateEvent() {
+		Event newEvent = new Event();
+		Event dbEvent = new Event ();
+		try {
+			newEvent.name = "Party Hardy";
+			newEvent.location = "West End";
+			newEvent.information = "Dinner fo thieves";
+			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			events.save(newEvent);
+//			dbEvent = events.
+			assertNotNull(dbEvent);
+
+		} finally {
+			events.delete(newEvent);
+		}
+
+
+	}
 //
 //	@Test
 //	public void testEditEvent() {
