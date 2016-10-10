@@ -135,22 +135,21 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testEmptyFieldForEvent() throws Exception {
+		boolean thrown = false;
+		Event testEvent = new Event();
+		try{
+			testEvent.date = "3/3/2013 ~ 3:30 PM";
+			testEvent.information = "The new new";
+			events.save(testEvent);
 
-//	@Test
-//	public void testEmptyFieldForEvent() throws Exception {
-//		boolean thrown = false;
-//		Event testEvent = new Event();
-//		try{
-//			testEvent.date = "3/3/2013 ~ 3:30 PM";
-//			testEvent.information = "The new new";
-//
-//		} catch (Exception ex) {
-//			thrown = true;
-//		}
-//		assertTrue(thrown);
-//		events.delete(testEvent);
-//
-//	}
+		} catch (Exception ex) {
+			thrown = true;
+		}
+		assertTrue(thrown);
+
+	}
 //
 //	@Test
 //	public void testFindEventById() {
