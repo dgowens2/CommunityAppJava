@@ -91,69 +91,69 @@ public class CommunityAppApplicationTests {
 	}
 
 
-	@Test
-	public void testCreateEvent() {
-
-	}
-
-	@Test
-	public void testEditEvent() {
-
-	}
-
-	@Test
-	public void testEmptyFieldForEvent() {
-
-	}
-
-	@Test
-	public void testFindEventById() {
-
-	}
-
-	@Test
-	public void testCreatePost() {
-
-	}
-
-	@Test
-	public void testEditPost() {
-
-	}
-
-	@Test
-	public void testFindPostById() {
-
-	}
-
-	@Test
-	public void testFindPostByUser() {
-
-	}
-
-	@Test
-	public void testAttendingEvent() {
-
-	}
-
-	@Test
-	public void testUsersAttending() {
-
-	}
-
-	@Test
-	public void testOrgMembers() {
-
-	}
-
-	@Test
-	public void testOrgInfo() {
-
-	}
-
-	@Test
-	public void testMemberInfo() {
-
-	}
+//	@Test
+//	public void testCreateEvent() {
+//
+//	}
+//
+//	@Test
+//	public void testEditEvent() {
+//
+//	}
+//
+//	@Test
+//	public void testEmptyFieldForEvent() {
+//
+//	}
+//
+//	@Test
+//	public void testFindEventById() {
+//
+//	}
+//
+//	@Test
+//	public void testCreatePost() {
+//
+//	}
+//
+//	@Test
+//	public void testEditPost() {
+//
+//	}
+//
+//	@Test
+//	public void testFindPostById() {
+//
+//	}
+//
+//	@Test
+//	public void testFindPostByUser() {
+//
+//	}
+//
+//	@Test
+//	public void testAttendingEvent() {
+//
+//	}
+//
+//	@Test
+//	public void testUsersAttending() {
+//
+//	}
+//
+//	@Test
+//	public void testOrgMembers() {
+//
+//	}
+//
+//	@Test
+//	public void testOrgInfo() {
+//
+//	}
+//
+//	@Test
+//	public void testMemberInfo() {
+//
+//	}
 }
 
