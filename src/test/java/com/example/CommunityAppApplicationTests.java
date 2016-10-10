@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -17,6 +18,9 @@ public class CommunityAppApplicationTests {
 
 	@Autowired
 	MemberRepository members;
+
+	@Autowired
+	EventRepository events;
 
 
 	@Test
@@ -49,13 +53,12 @@ public class CommunityAppApplicationTests {
 	public void testCreateUserThatExists() throws Exception {
 		boolean thrown = false;
 		Member tester = new Member();
-		tester.firstName = "Rebecca";
-		tester.lastName = "Bearden-Tellez";
-		tester.email = "r@gmail.com";
+		tester.firstName = "Tu Wong";
+		tester.lastName = "Foo";
+		tester.email = "taka@gmail.com";
 		tester.password = "JavaBeanForLife";
 		tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 		members.save(tester);
-
 		try {
 			Member testerTwo = new Member();
 			testerTwo.firstName = "Rebecca";
@@ -64,11 +67,11 @@ public class CommunityAppApplicationTests {
 			testerTwo.password = "JavaBeanForLife";
 			testerTwo.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(testerTwo);
-
-		} catch (DataIntegrityViolationException exception) {
+		} catch (Exception exception) {
 			thrown = true;
 		}
 		assertTrue(thrown);
+		members.delete(tester);
 	}
 
 	@Test
@@ -91,18 +94,61 @@ public class CommunityAppApplicationTests {
 	}
 
 
+	@Test
+	public void testCreateEvent() {
+		Event newEvent = new Event();
+		Event dbEvent = new Event ();
+		try {
+			newEvent.name = "Party Hardy";
+			newEvent.location = "West End";
+			newEvent.information = "Dinner fo thieves";
+			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			events.save(newEvent);
+			dbEvent = events.findOne(newEvent.getId());
+			assertNotNull(dbEvent);
+
+		} finally {
+			events.delete(newEvent);
+		}
+
+
+	}
+
+	@Test
+	public void testEditEvent() {
+		Event newEvent = new Event();
+		Event dbEvent = new Event ();
+		try {
+			newEvent.name = "Party Hardy";
+			newEvent.location = "West End";
+			newEvent.information = "Dinner fo thieves";
+			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			events.save(newEvent);
+
+			dbEvent = events.findOne(newEvent.getId());
+			dbEvent.name = "My new party";
+			events.save(dbEvent);
+
+			assertEquals(dbEvent.getId(), newEvent.getId());
+		} finally {
+			events.delete(newEvent);
+		}
+	}
+
+
 //	@Test
-//	public void testCreateEvent() {
+//	public void testEmptyFieldForEvent() throws Exception {
+//		boolean thrown = false;
+//		Event testEvent = new Event();
+//		try{
+//			testEvent.date = "3/3/2013 ~ 3:30 PM";
+//			testEvent.information = "The new new";
 //
-//	}
-//
-//	@Test
-//	public void testEditEvent() {
-//
-//	}
-//
-//	@Test
-//	public void testEmptyFieldForEvent() {
+//		} catch (Exception ex) {
+//			thrown = true;
+//		}
+//		assertTrue(thrown);
+//		events.delete(testEvent);
 //
 //	}
 //
