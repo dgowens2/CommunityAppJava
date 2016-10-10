@@ -93,6 +93,35 @@ public class CommunityAppApplicationTests {
 		assertTrue(thrown);
 	}
 
+	@Test
+	public void testFindEventByName() { // waiting on updated event class
+		Event newEvent = new Event();
+		Event dbEvent = new Event ();
+
+		Member newMember = new Member();
+
+		try {
+			newMember.lastName = "Adding a member";
+			newMember.email = "useremail@gmail.com";
+			newMember.password = "surprise";
+			newMember.streetAddress = "123 TIY Drive, Atlanta, GA 30102";
+			members.save(newMember);
+
+
+			newEvent.name = "Party Hardy";
+			newEvent.location = "West End";
+			newEvent.information = "Dinner fo thieves";
+			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			newEvent.organizer = newMember;
+			events.save(newEvent);
+			dbEvent = events.findByName("Party Hardy");
+			assertNotNull(dbEvent);
+
+		} finally {
+			events.delete(newEvent);
+			members.delete(newMember);
+		}
+	}
 
 	@Test
 	public void testCreateEvent() {
@@ -110,8 +139,6 @@ public class CommunityAppApplicationTests {
 		} finally {
 			events.delete(newEvent);
 		}
-
-
 	}
 
 	@Test
