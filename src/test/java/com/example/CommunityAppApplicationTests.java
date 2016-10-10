@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -103,7 +104,7 @@ public class CommunityAppApplicationTests {
 			newEvent.information = "Dinner fo thieves";
 			newEvent.date = "5/30/2017 ~ 1:30 PM";
 			events.save(newEvent);
-//			dbEvent = events.
+			dbEvent = events.findOne(newEvent.getId());
 			assertNotNull(dbEvent);
 
 		} finally {
@@ -112,14 +113,42 @@ public class CommunityAppApplicationTests {
 
 
 	}
-//
+
+	@Test
+	public void testEditEvent() {
+		Event newEvent = new Event();
+		Event dbEvent = new Event ();
+		try {
+			newEvent.name = "Party Hardy";
+			newEvent.location = "West End";
+			newEvent.information = "Dinner fo thieves";
+			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			events.save(newEvent);
+
+			dbEvent = events.findOne(newEvent.getId());
+			dbEvent.name = "My new party";
+			events.save(dbEvent);
+
+			assertEquals(dbEvent.getId(), newEvent.getId());
+		} finally {
+			events.delete(newEvent);
+		}
+	}
+
+
 //	@Test
-//	public void testEditEvent() {
+//	public void testEmptyFieldForEvent() throws Exception {
+//		boolean thrown = false;
+//		Event testEvent = new Event();
+//		try{
+//			testEvent.date = "3/3/2013 ~ 3:30 PM";
+//			testEvent.information = "The new new";
 //
-//	}
-//
-//	@Test
-//	public void testEmptyFieldForEvent() {
+//		} catch (Exception ex) {
+//			thrown = true;
+//		}
+//		assertTrue(thrown);
+//		events.delete(testEvent);
 //
 //	}
 //
