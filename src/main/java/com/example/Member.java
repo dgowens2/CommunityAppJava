@@ -14,6 +14,11 @@ public class Member {
     @GeneratedValue
     int id;
 
+    @ManyToOne
+    Event event;
+
+
+
     @Column(nullable = false)
     String firstName;
 
@@ -28,6 +33,14 @@ public class Member {
 
     @Column (nullable = false)
     String streetAddress;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -69,12 +82,21 @@ public class Member {
         this.streetAddress = streetAddress;
     }
 
-    public void Member (String email, String firstName, String lastName, String password, String streetAddress){
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public void Member (String email, String firstName, String lastName, String password, String streetAddress, Event event){
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.streetAddress = streetAddress;
+        this.event = event;
 
     }
 
