@@ -101,7 +101,8 @@ public class CommunityAppApplicationTests {
 		Member newMember = new Member();
 
 		try {
-			newMember.lastName = "Adding a member";
+			newMember.firstName = "Tommy";
+			newMember.lastName = "Hitch";
 			newMember.email = "useremail@gmail.com";
 			newMember.password = "surprise";
 			newMember.streetAddress = "123 TIY Drive, Atlanta, GA 30102";
@@ -115,6 +116,7 @@ public class CommunityAppApplicationTests {
 			newEvent.organizer = newMember;
 			events.save(newEvent);
 			dbEvent = events.findByName("Party Hardy");
+
 			assertNotNull(dbEvent);
 
 		} finally {
