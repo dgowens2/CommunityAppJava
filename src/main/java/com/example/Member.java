@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "members")
+
 public class Member {
     @Id
     @GeneratedValue
@@ -28,6 +29,14 @@ public class Member {
 
     @Column (nullable = false)
     String streetAddress;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -69,7 +78,7 @@ public class Member {
         this.streetAddress = streetAddress;
     }
 
-    public void Member (String email, String firstName, String lastName, String password, String streetAddress){
+    public Member (String email, String firstName, String lastName, String password, String streetAddress){
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -78,7 +87,7 @@ public class Member {
 
     }
 
-    public void Member(){
+    public Member(){
 
     }
 }
