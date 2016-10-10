@@ -32,13 +32,12 @@ public class Event {
     public Event() {
     }
 
-    public Event(int id, String name, String date, String location, String information, Member organizer) {
-        this.id = id;
+    public Event(String name, String date, String location, String information, Member organizer) {
         this.name = name;
         this.date = date; //user will enter date~time
         this.location = location;
         this.information = information;
-        this.organizer = organizer;
+//        this.organizer = organizer;
     }
 
     public int getId() {
