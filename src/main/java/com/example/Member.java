@@ -9,15 +9,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "members")
+
 public class Member {
     @Id
     @GeneratedValue
     int id;
-
-    @ManyToOne
-    Event event;
-
-
 
     @Column(nullable = false)
     String firstName;
@@ -82,25 +78,16 @@ public class Member {
         this.streetAddress = streetAddress;
     }
 
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public void Member (String email, String firstName, String lastName, String password, String streetAddress, Event event){
+    public Member (String email, String firstName, String lastName, String password, String streetAddress){
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.streetAddress = streetAddress;
-        this.event = event;
 
     }
 
-    public void Member(){
+    public Member(){
 
     }
 }
