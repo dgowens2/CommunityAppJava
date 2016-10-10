@@ -5,8 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Created by jessicatracy on 9/29/16.
  */
-public interface PostRepository extends CrudRepository<Post, Integer> {
+public interface OrganizationRepository extends CrudRepository<Organization, Integer> {
 
-    Post findByMember(Member member);
+    Organization findByName(String name);
 
 }
