@@ -35,7 +35,7 @@ public class Event {
     public Event(int id, String name, String date, String location, String information, Member organizer) {
         this.id = id;
         this.name = name;
-        this.date = date;
+        this.date = date; //user will enter date~time
         this.location = location;
         this.information = information;
         this.organizer = organizer;
