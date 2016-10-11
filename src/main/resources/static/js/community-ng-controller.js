@@ -39,7 +39,7 @@ angular.module('CommunityApp', [])
                 password: loginPassword
             }
 
-            console.log("Container we're about to send: " + returningUser.loginEmail + " " + returningUser.loginPassword);
+            console.log("Container we're about to send: " + returningUser.email + " " + returningUser.password);
 
 
             $http.post("/login.json", returningUser)
@@ -125,7 +125,7 @@ angular.module('CommunityApp', [])
                   member: myMemberEmail
              }
 
-             console.log("Container we're about to send: " + postContainer.newPostDate + " " + postContainer.newPostTitle + " " + postContainer.bodyOfNewPost + " " + postContainer.myMemberEmail);
+             console.log("Container we're about to send: " + postContainer.date + " " + postContainer.title + " " + postContainer.body + " " + postContainer.member);
 
              $http.post("/createPost.json", postContainer)
                   .then(
