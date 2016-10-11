@@ -29,8 +29,8 @@ public class Post {
     public Post() {
     }
 
-    public Post(int id, String date, String title, String body, Member member) {
-        this.id = id;
+    public Post(String date, String title, String body, Member member) {
+//        this.id = id;
         this.date = date;
         this.title = title;
         this.body = body;

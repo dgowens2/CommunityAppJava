@@ -22,6 +22,8 @@ public class CommunityAppApplicationTests {
 	@Autowired
 	EventRepository events;
 
+	@Autowired
+	PostRepository posts;
 
 	@Test
 	public void contextLoads() {
@@ -179,31 +181,76 @@ public class CommunityAppApplicationTests {
 		assertTrue(thrown);
 
 	}
-//
-//	@Test
-//	public void testFindEventById() {
-//
-//	}
-//
-//	@Test
-//	public void testCreatePost() {
-//
-//	}
-//
-//	@Test
-//	public void testEditPost() {
-//
-//	}
-//
-//	@Test
-//	public void testFindPostById() {
-//
-//	}
-//
-//	@Test
-//	public void testFindPostByUser() {
-//
-//	}
+
+	@Test
+	public void testFindEventById() {
+		Event newEvent = new Event();
+		Event dbEvent = new Event ();
+		try {
+			newEvent.name = "Party Hardy";
+			newEvent.location = "West End";
+			newEvent.information = "Dinner fo thieves";
+			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			events.save(newEvent);
+
+			dbEvent = events.findById(newEvent.getId());
+			dbEvent.name = "My new party";
+			events.save(dbEvent);
+
+			assertEquals(dbEvent.getId(), newEvent.getId());
+		} finally {
+			events.delete(newEvent);
+		}
+	}
+
+	@Test
+	public void testCreatePost() {
+		Post testPost = new Post();
+		Post dbPost = new Post();
+		Member tester = new Member();
+
+		try{
+			tester.firstName = "Tu Wong";
+			tester.lastName = "Foo";
+			tester.email = "taka@gmail.com";
+			tester.password = "JavaBeanForLife";
+			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
+			members.save(tester);
+
+			testPost.date = "2/3/14 ~ 2:10 AM";
+			testPost.title = "Goodies";
+			testPost.body = "Not my goodies";
+			testPost.member = tester;
+			posts.save(testPost);
+			dbPost = posts.findByMember(tester);
+
+			assertNotNull(dbPost);
+
+
+
+		} finally {
+			posts.delete(testPost);
+			members.delete(tester);
+
+		}
+
+
+	}
+
+	@Test
+	public void testEditPost() {
+
+	}
+
+	@Test
+	public void testFindPostById() {
+
+	}
+
+	@Test
+	public void testFindPostByUser() {
+
+	}
 //
 //	@Test
 //	public void testAttendingEvent() {
