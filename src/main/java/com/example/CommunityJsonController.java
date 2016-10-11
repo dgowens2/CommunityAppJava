@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by bearden-tellez on 10/10/16.
@@ -50,5 +52,18 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
+
+    @RequestMapping(path = "/viewMembers.json", method = RequestMethod.GET)
+    public List<Member> getMembers() {
+
+        List<Member> memberList = new ArrayList<>();
+        Iterable <Member> allMembers = members.findAll();
+        for (Member member : allMembers) {
+            memberList.add(member);
+        }
+        return memberList;
+    }
+
+
 
 }
