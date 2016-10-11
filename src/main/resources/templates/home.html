@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="CommunityApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Community Homepage</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="../static/js/community-ng-controller.js"></script>
+    <script src="js/community-ng-controller.js"></script>
+</head>
+<body ng-controller="CommunityController">
+
+{{! changing the mustache delimiter so it doesn't conflict with }}
+{{! the default angularjs delimeters - https://mustache.github.io/mustache.5.html for more info }}
+{{=<% %>=}}
+
+<div>
+
+On Community App page!!
+
+<!--register    -->
+<br/><br/>
+First Name: <input type="text" ng-model="firstName"/> <br/>
+Last name: <input type="text" ng-model="lastName"/> <br/>
+Email: <input type="email" ng-model="email"/> <br/>
+Password: <input type="password" ng-model="password"/> <br/>
+Street Address: <input type="text" ng-model="streetAddress"/> <br/>
+<input type="button" ng-click="register(firstName, lastName, email, password, streetAddress)" value="Send"/>
+
+<br/>
+
+<!--login-->
+<br/><br/><br/><br/><br/>
+OR login to your existing account:<br/>
+Email: <input type="email" ng-model="loginEmail"/> <br/>
+Password: <input type="password" ng-model="loginPassword"/> <br/>
+<input type="button" ng-click="login(loginEmail, loginPassword)" value="Send"/>
+
+</div>
+
+<div>
+
+<br/><br/><br/><br/><br/>
+
+<!--add event-->
+Add an event:<br/>
+Event name: <input type="text" ng-model="newEventName"/> <br/>
+Date: <input type="date" ng-model="newEventDate"/> <br/>
+Location: <input type="text" ng-model="newEventLocation"/> <br/>
+Information: <input type="text" ng-model="newEventInformation"/> <br/>
+Organizer: <select type="text" ng-model="newEventOrganizer"/> <br/>
+    <option selected disabled>Organizer</option>
+    <option ng-repeat="organizer in organizers">Organizer</option>
+    <!--figure out how to use this-->
+    </select>
+<br/>
+<input type="button" ng-click="createNewEvent(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer)" value="Create"/> <br/>
+
+<br/>
+
+<!--list all events-->
+All Events: <br/>
+<span ng-repeat="currentEvent in allEvents">
+{{currentEvent}} <br/>
+</span>
+
+<!--join an event-->
+<br/><br/><br/><br/><br/>
+Join an event: (Note: just for testing. Can get these from /viewusers.json and /getAllEvents.json)<br/>
+Your user id: <input type="number" ng-model="myMemberId"/>
+Event id: <input type="number" ng-model="eventIWantToJoinId"/>
+<input type="button" ng-click="joinEvent(myMemberId, eventIWantToJoinId)" value="Join"/> <br/>
+
+<br/>
+
+<!--event attendee list-->
+Updated attendees at this event: <br/>
+<span ng-repeat="currentAttendee in eventAttendees">
+{{currentAttendee}} <br/>
+</span>
+
+</div>
+
+<div>
+<!--Post a message-->
+<br/><br/><br/><br/><br/>
+Post a message: <br/>
+Date: <input type="date" ng-model="newPostDate"/> <br/>
+Title: <input type="text" ng-model="newPostTitle"/><br/>
+Body: <textarea rows="10" cols="50" ng-model="bodyOfNewPost"></textarea><br/>
+Your email address: <input type="email" ng-model="myMemberEmail"/><br/>
+<input type="button" ng-click="sendPost(newPostDate, newPostTitle, bodyOfNewPost, myMemberEmail)" value="Submit"/> <br/>
+
+<br/>
+
+<!--Post List-->
+Updated posts: <br/>
+<span ng-repeat="currentPost in allPosts">
+{{currentPost}} <br/>
+</span>
+
+</div>
+
+</body>
+</html>
