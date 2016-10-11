@@ -56,17 +56,6 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-    @RequestMapping(path = "/viewMembers.json", method = RequestMethod.GET)
-    public List<Member> getMembers() {
-
-        List<Member> memberList = new ArrayList<>();
-        Iterable <Member> allMembers = members.findAll();
-        for (Member member : allMembers) {
-            memberList.add(member);
-        }
-        return memberList;
-    }
-
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(@RequestBody Post post, Member member) {
 //        posts.save(post);
