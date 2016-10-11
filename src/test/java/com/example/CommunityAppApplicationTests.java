@@ -35,6 +35,9 @@ public class CommunityAppApplicationTests {
 	@Autowired
 	OrganizationMemberRepository organizationmembers;
 
+	@Autowired
+	MemberEventRepository memberevents;
+
 	@Test
 	public void contextLoads() {
 	}
@@ -436,19 +439,127 @@ public class CommunityAppApplicationTests {
 			organizations.delete(testOrganization);
 			members.delete(testMember);
 		}
-
-
 	}
 
-//	@Test
-//	public void testAttendingEvent() {
-//
-//	}
-//
-//	@Test
-//	public void testUsersAttending() {
-//
-//	}
+	@Test
+	public void testAttendingEvent() {
+		Member aEventMember = new Member();
+		Event attendEvent = new Event();
+		MemberEvent theMemberEvent = new MemberEvent();
+		MemberEvent dbMemberEvent = new MemberEvent();;
+		try{
+			aEventMember.firstName = "Rod";
+			aEventMember.lastName = "Johnson";
+			aEventMember.email = "tats2@yahoo.com";
+			aEventMember.streetAddress = "679 Lemonade Way......";
+			aEventMember.password = "doitall";
+			members.save(aEventMember);
+
+			attendEvent.date = "5/25/2018 ~ 2:00 PM";
+			attendEvent.organizer = aEventMember;
+			attendEvent.information = "Beach madness";
+			attendEvent.location = "Pensacola";
+			attendEvent.name = "Slip and Slides";
+			events.save(attendEvent);
+
+			theMemberEvent = new MemberEvent(aEventMember, attendEvent);
+			System.out.println(theMemberEvent.event.getName() + " " + theMemberEvent.member.getFirstName());
+			memberevents.save(theMemberEvent);
+
+			dbMemberEvent = memberevents.findByEventId(attendEvent.getId());
+			assertNotNull(dbMemberEvent);
+
+		} finally {
+			memberevents.delete(theMemberEvent);
+			events.delete(attendEvent);
+			members.delete(aEventMember);
+		}
+	}
+
+	@Test
+	public void testMembersAttending() {
+		Member aEventMember = new Member();
+		Member aEventMemberOne = new Member();
+		Member aEventMemberTwo = new Member();
+		Member aEventMemberThree = new Member();
+
+		Event attendEvent = new Event();
+
+		MemberEvent theMemberEvent = new MemberEvent();
+		MemberEvent theMemberEventOne = new MemberEvent();
+		MemberEvent theMemberEventTwo = new MemberEvent();
+		MemberEvent theMemberEventThree = new MemberEvent();
+
+		try{
+			aEventMember.firstName = "Rod";
+			aEventMember.lastName = "Johnson";
+			aEventMember.email = "tatskolber@yahoo.com";
+			aEventMember.streetAddress = "679 Lemonade Way......";
+			aEventMember.password = "doitall";
+			members.save(aEventMember);
+
+			aEventMemberOne.firstName = "Joe";
+			aEventMemberOne.lastName = "Bear";
+			aEventMemberOne.email = "mechjoes@yahoo.com";
+			aEventMemberOne.streetAddress = "344 Riverwalk Place Savannah, GA";
+			aEventMemberOne.password = "whynot";
+			members.save(aEventMemberOne);
+
+			aEventMemberTwo.firstName = "Tasty";
+			aEventMemberTwo.lastName = "Cakes";
+			aEventMemberTwo.email = "tastys@yahoo.com";
+			aEventMemberTwo.streetAddress = "155 Locked up Lane";
+			aEventMemberTwo.password = "jailtime";
+			members.save(aEventMemberTwo);
+
+			aEventMemberThree.firstName = "Sherry";
+			aEventMemberThree.lastName = "Berry";
+			aEventMemberThree.email = "sbs@yahoo.com";
+			aEventMemberThree.streetAddress = "766 Berry Ave";
+			aEventMemberThree.password = "gimmetheberries";
+			members.save(aEventMemberThree);
+
+
+			attendEvent.date ="3/2/16 ~ 4:45 PM";
+			attendEvent.organizer = aEventMember;
+			attendEvent.information = "Live a day as a your favorite person";
+			attendEvent.location = "Underground";
+			attendEvent.name = "Pixar day";
+			events.save(attendEvent);
+
+			theMemberEvent = new MemberEvent(aEventMember, attendEvent);
+			theMemberEventOne= new MemberEvent(aEventMemberOne, attendEvent);
+			theMemberEventTwo = new MemberEvent(aEventMemberTwo, attendEvent);
+			theMemberEventThree = new MemberEvent(aEventMemberThree, attendEvent);
+			memberevents.save(theMemberEvent);
+			memberevents.save(theMemberEventOne);
+			memberevents.save(theMemberEventTwo);
+			memberevents.save(theMemberEventThree);
+
+			Iterable<MemberEvent> memberEventsFound = memberevents.findMembersByEvent(attendEvent);
+			ArrayList<MemberEvent> memberList = new ArrayList<MemberEvent>();
+			for (MemberEvent currentMemberEvent : memberEventsFound) {
+				memberList.add(currentMemberEvent);
+			}
+
+			int alSize = memberList.size();
+
+			assertEquals(4, alSize);
+
+		} finally {
+			memberevents.delete(theMemberEvent);
+			memberevents.delete(theMemberEventOne);
+			memberevents.delete(theMemberEventTwo);
+			memberevents.delete(theMemberEventThree);
+
+			events.delete(attendEvent);
+
+			members.delete(aEventMember);
+			members.delete(aEventMemberOne);
+			members.delete(aEventMemberTwo);
+			members.delete(aEventMemberThree);
+		}
+	}
 //
 //
 //	@Test
