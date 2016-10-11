@@ -427,8 +427,8 @@ public class CommunityAppApplicationTests {
 			dbOrganizations = organizationmembers.findByMemberId(testMember.getId());
 			assertNotNull(dbOrganizations);
 
-//			dbMembers =  organizationmembers.findByOrganization(testOrganization.getId());
-//			assertNotNull(dbMembers);
+			dbMembers =  organizationmembers.findByOrganizationId(testOrganization.getId());
+			assertNotNull(dbMembers);
 
 
 		} finally {
