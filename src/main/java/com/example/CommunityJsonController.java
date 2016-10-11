@@ -53,7 +53,6 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
     @RequestMapping(path = "/viewMembers.json", method = RequestMethod.GET)
     public List<Member> getMembers() {
 
