@@ -23,6 +23,12 @@ public class CommunityJsonController {
     @Autowired
     PostRepository posts;
 
+    @Autowired
+    EventRepository events;
+
+    @Autowired
+    MemberEventRepository memberevents;
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -102,6 +108,114 @@ public class CommunityJsonController {
             postList.add(currentPost);
         }
         return postList;
+    }
+
+    //test with angular
+
+    @RequestMapping(path = "/createEvent.json", method = RequestMethod.POST)
+    public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
+        Member member = (Member) session.getAttribute("member");
+        EventContainer myResponse = new EventContainer();
+
+        try {
+            thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name, thisEvent.organizer);
+            events.save(thisEvent);
+
+            System.out.println("Creating event");
+
+            myResponse.eventList = getAllEvents();
+            System.out.println("Returning list of events");
+        } catch (Exception ex){
+            myResponse.errorMessage = "An Error occurred while creating an event";
+        }
+        return myResponse;
+    }
+
+
+    @RequestMapping(path = "/editEvent.json", method = RequestMethod.POST)
+    public EventContainer editEvent(HttpSession session, @RequestBody Event thisEvent) {
+        Member member = (Member) session.getAttribute("member");
+        EventContainer myResponse = new EventContainer();
+        try {
+            if (member.firstName.equalsIgnoreCase(thisEvent.organizer.firstName)) {
+
+                events.save(thisEvent);
+
+                System.out.println("Saving edited event");
+
+                myResponse.eventList = getAllEvents();
+                System.out.println("Returning list of events");
+            } else {
+                myResponse.errorMessage = "Member did not create event and thus cannot edit it.";
+            }
+        } catch (Exception ex){
+            myResponse.errorMessage = "An Error occurred while editing an event";
+        }
+        return myResponse;
+    }
+
+
+    @RequestMapping(path = "/eventsList.json", method = RequestMethod.GET)
+    public EventContainer eventThings(HttpSession session) {
+        EventContainer myResponse = new EventContainer();
+
+        ArrayList<Event> myEvents = getAllEvents();
+        int myEventListSize = myEvents.size();
+
+        if (myEventListSize == 0) {
+            myResponse.errorMessage = "No events to display";
+
+        } else {
+            for (Event myEvent : myEvents) {
+                myResponse.eventList.add(myEvent);
+                System.out.println("returning list of events");
+            }
+        }
+        return myResponse;
+    }
+
+    ArrayList<Event> getAllEvents() {
+        ArrayList<Event> eventList = new ArrayList<Event>();
+        Iterable<Event> allEvents = events.findAll();
+
+        for (Event currentEvent : allEvents) {
+            eventList.add(currentEvent);
+
+        }
+        return eventList;
+    }
+
+    @RequestMapping(path = "/event.json", method = RequestMethod.GET)
+    public EventContainer getSpecificEvent(Integer eventID) {
+        System.out.println("finding event with event id " + eventID);
+        EventContainer myResponse = new EventContainer();
+
+        Event myEvent = events.findById(eventID);
+        if (myEvent == null) {
+            myResponse.errorMessage = "No event found";
+        } else {
+            System.out.println("Found event " + myEvent.name);
+            myResponse.responseEvent = myEvent;
+        }
+        return myResponse;
+    }
+
+    @RequestMapping(path = "/attendEvent.json", method = RequestMethod.POST)
+    public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
+        MemberEventContainer myResponse = new MemberEventContainer();
+        Member member = (Member) session.getAttribute("user");
+
+        try {
+            MemberEvent attendingEvent = new MemberEvent(member, event);
+
+            memberevents.save(attendingEvent);
+
+            myResponse.setEventList(memberevents.findMembersByEvent(event));
+        } catch (Exception ex){
+            myResponse.setErrorMessage("A problem occurred while trying to attend an event");
+
+        }
+        return myResponse;
     }
 
 }

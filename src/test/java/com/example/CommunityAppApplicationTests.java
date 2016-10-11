@@ -229,18 +229,18 @@ public class CommunityAppApplicationTests {
 		Event dbEvent = new Event ();
 		Member testMember = new Member();
 		try {
-//			testMember.firstName = "Tam Tam";
-//			testMember.lastName = "Bam";
-//			testMember.streetAddress = "3824 Winder Rd";
-//			testMember.email = "red@gmail.com";
-//			testMember.password = "lucky";
-//			members.save(testMember);
+			testMember.firstName = "Tam Tam";
+			testMember.lastName = "Bam";
+			testMember.streetAddress = "3824 Winder Rd";
+			testMember.email = "redman@gmail.com";
+			testMember.password = "lucky";
+			members.save(testMember);
 
 			newEvent.name = "Party Hardy";
 			newEvent.location = "West End";
 			newEvent.information = "Dinner fo thieves";
 			newEvent.date = "5/30/2017 ~ 1:30 PM";
-//			newEvent.organizer = testMember;
+			newEvent.organizer = testMember;
 			events.save(newEvent);
 
 			dbEvent = events.findById(newEvent.getId());
@@ -250,7 +250,7 @@ public class CommunityAppApplicationTests {
 			assertEquals(dbEvent.getId(), newEvent.getId());
 		} finally {
 			events.delete(newEvent);
-//			members.delete(testMember);
+			members.delete(testMember);
 		}
 	}
 
@@ -342,6 +342,7 @@ public class CommunityAppApplicationTests {
 			posts.save(dbPost);
 
 			assertEquals(dbPost.getId(), newPost.getId());
+
 		} finally {
 			posts.delete(newPost);
 			members.delete(testMember);
@@ -558,6 +559,10 @@ public class CommunityAppApplicationTests {
 			members.delete(aEventMemberThree);
 		}
 	}
+
+
+
+
 //
 //
 //	@Test
@@ -567,7 +572,21 @@ public class CommunityAppApplicationTests {
 //
 //	@Test
 //	public void testMemberInfo() {
+//	Member testMember = new Member();
+//	Member dbMember = new Member();
+//		try{
+//			testMember.firstName = "Hirum";
+//			testMember.lastName = "Wilcox";
+//			testMember.streetAddress = "539 Fells Creek Rd ..";
+//			testMember.email= "lostrd@ymail.com";
+//			testMember.password = "newroad";
+//			members.save(testMember);
 //
+//
+//
+//		}finally {
+//			members.delete(testMember);
+//		}
 //	}
 }
 
