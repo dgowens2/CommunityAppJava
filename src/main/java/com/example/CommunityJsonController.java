@@ -185,33 +185,37 @@ public class CommunityJsonController {
         return eventList;
     }
 
-
-    //put into a container
     @RequestMapping(path = "/event.json", method = RequestMethod.GET)
-    public Event getSpecificEvent(Integer eventID) {
+    public EventContainer getSpecificEvent(Integer eventID) {
         System.out.println("finding event with event id " + eventID);
+        EventContainer myResponse = new EventContainer();
+
         Event myEvent = events.findById(eventID);
-        System.out.println("Found event " + myEvent.name);
-        return myEvent;
+        if (myEvent == null) {
+            myResponse.errorMessage = "No event found";
+        } else {
+            System.out.println("Found event " + myEvent.name);
+            myResponse.responseEvent = myEvent;
+        }
+        return myResponse;
     }
 
     @RequestMapping(path = "/attendEvent.json", method = RequestMethod.POST)
     public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
         MemberEventContainer myResponse = new MemberEventContainer();
-
         Member member = (Member) session.getAttribute("user");
 
-        //is a response container needed here?
-        MemberEvent attendingEvent = new MemberEvent(member, event);
+        try {
+            MemberEvent attendingEvent = new MemberEvent(member, event);
 
-        memberevents.save(attendingEvent);
+            memberevents.save(attendingEvent);
 
+            myResponse.setEventList(memberevents.findMembersByEvent(event));
+        } catch (Exception ex){
+            myResponse.setErrorMessage("A problem occurred while trying to attend an event");
 
-        myResponse.setEventList(memberevents.findMembersByEvent(event));
-
+        }
         return myResponse;
     }
-
-
 
 }

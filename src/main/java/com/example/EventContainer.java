@@ -8,6 +8,7 @@ import java.util.List;
 public class EventContainer {
     List<Event> eventList;
     String errorMessage;
+    Event responseEvent;
 
 
     public List<Event> getEventList() {
