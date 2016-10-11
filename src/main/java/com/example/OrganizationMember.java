@@ -19,8 +19,8 @@ public class OrganizationMember {
     public OrganizationMember() {
     }
 
-    public OrganizationMember(int id, Organization organization, Member member) {
-        this.id = id;
+    public OrganizationMember(Organization organization, Member member) {
+//        this.id = id;
         this.organization = organization;
         this.member = member;
     }

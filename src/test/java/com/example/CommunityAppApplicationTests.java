@@ -1,5 +1,6 @@
 package com.example;
 
+import org.aspectj.weaver.ast.Or;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.postgresql.util.PSQLException;
@@ -27,6 +28,12 @@ public class CommunityAppApplicationTests {
 
 	@Autowired
 	PostRepository posts;
+
+	@Autowired
+	OrganizationRepository organizations;
+
+	@Autowired
+	OrganizationMemberRepository organizationmembers;
 
 	@Test
 	public void contextLoads() {
@@ -380,8 +387,57 @@ public class CommunityAppApplicationTests {
 
 
 	@Test
+	public void testCreateOrg() {
+		Organization testOrganization = new Organization();
+		Organization dbOrg = new Organization();
+		try{
+			testOrganization.name = "Lifeline";
+			organizations.save(testOrganization);
+			dbOrg = organizations.findByName("Lifeline");
+			assertNotNull(dbOrg);
+		} finally {
+			organizations.delete(testOrganization);
+		}
+	}
+
+	@Test
 	public void testOrgMembers() {
-		
+		Organization testOrganization = new Organization();
+		Organization dbOrg = new Organization();
+		Member testMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		ArrayList<Organization> dbMember = new ArrayList<Organization>();
+		ArrayList<Member> dbMembers = new ArrayList<Member>();
+
+
+		try{
+			testOrganization.name = "Peace Corps";
+			organizations.save(testOrganization);
+
+			testMember.firstName = "Creep";
+			testMember.lastName = "Promised";
+			testMember.streetAddress= "333 Promise Ave, Utoy, UT 23094";
+			testMember.password = "scratchedouryourname";
+			testMember.email = "canterase@gmail.com";
+			members.save(testMember);
+
+			orgMember.member= testMember;
+			orgMember.organization = testOrganization;
+			organizationmembers.save(orgMember);
+
+			dbMember = organizationmembers.findByMember(testMember.getId());
+			assertNotNull(dbMember);
+
+
+			dbMembers = organizationmembers.findByOrganization(testOrganization.getId());
+			assertEquals(1, dbMembers.size());
+
+
+		} finally {
+			organizationmembers.delete(orgMember);
+			organizations.delete(testOrganization);
+			members.delete(testMember);
+		}
 
 
 	}

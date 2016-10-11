@@ -20,8 +20,8 @@ public class Organization {
     public Organization() {
     }
 
-    public Organization(int id, String name) {
-        this.id = id;
+    public Organization(String name) {
+//        this.id = id;
         this.name = name;
     }
 
