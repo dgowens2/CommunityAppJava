@@ -26,6 +26,9 @@ public class CommunityJsonController {
     @Autowired
     EventRepository events;
 
+    @Autowired
+    MemberEventRepository memberevents;
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -181,6 +184,34 @@ public class CommunityJsonController {
         }
         return eventList;
     }
+
+
+    //put into a container
+    @RequestMapping(path = "/event.json", method = RequestMethod.GET)
+    public Event getSpecificEvent(Integer eventID) {
+        System.out.println("finding event with event id " + eventID);
+        Event myEvent = events.findById(eventID);
+        System.out.println("Found event " + myEvent.name);
+        return myEvent;
+    }
+
+    @RequestMapping(path = "/attendEvent.json", method = RequestMethod.POST)
+    public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
+        MemberEventContainer myResponse = new MemberEventContainer();
+
+        Member member = (Member) session.getAttribute("user");
+
+        //is a response container needed here?
+        MemberEvent attendingEvent = new MemberEvent(member, event);
+
+        memberevents.save(attendingEvent);
+
+
+        myResponse.setEventList(memberevents.findMembersByEvent(event));
+
+        return myResponse;
+    }
+
 
 
 }
