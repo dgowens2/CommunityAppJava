@@ -2,9 +2,11 @@ package com.example;
 
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.ArrayList;
+
 
 public interface OrganizationMemberRepository extends CrudRepository<OrganizationMember, Integer> {
-    Organization findByMember(int memberId);
+    ArrayList<OrganizationMember> findByMemberId(int memberId);
 
-    Member findByOrganization (int organizationId);
+    ArrayList<OrganizationMember> findByOrganizationId(int organizationId);
 }
