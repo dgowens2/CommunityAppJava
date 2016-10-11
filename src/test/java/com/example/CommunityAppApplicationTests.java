@@ -8,6 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.constraints.AssertTrue;
+import java.util.ArrayList;
+
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -60,22 +63,24 @@ public class CommunityAppApplicationTests {
 		try {
 			tester.firstName = "Tu Wong";
 			tester.lastName = "Foo";
-			tester.email = "r@gmail.com";
+			tester.email = "reck@gmail.com";
 			tester.password = "JavaBeanForLife";
 			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(tester);
 
 			testerTwo.firstName = "Rebecca";
 			testerTwo.lastName = "Bearden-Tellez";
-			testerTwo.email = "r@gmail.com";
+			testerTwo.email = "reck@gmail.com";
 			testerTwo.password = "JavaBeanForLife";
 			testerTwo.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(testerTwo);
-		} catch (Exception exception) {
+		} catch (DataIntegrityViolationException exception) {
 			thrown = true;
+		}finally {
+			assertTrue(thrown);
+			members.delete(tester);
 		}
-		assertTrue(thrown);
-		members.delete(tester);
+
 //		members.delete(testerTwo);
 	}
 
@@ -133,18 +138,29 @@ public class CommunityAppApplicationTests {
 	@Test
 	public void testCreateEvent() {
 		Event newEvent = new Event();
-		Event dbEvent = new Event ();
+		Event dbEvent = new Event();
+		Member testOrganizer = new Member();
 		try {
-			newEvent.name = "Party Hardy";
+			testOrganizer.firstName = "Q";
+			testOrganizer.lastName = "Wes";
+			testOrganizer.email = "quest@gmail.com";
+			testOrganizer.streetAddress = "222 Lucky Lane";
+			testOrganizer.password = "eastside";
+			members.save(testOrganizer);
+
+			newEvent.name = "Party Hardies";
 			newEvent.location = "West End";
 			newEvent.information = "Dinner fo thieves";
-			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			newEvent.organizer = testOrganizer;
+
 			events.save(newEvent);
 			dbEvent = events.findOne(newEvent.getId());
 			assertNotNull(dbEvent);
 
 		} finally {
-			events.delete(newEvent);
+//			events.delete(newEvent);
+
+
 		}
 	}
 
@@ -157,7 +173,7 @@ public class CommunityAppApplicationTests {
 
 			tMember.firstName= "Wally";
 			tMember.lastName = "Willy";
-			tMember.email ="the@yahoo.com";
+			tMember.email ="theo@yahoo.com";
 			tMember.streetAddress = "900 Frogs Drive, Kennesaw GA 30152";
 			tMember.password = "tinktink";
 			members.save(tMember);
@@ -203,18 +219,18 @@ public class CommunityAppApplicationTests {
 		Event dbEvent = new Event ();
 		Member testMember = new Member();
 		try {
-			testMember.firstName = "Tam Tam";
-			testMember.lastName = "Bam";
-			testMember.streetAddress = "3824 Winder Rd";
-			testMember.email = "redrum@gmail.com";
-			testMember.password = "lucky";
-			members.save(testMember);
+//			testMember.firstName = "Tam Tam";
+//			testMember.lastName = "Bam";
+//			testMember.streetAddress = "3824 Winder Rd";
+//			testMember.email = "red@gmail.com";
+//			testMember.password = "lucky";
+//			members.save(testMember);
 
 			newEvent.name = "Party Hardy";
 			newEvent.location = "West End";
 			newEvent.information = "Dinner fo thieves";
 			newEvent.date = "5/30/2017 ~ 1:30 PM";
-			newEvent.organizer = testMember;
+//			newEvent.organizer = testMember;
 			events.save(newEvent);
 
 			dbEvent = events.findById(newEvent.getId());
@@ -224,14 +240,14 @@ public class CommunityAppApplicationTests {
 			assertEquals(dbEvent.getId(), newEvent.getId());
 		} finally {
 			events.delete(newEvent);
-			members.delete(testMember);
+//			members.delete(testMember);
 		}
 	}
 
 	@Test
 	public void testCreatePost() {
 		Post testPost = new Post();
-		Post dbPost = new Post();
+		ArrayList<Post> dbPosts = new ArrayList<Post>();
 		Member tester = new Member();
 
 		try{
@@ -247,9 +263,9 @@ public class CommunityAppApplicationTests {
 			testPost.body = "Not my goodies";
 			testPost.member = tester;
 			posts.save(testPost);
-			dbPost = posts.findByMember(tester);
+			dbPosts = posts.findByMember(tester);
 
-			assertNotNull(dbPost);
+			assertNotNull(dbPosts);
 
 		} finally {
 			posts.delete(testPost);
@@ -278,7 +294,7 @@ public class CommunityAppApplicationTests {
 			testPost.body = "Not my goodies";
 			testPost.member = tester;
 			posts.save(testPost);
-			dbPost = posts.findByMember(tester);
+			dbPost = posts.findById(testPost.getId());
 
 			dbPost.body = "Ciara";
 			posts.save(dbPost);
@@ -301,7 +317,7 @@ public class CommunityAppApplicationTests {
 			testMember.firstName = "Tam Tam";
 			testMember.lastName = "Bam";
 			testMember.streetAddress = "3824 Winder Rd";
-			testMember.email = "redrum@gmail.com";
+			testMember.email = "rum@gmail.com";
 			testMember.password = "lucky";
 			members.save(testMember);
 
@@ -322,10 +338,43 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
-//	@Test
-//	public void testFindPostByUser() {
-//
-//	}
+	@Test
+	public void testFindPostsByUser() {
+		Post testPost = new Post();
+		Post secondPost = new Post();
+		Member tester = new Member();
+
+		try {
+			tester.firstName = "Lakeland";
+			tester.lastName = "Fordays";
+			tester.email = "wut@gmail.com";
+			tester.password = "JavaBeanForLife";
+			tester.streetAddress = "334 Sand Drive, Atlanta, GA 30102";
+			members.save(tester);
+
+			testPost.date = "2/3/14 ~ 2:10 AM";
+			testPost.title = "Goodies";
+			testPost.body = "Not my goodies";
+			testPost.member = tester;
+			posts.save(testPost);
+
+			secondPost.title = "Waterfalls";
+			secondPost.body = "Don't go chasing";
+			secondPost.date = "6/4/2020 ~ 7:30 PM";
+			secondPost.member = tester;
+			posts.save(secondPost);
+
+			ArrayList dbPosts = posts.findByMember(tester);
+
+
+			assertEquals(2,dbPosts.size());
+
+		} finally {
+			posts.delete(testPost);
+			posts.delete(secondPost);
+			members.delete(tester);
+		}
+	}
 //
 //	@Test
 //	public void testAttendingEvent() {
