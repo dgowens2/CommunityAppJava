@@ -561,6 +561,10 @@ public class CommunityAppApplicationTests {
 			members.delete(aEventMemberThree);
 		}
 	}
+
+
+
+
 //
 //
 //	@Test

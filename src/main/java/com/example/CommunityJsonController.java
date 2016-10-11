@@ -26,6 +26,9 @@ public class CommunityJsonController {
     @Autowired
     EventRepository events;
 
+    @Autowired
+    MemberEventRepository memberevents;
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -182,5 +185,37 @@ public class CommunityJsonController {
         return eventList;
     }
 
+    @RequestMapping(path = "/event.json", method = RequestMethod.GET)
+    public EventContainer getSpecificEvent(Integer eventID) {
+        System.out.println("finding event with event id " + eventID);
+        EventContainer myResponse = new EventContainer();
+
+        Event myEvent = events.findById(eventID);
+        if (myEvent == null) {
+            myResponse.errorMessage = "No event found";
+        } else {
+            System.out.println("Found event " + myEvent.name);
+            myResponse.responseEvent = myEvent;
+        }
+        return myResponse;
+    }
+
+    @RequestMapping(path = "/attendEvent.json", method = RequestMethod.POST)
+    public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
+        MemberEventContainer myResponse = new MemberEventContainer();
+        Member member = (Member) session.getAttribute("user");
+
+        try {
+            MemberEvent attendingEvent = new MemberEvent(member, event);
+
+            memberevents.save(attendingEvent);
+
+            myResponse.setEventList(memberevents.findMembersByEvent(event));
+        } catch (Exception ex){
+            myResponse.setErrorMessage("A problem occurred while trying to attend an event");
+
+        }
+        return myResponse;
+    }
 
 }

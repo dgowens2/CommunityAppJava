@@ -5,21 +5,20 @@ import java.util.List;
 /**
  * Created by DTG2 on 10/11/16.
  */
-public class EventContainer {
-    List<Event> eventList;
+public class MemberEventContainer {
+    List<MemberEvent> eventList;
     String errorMessage;
-    Event responseEvent;
 
 
-    public List<Event> getEventList() {
+    public List<MemberEvent> getEventList() {
         return eventList;
     }
 
-    public void setEventList(List<Event> eventList) {
+    public void setEventList(List<MemberEvent> eventList) {
         this.eventList = eventList;
     }
 
-    public EventContainer() {
+    public MemberEventContainer() {
     }
 
     public String getErrorMessage() {
