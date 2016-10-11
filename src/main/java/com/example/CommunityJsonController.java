@@ -39,7 +39,7 @@ public class CommunityJsonController {
             myResponse.errorMessage = "Incorrect password";
         } else if(newMember != null && newMember.password.equals(newMember.getPassword())) {
             System.out.println(newMember.email + " is logging in");
-            session.setAttribute("user", newMember);
+            session.setAttribute("member", newMember);
             myResponse.responseMember = newMember;
         }
         return myResponse;
@@ -65,13 +65,13 @@ public class CommunityJsonController {
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
         Member member = (Member) session.getAttribute("member");
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body, post.member);
+        post = new Post(post.date, post.title, post.body, post.author);
 
         if (post == null) {
             postContainer.errorMessage = "Post was empty and therefore cannot be saved";
 
         } else {
-            post = new Post(post.date, post.title, post.body, post.member);
+            post = new Post(post.date, post.title, post.body, post.author);
             posts.save(post);
             postContainer.postList = getAllPostsByMember(member);
             System.out.println("post id = " + post.id);
@@ -91,7 +91,7 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
     public List<Post> getAllPostsByMember(Member member) {
-        Iterable<Post> allPosts = posts.findByMember(member);
+        Iterable<Post> allPosts = posts.findByAuthor(member);
         List<Post> postList = new ArrayList<>();
         for (Post currentPost : allPosts) {
             postList.add(currentPost);

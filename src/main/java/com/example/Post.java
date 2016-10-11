@@ -24,17 +24,17 @@ public class Post {
     String body;
 
     @ManyToOne
-    Member member;
+    Member author;
 
     public Post() {
     }
 
-    public Post(String date, String title, String body, Member member) {
+    public Post(String date, String title, String body, Member author) {
 //        this.id = id;
         this.date = date;
         this.title = title;
         this.body = body;
-        this.member = member;
+        this.author = author;
     }
 
     public int getId() {
@@ -70,10 +70,10 @@ public class Post {
     }
 
     public Member getMember() {
-        return member;
+        return author;
     }
 
     public void setMember(Member member) {
-        this.member = member;
+        this.author = author;
     }
 }
