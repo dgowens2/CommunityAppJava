@@ -38,6 +38,9 @@ public class CommunityAppApplicationTests {
 	@Autowired
 	MemberEventRepository memberevents;
 
+	@Autowired
+	InvitationRepository invitations;
+
 	@Test
 	public void contextLoads() {
 	}
@@ -562,7 +565,43 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testInvitation() {
+		Member aMember = new Member();
+		Organization testOrganization = new Organization();
+		OrganizationMember newOrgMember = null;
+		Invitation theInvite = null;
+		Invitation dbInvite = null;
 
+		try{
+			aMember.firstName = "Charlie";
+			aMember.lastName = "Coach";
+			aMember.email = "Jeepers@gmail.com";
+			aMember.password = "creepers";
+			aMember.streetAddress = "2 Peepers Lane Dallas, TX";
+			members.save(aMember);
+
+			testOrganization.name = "Horror Fandom";
+			organizations.save(testOrganization);
+
+			newOrgMember =  new OrganizationMember(testOrganization, aMember);
+			organizationmembers.save(newOrgMember);
+
+			theInvite = new Invitation(aMember, "testemail@yahoo.com", testOrganization);
+			invitations.save(theInvite);
+
+			dbInvite = invitations.findByInvitedEmail("testemail@yahoo.com");
+			assertNotNull(dbInvite);
+
+		} finally {
+			invitations.delete(dbInvite);
+			organizationmembers.delete(newOrgMember);
+			organizations.delete(testOrganization);
+			members.delete(aMember);
+		}
+
+
+	}
 
 
 //
