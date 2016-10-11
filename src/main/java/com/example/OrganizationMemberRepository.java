@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 
 public interface OrganizationMemberRepository extends CrudRepository<OrganizationMember, Integer> {
-    ArrayList<Organization> findByMember(int memberId);
+    ArrayList<OrganizationMember> findByMemberId(int memberId);
 
-    ArrayList<Member> findByOrganization (int organizationId);
+    ArrayList<OrganizationMember> findByOrganization (int organizationId);
 }
