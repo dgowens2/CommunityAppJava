@@ -2,6 +2,7 @@ angular.module('CommunityApp', [])
    .controller('CommunityController', function($scope, $http) {
 
     console.log("before register");
+
         $scope.register = function(firstName, lastName, email, password, streetAddress) {
             console.log("In register function in ng controller");
 
@@ -41,7 +42,6 @@ angular.module('CommunityApp', [])
 
             console.log("Container we're about to send: " + returningUser.email + " " + returningUser.password);
 
-
             $http.post("/login.json", returningUser)
                 .then(
                     function successCallback(response) {
@@ -55,6 +55,8 @@ angular.module('CommunityApp', [])
                         console.log("Unable to get data...");
                     });
         };
+
+    $scope.returningUser = {};
 
     console.log("before createNewEvent");
 
@@ -114,7 +116,7 @@ angular.module('CommunityApp', [])
 
     console.log("before sendPost");
 
-        $scope.sendPost = function (newPostDate, newPostTitle, bodyOfNewPost, myMemberEmail) {
+        $scope.sendPost = function (newPostDate, newPostTitle, bodyOfNewPost) {
              console.log("In sendPost function in ng controller");
 
              //Make a container
@@ -122,10 +124,10 @@ angular.module('CommunityApp', [])
                   date: newPostDate,
                   title: newPostTitle,
                   body: bodyOfNewPost,
-                  member: myMemberEmail
+//                  member: myMemberEmail
              }
 
-             console.log("Container we're about to send: " + postContainer.date + " " + postContainer.title + " " + postContainer.body + " " + postContainer.member);
+             console.log("Container we're about to send: " + postContainer.date + " " + postContainer.title + " " + postContainer.body);
 
              $http.post("/createPost.json", postContainer)
                   .then(
