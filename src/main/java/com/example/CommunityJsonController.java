@@ -23,7 +23,6 @@ public class CommunityJsonController {
     @Autowired
     PostRepository posts;
 
-
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -56,46 +55,22 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-    @RequestMapping(path = "/viewMembers.json", method = RequestMethod.GET)
-    public List<Member> getMembers() {
-
-        List<Member> memberList = new ArrayList<>();
-        Iterable <Member> allMembers = members.findAll();
-        for (Member member : allMembers) {
-            memberList.add(member);
-        }
-        return memberList;
-    }
-
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(@RequestBody Post post, Member member) {
-//        posts.save(post);
-//
-//        System.out.println(" in create post method");
-//
-//        List<Post> postList = new ArrayList<>();
-//        Iterable<Post> allPosts = posts.findAll();
-//        for (Post currentPost : allPosts) {
-//            postList.add(currentPost);
-//        }
-//
-//        System.out.println("after iterable");
-//        return postList;
+    public PostContainer createPost(HttpSession session, @RequestBody Post post) {
+        Member member = (Member) session.getAttribute("member");
+        PostContainer postContainer = new PostContainer();
+        post = new Post(post.date, post.title, post.body, post.member);
 
-//        System.out.println("just above the method");
-//
-        PostContainer postList = new PostContainer();
-//        Post newPost = posts.findByMember(member);
-//        System.out.println("Post #" + post.id + " is about to be created");
-//        if (newPost == null) {
-//            post = new Post(post.date, post.title, post.body, post.member);
-//            posts.save(post);
-//            postList.responsePost = post;
-////            session.setAttribute("member", member);
-//        } else {
-//            postList.errorMessage = "Post cannot be created";
-//        }
-        return postList;
+        if (post == null) {
+            postContainer.errorMessage = "Post was empty and therefore cannot be saved";
+
+        } else {
+            post = new Post(post.date, post.title, post.body, post.member);
+            posts.save(post);
+            postContainer.postList = getAllPostsByMember(member);
+            System.out.println("post id = " + post.id);
+        }
+        return postContainer;
     }
 
     @RequestMapping(path = "/memberList.json", method = RequestMethod.GET)
@@ -108,5 +83,25 @@ public class CommunityJsonController {
         return memberList;
     }
 
+    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
+    public List<Post> getAllPostsByMember(Member member) {
+        Iterable<Post> allPosts = posts.findByMember(member);
+        List<Post> postList = new ArrayList<>();
+        for (Post currentPost : allPosts) {
+            postList.add(currentPost);
+        }
+        System.out.println("after iterable");
+        return postList;
+    }
+
+    @RequestMapping(path = "/postsList.json", method = RequestMethod.GET)
+    public List<Post> getAllPosts() {
+        Iterable<Post> allPosts = posts.findAll();
+        List<Post> postList = new ArrayList<>();
+        for (Post currentPost : allPosts) {
+            postList.add(currentPost);
+        }
+        return postList;
+    }
 
 }
