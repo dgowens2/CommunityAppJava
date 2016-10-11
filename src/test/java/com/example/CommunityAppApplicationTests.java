@@ -57,7 +57,7 @@ public class CommunityAppApplicationTests {
 		Member tester = new Member();
 		tester.firstName = "Tu Wong";
 		tester.lastName = "Foo";
-		tester.email = "taka@gmail.com";
+		tester.email = "never@gmail.com";
 		tester.password = "JavaBeanForLife";
 		tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 		members.save(tester);
@@ -210,9 +210,9 @@ public class CommunityAppApplicationTests {
 		Member tester = new Member();
 
 		try{
-			tester.firstName = "Tu Wong";
-			tester.lastName = "Foo";
-			tester.email = "taka@gmail.com";
+			tester.firstName = "Tupelo";
+			tester.lastName = "MS";
+			tester.email = "twf@gmail.com";
 			tester.password = "JavaBeanForLife";
 			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(tester);
@@ -225,8 +225,6 @@ public class CommunityAppApplicationTests {
 			dbPost = posts.findByMember(tester);
 
 			assertNotNull(dbPost);
-
-
 
 		} finally {
 			posts.delete(testPost);
