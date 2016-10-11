@@ -143,13 +143,14 @@ public class CommunityAppApplicationTests {
 		try {
 			testOrganizer.firstName = "Q";
 			testOrganizer.lastName = "Wes";
-			testOrganizer.email = "quest@gmail.com";
+			testOrganizer.email = "quests@gmail.com";
 			testOrganizer.streetAddress = "222 Lucky Lane";
 			testOrganizer.password = "eastside";
 			members.save(testOrganizer);
 
-			newEvent.name = "Party Hardies";
+			newEvent.name = "Party Hardies people";
 			newEvent.location = "West End";
+			newEvent.date = "4/5/2017";
 			newEvent.information = "Dinner fo thieves";
 			newEvent.organizer = testOrganizer;
 
@@ -158,7 +159,8 @@ public class CommunityAppApplicationTests {
 			assertNotNull(dbEvent);
 
 		} finally {
-//			events.delete(newEvent);
+			events.delete(newEvent);
+			members.delete(testOrganizer);
 
 
 		}
@@ -375,7 +377,15 @@ public class CommunityAppApplicationTests {
 			members.delete(tester);
 		}
 	}
-//
+
+
+	@Test
+	public void testOrgMembers() {
+		
+
+
+	}
+
 //	@Test
 //	public void testAttendingEvent() {
 //
@@ -386,10 +396,6 @@ public class CommunityAppApplicationTests {
 //
 //	}
 //
-//	@Test
-//	public void testOrgMembers() {
-//
-//	}
 //
 //	@Test
 //	public void testOrgInfo() {
