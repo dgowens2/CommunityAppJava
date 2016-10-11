@@ -1,6 +1,5 @@
 package com.example;
 
-import org.aspectj.weaver.ast.Or;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.postgresql.util.PSQLException;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -273,9 +271,9 @@ public class CommunityAppApplicationTests {
 			testPost.date = "2/3/14 ~ 2:10 AM";
 			testPost.title = "Goodies";
 			testPost.body = "Not my goodies";
-			testPost.member = tester;
+			testPost.author = tester;
 			posts.save(testPost);
-			dbPosts = posts.findByMember(tester);
+			dbPosts = posts.findByAuthor(tester);
 
 			assertNotNull(dbPosts);
 
@@ -304,7 +302,7 @@ public class CommunityAppApplicationTests {
 			testPost.date = "2/3/14 ~ 2:10 AM";
 			testPost.title = "Goodies";
 			testPost.body = "Not my goodies";
-			testPost.member = tester;
+			testPost.author = tester;
 			posts.save(testPost);
 			dbPost = posts.findById(testPost.getId());
 
@@ -336,7 +334,7 @@ public class CommunityAppApplicationTests {
 			newPost.title = "Hello";
 			newPost.body = "Unit Testing for life";
 			newPost.date = "5/30/2017 ~ 1:30 PM";
-			newPost.member = testMember;
+			newPost.author = testMember;
 			posts.save(newPost);
 
 			dbPost = posts.findById(newPost.getId());
@@ -367,16 +365,16 @@ public class CommunityAppApplicationTests {
 			testPost.date = "2/3/14 ~ 2:10 AM";
 			testPost.title = "Goodies";
 			testPost.body = "Not my goodies";
-			testPost.member = tester;
+			testPost.author = tester;
 			posts.save(testPost);
 
 			secondPost.title = "Waterfalls";
 			secondPost.body = "Don't go chasing";
 			secondPost.date = "6/4/2020 ~ 7:30 PM";
-			secondPost.member = tester;
+			secondPost.author = tester;
 			posts.save(secondPost);
 
-			ArrayList dbPosts = posts.findByMember(tester);
+			ArrayList dbPosts = posts.findByAuthor(tester);
 
 
 			assertEquals(2,dbPosts.size());

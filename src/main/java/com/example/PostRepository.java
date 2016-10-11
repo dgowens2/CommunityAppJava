@@ -7,6 +7,6 @@ import java.util.ArrayList;
 
 public interface PostRepository extends CrudRepository<Post, Integer> {
 
-    ArrayList<Post> findByMember(Member member);
+    ArrayList<Post> findByAuthor(Member author);
     Post findById (Integer id);
 }
