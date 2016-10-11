@@ -55,14 +55,16 @@ public class CommunityAppApplicationTests {
 	public void testCreateUserThatExists() throws Exception {
 		boolean thrown = false;
 		Member tester = new Member();
-		tester.firstName = "Tu Wong";
-		tester.lastName = "Foo";
-		tester.email = "taka@gmail.com";
-		tester.password = "JavaBeanForLife";
-		tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
-		members.save(tester);
+		Member testerTwo = new Member();
+
 		try {
-			Member testerTwo = new Member();
+			tester.firstName = "Tu Wong";
+			tester.lastName = "Foo";
+			tester.email = "r@gmail.com";
+			tester.password = "JavaBeanForLife";
+			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
+			members.save(tester);
+
 			testerTwo.firstName = "Rebecca";
 			testerTwo.lastName = "Bearden-Tellez";
 			testerTwo.email = "r@gmail.com";
@@ -74,6 +76,7 @@ public class CommunityAppApplicationTests {
 		}
 		assertTrue(thrown);
 		members.delete(tester);
+//		members.delete(testerTwo);
 	}
 
 	@Test
@@ -96,7 +99,7 @@ public class CommunityAppApplicationTests {
 	}
 
 	@Test
-	public void testFindEventByName() { // waiting on updated event class
+	public void testFindEventByName() {
 		Event newEvent = new Event();
 		Event dbEvent = new Event ();
 
@@ -149,11 +152,22 @@ public class CommunityAppApplicationTests {
 	public void testEditEvent() {
 		Event newEvent = new Event();
 		Event dbEvent = new Event ();
+		Member tMember = new Member();
 		try {
+
+			tMember.firstName= "Wally";
+			tMember.lastName = "Willy";
+			tMember.email ="the@yahoo.com";
+			tMember.streetAddress = "900 Frogs Drive, Kennesaw GA 30152";
+			tMember.password = "tinktink";
+			members.save(tMember);
+
+
 			newEvent.name = "Party Hardy";
 			newEvent.location = "West End";
 			newEvent.information = "Dinner fo thieves";
 			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			newEvent.organizer = tMember;
 			events.save(newEvent);
 
 			dbEvent = events.findOne(newEvent.getId());
@@ -163,6 +177,7 @@ public class CommunityAppApplicationTests {
 			assertEquals(dbEvent.getId(), newEvent.getId());
 		} finally {
 			events.delete(newEvent);
+			members.delete(tMember);
 		}
 	}
 
@@ -186,11 +201,20 @@ public class CommunityAppApplicationTests {
 	public void testFindEventById() {
 		Event newEvent = new Event();
 		Event dbEvent = new Event ();
+		Member testMember = new Member();
 		try {
+			testMember.firstName = "Tam Tam";
+			testMember.lastName = "Bam";
+			testMember.streetAddress = "3824 Winder Rd";
+			testMember.email = "redrum@gmail.com";
+			testMember.password = "lucky";
+			members.save(testMember);
+
 			newEvent.name = "Party Hardy";
 			newEvent.location = "West End";
 			newEvent.information = "Dinner fo thieves";
 			newEvent.date = "5/30/2017 ~ 1:30 PM";
+			newEvent.organizer = testMember;
 			events.save(newEvent);
 
 			dbEvent = events.findById(newEvent.getId());
@@ -200,6 +224,7 @@ public class CommunityAppApplicationTests {
 			assertEquals(dbEvent.getId(), newEvent.getId());
 		} finally {
 			events.delete(newEvent);
+			members.delete(testMember);
 		}
 	}
 
@@ -210,9 +235,9 @@ public class CommunityAppApplicationTests {
 		Member tester = new Member();
 
 		try{
-			tester.firstName = "Tu Wong";
-			tester.lastName = "Foo";
-			tester.email = "taka@gmail.com";
+			tester.firstName = "Tupelo";
+			tester.lastName = "MS";
+			tester.email = "twf@gmail.com";
 			tester.password = "JavaBeanForLife";
 			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(tester);
@@ -226,31 +251,81 @@ public class CommunityAppApplicationTests {
 
 			assertNotNull(dbPost);
 
-
-
 		} finally {
 			posts.delete(testPost);
 			members.delete(tester);
 
 		}
 
-
 	}
 
 	@Test
 	public void testEditPost() {
+		Post testPost = new Post();
+		Post dbPost = new Post();
+		Member tester = new Member();
 
+		try{
+			tester.firstName = "Tupelo";
+			tester.lastName = "MS";
+			tester.email = "twf@gmail.com";
+			tester.password = "JavaBeanForLife";
+			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
+			members.save(tester);
+
+			testPost.date = "2/3/14 ~ 2:10 AM";
+			testPost.title = "Goodies";
+			testPost.body = "Not my goodies";
+			testPost.member = tester;
+			posts.save(testPost);
+			dbPost = posts.findByMember(tester);
+
+			dbPost.body = "Ciara";
+			posts.save(dbPost);
+
+			assertEquals(testPost.getId(), dbPost.getId());
+
+		} finally {
+			posts.delete(testPost);
+			posts.delete(dbPost);
+			members.delete(tester);
+		}
 	}
 
 	@Test
 	public void testFindPostById() {
+		Post newPost = new Post();
+		Post dbPost = new Post();
+		Member testMember = new Member();
+		try {
+			testMember.firstName = "Tam Tam";
+			testMember.lastName = "Bam";
+			testMember.streetAddress = "3824 Winder Rd";
+			testMember.email = "redrum@gmail.com";
+			testMember.password = "lucky";
+			members.save(testMember);
 
+			newPost.title = "Hello";
+			newPost.body = "Unit Testing for life";
+			newPost.date = "5/30/2017 ~ 1:30 PM";
+			newPost.member = testMember;
+			posts.save(newPost);
+
+			dbPost = posts.findById(newPost.getId());
+			dbPost.title = "My new party";
+			posts.save(dbPost);
+
+			assertEquals(dbPost.getId(), newPost.getId());
+		} finally {
+			posts.delete(newPost);
+			members.delete(testMember);
+		}
 	}
 
-	@Test
-	public void testFindPostByUser() {
-
-	}
+//	@Test
+//	public void testFindPostByUser() {
+//
+//	}
 //
 //	@Test
 //	public void testAttendingEvent() {
