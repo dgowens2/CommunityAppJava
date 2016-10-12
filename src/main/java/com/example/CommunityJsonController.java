@@ -63,7 +63,8 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
-        Member member = (Member) session.getAttribute("member");
+//        Member member = (Member) session.getAttribute("member");
+        Member author = (Member) session.getAttribute("author");  //changed member to author
         PostContainer postContainer = new PostContainer();
         post = new Post(post.date, post.title, post.body, post.author);
 
@@ -73,7 +74,7 @@ public class CommunityJsonController {
         } else {
             post = new Post(post.date, post.title, post.body, post.author);
             posts.save(post);
-            postContainer.postList = getAllPostsByMember(member);
+            postContainer.postList = getAllPostsByMember(author);
             System.out.println("post id = " + post.id);
         }
         return postContainer;
