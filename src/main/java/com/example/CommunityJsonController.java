@@ -204,7 +204,6 @@ public class CommunityJsonController {
     public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
         MemberEventContainer myResponse = new MemberEventContainer();
         Member member = (Member) session.getAttribute("member");
-
         try {
             MemberEvent attendingEvent = new MemberEvent(member, event);
 
@@ -229,7 +228,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("Invited email was null");
             } else {
                 //do we really want to send an invite back ... what should that entail?
-                
+
             }
 
         } catch (Exception ex) {
