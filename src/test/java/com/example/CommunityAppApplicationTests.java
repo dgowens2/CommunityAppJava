@@ -600,9 +600,66 @@ public class CommunityAppApplicationTests {
 			members.delete(aMember);
 		}
 
-
 	}
 
+	@Test
+	public void testMultipleInvitations() {
+		Member aMember = new Member();
+		Member twoMember = new Member();
+		Organization testOrganization = new Organization();
+		OrganizationMember newOrgMember = null;
+		OrganizationMember secondOrgMember = null;
+		Invitation theInvite = null;
+		Invitation dbInvite = null;
+		Invitation dbInviteTwo = null;
+		Invitation theSecondInvite = null;
+		try {
+			aMember.firstName = "Charlie";
+			aMember.lastName = "Coach";
+			aMember.email = "Jeepers@gmail.com";
+			aMember.password = "creepers";
+			aMember.streetAddress = "2 Peepers Lane Dallas, TX";
+			members.save(aMember);
+
+			twoMember.firstName = "Frank";
+			twoMember.lastName = "Deletty";
+			twoMember.email = "frankie@gmail.com";
+			twoMember.password = "fright";
+			twoMember.streetAddress = "4 Peepers Lane Dallas, TX";
+			members.save(twoMember);
+
+
+			testOrganization.name = "Horror Fandom";
+			organizations.save(testOrganization);
+
+			newOrgMember = new OrganizationMember(testOrganization, aMember);
+			organizationmembers.save(newOrgMember);
+
+			secondOrgMember = new OrganizationMember(testOrganization, aMember);
+			organizationmembers.save(secondOrgMember);
+
+			theInvite = new Invitation(aMember, "testemail@yahoo.com", testOrganization);
+			invitations.save(theInvite);
+
+			theSecondInvite = new Invitation(twoMember, "hello@gmail.com", testOrganization);
+			invitations.save(theInvite);
+
+			dbInvite = invitations.findByInvitedEmail("testemail@yahoo.com");
+			assertNotNull(dbInvite);
+
+			dbInviteTwo = invitations.findByInvitedEmail("hello@gmail.com");
+
+
+		} finally {
+			invitations.delete(dbInvite);
+			invitations.delete(theSecondInvite);
+			organizationmembers.delete(newOrgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizations.delete(testOrganization);
+			members.delete(aMember);
+			members.delete(twoMember);
+		}
+	}
 
 //
 //
