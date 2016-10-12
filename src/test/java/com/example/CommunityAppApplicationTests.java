@@ -444,6 +444,54 @@ public class CommunityAppApplicationTests {
 	}
 
 	@Test
+	public void testMultipleOrgMembers() {
+		Organization testOrganization = new Organization();
+		Organization dbOrg = new Organization();
+		Member testMember = new Member();
+		Member testMemberTwo = new Member();
+		OrganizationMember orgMember = null;
+		OrganizationMember orgMemberTwo = null;
+		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
+
+
+		try{
+			testOrganization.name = "Peace Corps";
+			organizations.save(testOrganization);
+
+			testMember.firstName = "Unit";
+			testMember.lastName = "Testing";
+			testMember.streetAddress= "333 Like a Bosss Canton, GA 23094";
+			testMember.password = "lehggo";
+			testMember.email = "somanytests@gmail.com";
+			members.save(testMember);
+
+			testMemberTwo.firstName = "Love";
+			testMemberTwo.lastName = "Starland";
+			testMemberTwo.streetAddress= "237 Helpme Rd, Utoy, UT 23094";
+			testMemberTwo.password = "gottawin";
+			testMemberTwo.email = "lstarland@gmail.com";
+			members.save(testMemberTwo);
+
+			orgMember = new OrganizationMember(testOrganization, testMember);
+			organizationmembers.save(orgMember);
+
+			orgMemberTwo = new OrganizationMember(testOrganization, testMemberTwo);
+			organizationmembers.save(orgMemberTwo);
+
+			dbMembers = organizationmembers.findByOrganizationId(testOrganization.getId());
+			assertEquals(2, dbMembers.size());
+
+		} finally {
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(orgMemberTwo);
+			organizations.delete(testOrganization);
+			members.delete(testMember);
+			members.delete(testMemberTwo);
+		}
+	}
+
+
+	@Test
 	public void testAttendingEvent() {
 		Member aEventMember = new Member();
 		Event attendEvent = new Event();
@@ -563,6 +611,7 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	
 	@Test
 	public void testInvitation() {
 		Member aMember = new Member();
