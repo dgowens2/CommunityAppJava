@@ -1,10 +1,7 @@
 package com.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -77,15 +74,16 @@ public class CommunityJsonController {
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
-        Member author = (Member) session.getAttribute("author");  //changed member to author
+        Member author = (Member) session.getAttribute("member");  //changed member to author
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body, post.author);
+        post = new Post(post.date, post.title, post.body);
         try {
             if (post == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
                 post = new Post(post.date, post.title, post.body, post.author);
+                post.setMember(author);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
                 System.out.println("post id = " + post.id);

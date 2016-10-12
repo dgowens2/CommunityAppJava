@@ -2,6 +2,9 @@ angular.module('CommunityApp', [])
    .controller('CommunityController', function($scope, $http) {
 
     console.log("before register");
+    $scope.member = {};
+    $scope.currentUser;
+    $scope.returningUser = {};
 
         $scope.register = function(firstName, lastName, email, password, streetAddress) {
             console.log("In register function in ng controller");
@@ -23,6 +26,7 @@ angular.module('CommunityApp', [])
                         console.log(response.data);
                         console.log("Adding data to scope");
                         $scope.loginContainer = response.data;
+                        $scope.member = {};
                     },
                     function errorCallback(response) {
                         console.log("Unable to get data...");
@@ -48,8 +52,10 @@ angular.module('CommunityApp', [])
                         console.log(response.data);
                         console.log("Adding data to scope");
                         $scope.loginContainerForLogin = response.data;
-                        $scope.currentUser = response.data.member; //
-
+                        console.log("Data added after logincontainer user")
+                        $scope.currentUser = response.data; //
+                        console.log("Data added after current user")
+//                        $scope.returningUser = {};
                     },
                     function errorCallback(response) {
                         console.log("Unable to get data...");
@@ -67,7 +73,7 @@ angular.module('CommunityApp', [])
                  date: newEventDate,
                  location: newEventLocation,
                  information: newEventInformation,
-                 organizer, newEventOrganizer
+                 organizer: newEventOrganizer
              }
 
              console.log("Container we're about to send: " + newEvent.newEventName + " " + newEvent.newEventDate + " " + newEvent.newEventLocation + " " + newEvent.newEventInformation + " " + newEvent.newEventOrganizer);
@@ -122,12 +128,14 @@ angular.module('CommunityApp', [])
                   date: newPostDate,
                   title: newPostTitle,
                   body: bodyOfNewPost,
-//                  member: myMemberEmail
+                  member: $scope.currentUser
              }
 
              console.log("Container we're about to send: " + postContainer.date + " " + postContainer.title + " " + postContainer.body);
 
-             $http.post("/createPost.json", postContainer)
+//             $http.post("/createPost/" + $scope.currentUser.responseMember.id + ".json", postContainer)
+              $http.post("/createPost.json", postContainer)
+
                   .then(
                      function successCallback(response) {
                          console.log(response.data);

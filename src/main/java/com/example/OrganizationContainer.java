@@ -1,9 +1,5 @@
 package com.example;
 
-import com.sun.tools.corba.se.idl.constExpr.Or;
-
-import java.util.List;
-
 /**
  * Created by DTG2 on 10/11/16.
  */

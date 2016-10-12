@@ -13,8 +13,8 @@
 {{! the default angularjs delimeters - https://mustache.github.io/mustache.5.html for more info }}
 {{=<% %>=}}
 
-<!--<div ng-if="!currentUser"> Not Logged in-->
-<div>
+<div ng-if="!currentUser"> Not Logged in
+<!--<div>-->
 On Community App page!!
 
 <!--register    -->
@@ -40,8 +40,8 @@ Password: <input type="password" ng-model="loginPassword"/> <br/>
 
 </div>
 
-<!--<div ng-if="currentUser"> Logged in-->
-<div>
+<div ng-if="currentUser"> {{currentUser.responseMember.firstName}} is logged in1
+<!--<div>-->
 <br/><br/><br/><br/><br/>
 
 <!--add event-->
@@ -68,7 +68,7 @@ All Events: <br/>
 
 <!--join an event-->
 <br/><br/><br/><br/><br/>
-Join an event: (Note: just for testing. Can get these from /viewusers.json and /getAllEvents.json)<br/>
+Join an event:<br/>
 Your member id: <input type="number" ng-model="myMemberId"/>
 Event id: <input type="number" ng-model="eventIWantToJoinId"/>
 <input type="button" ng-click="joinEvent(myMemberId, eventIWantToJoinId)" value="Join"/> <br/>
@@ -99,6 +99,6 @@ Updated posts: <br/>
 </span>
 
 </div>
-<!--<div ng-if="currentUser">Logged in</div>-->
+<div ng-if="currentUser">Logged in</div>
 </body>
 </html>
