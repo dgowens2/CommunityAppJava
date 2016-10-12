@@ -611,7 +611,69 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
-	
+	@Test
+	public void testMemberAttendingMultipleEvents() {
+		Member aEventMember = new Member();
+
+
+		Event attendEvent = new Event();
+
+		Event attendEventTwo = new Event();
+
+		MemberEvent theMemberEvent = new MemberEvent();
+		MemberEvent theMemberEventTwo = new MemberEvent();
+
+
+		try{
+			aEventMember.firstName = "Rod";
+			aEventMember.lastName = "Johnson";
+			aEventMember.email = "tatskolber@yahoo.com";
+			aEventMember.streetAddress = "679 Lemonade Way......";
+			aEventMember.password = "doitall";
+			members.save(aEventMember);
+
+
+
+			attendEvent.date ="3/2/16 ~ 4:45 PM";
+			attendEvent.organizer = aEventMember;
+			attendEvent.information = "Live a day as a your favorite person";
+			attendEvent.location = "Underground";
+			attendEvent.name = "Pixar day";
+			events.save(attendEvent);
+
+			attendEventTwo.date ="3/4/16 ~ 6:45 PM";
+			attendEventTwo.organizer = aEventMember;
+			attendEventTwo.information = "Tacos & Tequila";
+			attendEventTwo.location = "Nacho Mamas";
+			attendEventTwo.name = "Demo Day";
+			events.save(attendEventTwo);
+
+			theMemberEvent = new MemberEvent(aEventMember, attendEvent);
+			theMemberEventTwo = new MemberEvent(aEventMember, attendEventTwo);
+
+			memberevents.save(theMemberEvent);
+			memberevents.save(theMemberEventTwo);
+
+			Iterable<MemberEvent> eventsFoundForMember = memberevents.findEventsByMember(aEventMember);
+			ArrayList<MemberEvent> eventList = new ArrayList<MemberEvent>();
+			for (MemberEvent currentMemberEvent : eventsFoundForMember) {
+				eventList.add(currentMemberEvent);
+			}
+
+			int alSize = eventList.size();
+
+			assertEquals(2, alSize);
+
+		} finally {
+			memberevents.delete(theMemberEvent);
+			memberevents.delete(theMemberEventTwo);
+			events.delete(attendEvent);
+			events.delete(attendEventTwo);
+			members.delete(aEventMember);
+
+		}
+	}
+
 	@Test
 	public void testInvitation() {
 		Member aMember = new Member();
@@ -708,12 +770,21 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
-//
-//
-//	@Test
-//	public void testOrgInfo() {
-//
-//	}
+	@Test
+	public void testOrgInfo() {
+		Organization testOrganization = new Organization();
+		Organization dbOrg = new Organization();
+		try{
+			testOrganization.name = "Ahimsa";
+			organizations.save(testOrganization);
+
+			dbOrg = organizations.findByName("Ahimsa");
+			assertEquals("Ahimsa", dbOrg.getName());
+
+		} finally {
+			organizations.delete(testOrganization);
+		}
+	}
 //
 //	@Test
 //	public void testMemberInfo() {
@@ -726,9 +797,7 @@ public class CommunityAppApplicationTests {
 //			testMember.email= "lostrd@ymail.com";
 //			testMember.password = "newroad";
 //			members.save(testMember);
-//
-//
-//
+
 //		}finally {
 //			members.delete(testMember);
 //		}
