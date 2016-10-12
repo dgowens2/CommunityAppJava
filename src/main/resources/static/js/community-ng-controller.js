@@ -7,7 +7,7 @@ angular.module('CommunityApp', [])
             console.log("In register function in ng controller");
 
             //Make a container
-            var newUser = {
+            var newMember = {
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
@@ -15,9 +15,9 @@ angular.module('CommunityApp', [])
                 streetAddress: streetAddress
             }
 
-            console.log("Container we're about to send: " + newUser.firstName + " " + newUser.lastName + " " + newUser.email + " " + newUser.password + " " + newUser.streetAddress);
+            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress);
 
-            $http.post("/register.json", newUser)
+            $http.post("/register.json", newMember)
                 .then(
                     function successCallback(response) {
                         console.log(response.data);
@@ -48,15 +48,13 @@ angular.module('CommunityApp', [])
                         console.log(response.data);
                         console.log("Adding data to scope");
                         $scope.loginContainerForLogin = response.data;
-                        $scope.currentUser = response.data.user;
+                        $scope.currentUser = response.data.member; //
 
                     },
                     function errorCallback(response) {
                         console.log("Unable to get data...");
                     });
         };
-
-    $scope.returningUser = {};
 
     console.log("before createNewEvent");
 
