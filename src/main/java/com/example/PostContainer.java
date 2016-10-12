@@ -7,20 +7,20 @@ import java.util.List;
  */
 public class PostContainer  {
 
-//    Post responsePost;
+    Post responsePost;
     List<Post> postList;
     String errorMessage;
 
     public PostContainer() {
     }
 
-//    public Post getResponsePost() {
-//        return responsePost;
-//    }
-//
-//    public void setResponsePost(Post responsePost) {
-//        this.responsePost = responsePost;
-//    }
+    public Post getResponsePost() {
+        return responsePost;
+    }
+
+    public void setResponsePost(Post responsePost) {
+        this.responsePost = responsePost;
+    }
 
     public String getErrorMessage() {
         return errorMessage;

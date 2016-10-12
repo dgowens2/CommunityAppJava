@@ -33,14 +33,19 @@ public class CommunityJsonController {
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
         Member newMember = members.findFirstByEmail(member.email);
-        if (newMember == null) {
-            myResponse.errorMessage = "User does not exist or was input incorrectly";
-        } else if (!member.password.equals(newMember.getPassword())) {
-            myResponse.errorMessage = "Incorrect password";
-        } else if(newMember != null && newMember.password.equals(newMember.getPassword())) {
-            System.out.println(newMember.email + " is logging in");
-            session.setAttribute("member", newMember);
-            myResponse.responseMember = newMember;
+        try {
+            if (newMember == null) {
+                myResponse.errorMessage = "User does not exist or was input incorrectly";
+            } else if (!member.password.equals(newMember.getPassword())) {
+                myResponse.errorMessage = "Incorrect password";
+            } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
+                System.out.println(newMember.email + " is logging in");
+                session.setAttribute("member", newMember);
+                myResponse.responseMember = newMember;
+            }
+        }catch (Exception ex) {
+            myResponse.setErrorMessage("An exception occurred while logging in");
+            ex.printStackTrace();
         }
         return myResponse;
     }
@@ -50,13 +55,18 @@ public class CommunityJsonController {
         MemberResponseContainer myResponse = new MemberResponseContainer();
         Member newMember = members.findFirstByEmail(member.email);
         System.out.println(member.email + " is about to be created");
-        if (newMember == null) {
-            member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
-            members.save(member);
-            myResponse.responseMember = member;
-            session.setAttribute("member", member);
-        } else {
-            myResponse.errorMessage = "User already exists";
+        try {
+            if (newMember == null) {
+                member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
+                members.save(member);
+                myResponse.responseMember = member;
+                session.setAttribute("member", member);
+            } else {
+                myResponse.setErrorMessage("User already exists");
+            }
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("An exception occurred while registering");
+            ex.printStackTrace();
         }
         return myResponse;
     }
@@ -67,15 +77,19 @@ public class CommunityJsonController {
         Member author = (Member) session.getAttribute("author");  //changed member to author
         PostContainer postContainer = new PostContainer();
         post = new Post(post.date, post.title, post.body, post.author);
+        try {
+            if (post == null) {
+                postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
-        if (post == null) {
-            postContainer.errorMessage = "Post was empty and therefore cannot be saved";
-
-        } else {
-            post = new Post(post.date, post.title, post.body, post.author);
-            posts.save(post);
-            postContainer.postList = getAllPostsByMember(author);
-            System.out.println("post id = " + post.id);
+            } else {
+                post = new Post(post.date, post.title, post.body, post.author);
+                posts.save(post);
+                postContainer.postList = getAllPostsByMember(author);
+                System.out.println("post id = " + post.id);
+            }
+        } catch (Exception ex){
+            postContainer.setErrorMessage("An exception occurred creating a post");
+            ex.printStackTrace();
         }
         return postContainer;
     }
@@ -113,21 +127,71 @@ public class CommunityJsonController {
 
     //test with angular
 
+    @RequestMapping(path = "/editPost.json", method = RequestMethod.POST)
+    public PostContainer editPost(HttpSession session, @RequestBody Post thispost) {
+        Member author = (Member) session.getAttribute("author");
+        PostContainer myResponse = new PostContainer();
+        try {
+            if (author == (thispost.author)) {
+
+                posts.save(thispost);
+
+                System.out.println("Saving edited post");
+
+                myResponse.postList = posts.findByAuthor(author);
+                System.out.println("Returning list of posts by  author");
+            } else {
+                myResponse.errorMessage = "Member did not create post and thus cannot edit it.";
+            }
+        } catch (Exception ex){
+            myResponse.errorMessage = "An Error occurred while editing a post";
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    @RequestMapping(path = "/singlePost.json", method = RequestMethod.GET)
+    public PostContainer getSpecificPost(Integer postID) {
+        System.out.println("finding post with post id " + postID);
+        PostContainer myResponse = new PostContainer();
+
+        Post myPost = posts.findById(postID);
+        try {
+            if (myPost == null) {
+                myResponse.setErrorMessage("No post found");
+            } else {
+                System.out.println("Found post with title:" + myPost.title);
+                myResponse.setResponsePost(myPost);
+            }
+        } catch (Exception ex){
+            myResponse.setErrorMessage("Exception while getting single post");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
     @RequestMapping(path = "/createEvent.json", method = RequestMethod.POST)
     public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
+        thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name, thisEvent.organizer);
 
-        try {
-            thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name, thisEvent.organizer);
-            events.save(thisEvent);
+        try{
+            if(thisEvent == null) {
+               myResponse.setErrorMessage("Retrieved a null event");
 
-            System.out.println("Creating event");
+            } else {
+                events.save(thisEvent);
 
-            myResponse.eventList = getAllEvents();
-            System.out.println("Returning list of events");
+                System.out.println("Creating event");
+
+                myResponse.eventList = getAllEvents();
+                System.out.println("Returning list of events");
+            }
         } catch (Exception ex){
-            myResponse.errorMessage = "An Error occurred while creating an event";
+            myResponse.setErrorMessage("An Error occurred while creating an event");
+            ex.printStackTrace();
         }
         return myResponse;
     }
@@ -138,7 +202,7 @@ public class CommunityJsonController {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
         try {
-            if (member.firstName.equalsIgnoreCase(thisEvent.organizer.firstName)) {
+            if (member == (thisEvent.organizer)) {
 
                 events.save(thisEvent);
 
@@ -147,10 +211,11 @@ public class CommunityJsonController {
                 myResponse.eventList = getAllEvents();
                 System.out.println("Returning list of events");
             } else {
-                myResponse.errorMessage = "Member did not create event and thus cannot edit it.";
+                myResponse.setErrorMessage("Member did not create event and thus cannot edit it.");
             }
         } catch (Exception ex){
-            myResponse.errorMessage = "An Error occurred while editing an event";
+            myResponse.setErrorMessage("An Error occurred while editing an event");
+            ex.printStackTrace();
         }
         return myResponse;
     }
@@ -164,7 +229,7 @@ public class CommunityJsonController {
         int myEventListSize = myEvents.size();
 
         if (myEventListSize == 0) {
-            myResponse.errorMessage = "No events to display";
+            myResponse.setErrorMessage("No events to display");
 
         } else {
             for (Event myEvent : myEvents) {
@@ -190,13 +255,17 @@ public class CommunityJsonController {
     public EventContainer getSpecificEvent(Integer eventID) {
         System.out.println("finding event with event id " + eventID);
         EventContainer myResponse = new EventContainer();
-
         Event myEvent = events.findById(eventID);
-        if (myEvent == null) {
-            myResponse.errorMessage = "No event found";
-        } else {
-            System.out.println("Found event " + myEvent.name);
-            myResponse.responseEvent = myEvent;
+        try {
+            if (myEvent == null) {
+                myResponse.setErrorMessage("No event found");
+            } else {
+                System.out.println("Found event " + myEvent.name);
+                myResponse.setResponseEvent(myEvent);
+            }
+        } catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred while retrieving event. ");
+            ex.printStackTrace();
         }
         return myResponse;
     }
@@ -213,7 +282,7 @@ public class CommunityJsonController {
             myResponse.setEventList(memberevents.findMembersByEvent(event));
         } catch (Exception ex){
             myResponse.setErrorMessage("A problem occurred while trying to attend an event");
-
+            ex.printStackTrace();
         }
         return myResponse;
     }
@@ -230,9 +299,9 @@ public class CommunityJsonController {
             } else {
             myResponse.setSuccessMessage("Invitation sent successfully");
             }
-
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");
+            ex.printStackTrace();
         }
         return myResponse;
     }
