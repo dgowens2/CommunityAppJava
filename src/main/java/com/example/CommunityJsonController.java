@@ -84,7 +84,7 @@ public class CommunityJsonController {
             } else {
                 post = new Post(post.date, post.title, post.body, post.author);
                 posts.save(post);
-                postContainer.postList = getAllPostsByMember(author);
+                postContainer.setPostList(getAllPostsByAuthor(author));
                 System.out.println("post id = " + post.id);
             }
         } catch (Exception ex){
@@ -105,8 +105,8 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
-    public List<Post> getAllPostsByMember(Member member) {
-        Iterable<Post> allPosts = posts.findByAuthor(member);
+    public List<Post> getAllPostsByAuthor(Member author) {
+        Iterable<Post> allPosts = posts.findByAuthor(author);
         List<Post> postList = new ArrayList<>();
         for (Post currentPost : allPosts) {
             postList.add(currentPost);
@@ -176,7 +176,6 @@ public class CommunityJsonController {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
         thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name, thisEvent.organizer);
-
         try{
             if(thisEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
@@ -186,7 +185,7 @@ public class CommunityJsonController {
 
                 System.out.println("Creating event");
 
-                myResponse.eventList = getAllEvents();
+                myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             }
         } catch (Exception ex){
@@ -208,7 +207,7 @@ public class CommunityJsonController {
 
                 System.out.println("Saving edited event");
 
-                myResponse.eventList = getAllEvents();
+                myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             } else {
                 myResponse.setErrorMessage("Member did not create event and thus cannot edit it.");
@@ -292,7 +291,6 @@ public class CommunityJsonController {
     public InvitationContainer evite(HttpSession session, @RequestBody String invitedEmail) throws Exception {
         InvitationContainer myResponse = new InvitationContainer();
         Member member = (Member) session.getAttribute("member");
-
         try{
             if (invitedEmail == null){
                 myResponse.setErrorMessage("Invited email was null");

@@ -30,11 +30,11 @@ public class PostContainer  {
         this.errorMessage = errorMessage;
     }
 
-//    public List<Post> getPostList() {
-//        return postList;
-//    }
-//
-//    public void setPostList(List<Post> postList) {
-//        this.postList = postList;
-//    }
+    public List<Post> getPostList() {
+        return postList;
+    }
+
+    public void setPostList(List<Post> postList) {
+        this.postList = postList;
+    }
 }
