@@ -614,15 +614,10 @@ public class CommunityAppApplicationTests {
 	@Test
 	public void testMemberAttendingMultipleEvents() {
 		Member aEventMember = new Member();
-
-
 		Event attendEvent = new Event();
-
 		Event attendEventTwo = new Event();
-
 		MemberEvent theMemberEvent = new MemberEvent();
 		MemberEvent theMemberEventTwo = new MemberEvent();
-
 
 		try{
 			aEventMember.firstName = "Rod";
@@ -631,8 +626,6 @@ public class CommunityAppApplicationTests {
 			aEventMember.streetAddress = "679 Lemonade Way......";
 			aEventMember.password = "doitall";
 			members.save(aEventMember);
-
-
 
 			attendEvent.date ="3/2/16 ~ 4:45 PM";
 			attendEvent.organizer = aEventMember;
@@ -805,5 +798,69 @@ public class CommunityAppApplicationTests {
 			members.delete(testMember);
 		}
 	}
+
+//	@Test
+//	public void testRevisedMemberEventQueries() {
+//		Member testMember = new Member();
+//		Member secondTestMember = new Member();
+//		Event testEvent = new Event();
+//
+//		MemberEvent testMemberEvent = new MemberEvent();
+//		MemberEvent secondTestMemberEvent = new MemberEvent();
+//
+//		ArrayList<Member> dbMemberForEvents = new ArrayList<Member>();
+//		ArrayList<Event> dbEventsForMember = new ArrayList<Event>();
+//
+//		try{
+//			testMember.firstName = "Kd";
+//			testMember.lastName = "Zee";
+//			testMember.streetAddress = "657 Gallows Way ...";
+//			testMember.email= "kd@gmail.com";
+//			testMember.password = "123yeeeee";
+//			members.save(testMember);
+//
+//			secondTestMember.firstName = "Ttc";
+//			secondTestMember.lastName = "Metro";
+//			secondTestMember.streetAddress= "490 Greenred Lane";
+//			secondTestMember.email = "ttc@yahoo.com";
+//			secondTestMember.password = "setup";
+//			members.save(secondTestMember);
+//
+//			testEvent.name = "Bentley Meet & Greet";
+//			testEvent.location = "Headquarters";
+//			testEvent.information= "See the future Bentley prototypes";
+//			testEvent.date = "4/21/2021 ~ 4:30 PM";
+//			testEvent.organizer = testMember;
+//			events.save(testEvent);
+//
+//			testMemberEvent = new MemberEvent(testMember, testEvent);
+//			memberevents.save(testMemberEvent);
+//
+////			secondTestMemberEvent = new MemberEvent(secondTestMember, testEvent);
+////			memberevents.save(secondTestMemberEvent);
+//
+//			ArrayList<Member> dbIterableMembers = memberevents.findActualMembersByEvent(testEvent);
+//			for (Member currentMember: dbIterableMembers) {
+////				dbMemberForEvents.add(currentMember);
+//				String name = currentMember.firstName;
+//				assertEquals("KD", name);
+//			}
+//
+//
+//		} finally {
+//			memberevents.delete(testMemberEvent);
+////			memberevents.delete(secondTestMemberEvent);
+//			events.delete(testEvent);
+//			members.delete(testMember);
+//			members.delete(secondTestMember);
+//		}
+//
+//
+//
+//	}
+
+
+
+
 }
 
