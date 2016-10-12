@@ -30,7 +30,6 @@ public class Post {
     }
 
     public Post(String date, String title, String body, Member author) {
-//        this.id = id;
         this.date = date;
         this.title = title;
         this.body = body;

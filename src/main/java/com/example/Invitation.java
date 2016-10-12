@@ -26,8 +26,7 @@ public class Invitation {
     public Invitation() {
     }
 
-    public Invitation(int id, Member invitingMember, String invitedEmail, Organization organization) {
-        this.id = id;
+    public Invitation(Member invitingMember, String invitedEmail, Organization organization) {
         this.invitingMember = invitingMember;
         this.invitedEmail = invitedEmail;
         this.organization = organization;

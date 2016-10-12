@@ -63,7 +63,8 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
-        Member member = (Member) session.getAttribute("member");
+//        Member member = (Member) session.getAttribute("member");
+        Member author = (Member) session.getAttribute("author");  //changed member to author
         PostContainer postContainer = new PostContainer();
         post = new Post(post.date, post.title, post.body, post.author);
 
@@ -73,7 +74,7 @@ public class CommunityJsonController {
         } else {
             post = new Post(post.date, post.title, post.body, post.author);
             posts.save(post);
-            postContainer.postList = getAllPostsByMember(member);
+            postContainer.postList = getAllPostsByMember(author);
             System.out.println("post id = " + post.id);
         }
         return postContainer;
@@ -203,8 +204,7 @@ public class CommunityJsonController {
     @RequestMapping(path = "/attendEvent.json", method = RequestMethod.POST)
     public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
         MemberEventContainer myResponse = new MemberEventContainer();
-        Member member = (Member) session.getAttribute("user");
-
+        Member member = (Member) session.getAttribute("member");
         try {
             MemberEvent attendingEvent = new MemberEvent(member, event);
 
@@ -218,4 +218,24 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+
+    @RequestMapping(path = "/sendInvitation.json", method = RequestMethod.POST)
+    public InvitationContainer evite(HttpSession session, @RequestBody String invitedEmail) throws Exception {
+        InvitationContainer myResponse = new InvitationContainer();
+        Member member = (Member) session.getAttribute("member");
+
+        try{
+            if (invitedEmail == null){
+                myResponse.setErrorMessage("Invited email was null");
+            } else {
+                //do we really want to send an invite back ... what should that entail?
+
+            }
+
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("An error occurred while trying to send an invite");
+        }
+
+        return myResponse;
+    }
 }
