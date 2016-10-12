@@ -29,6 +29,9 @@ public class CommunityJsonController {
     @Autowired
     MemberEventRepository memberevents;
 
+    @Autowired
+    OrganizationRepository organizations;
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -303,4 +306,43 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
+
+    @RequestMapping (path= "/organizationProfile.json", method = RequestMethod.GET)
+    public OrganizationContainer thisOrg(HttpSession session, @RequestBody Integer organizationId) throws Exception {
+        OrganizationContainer myResponse = new OrganizationContainer();
+        Organization myOrg = organizations.findOne(organizationId);
+        try{
+            if (myOrg == null){
+                myResponse.setErrorMessage("Organization was null");
+            } else {
+                myResponse.setResponseOrganization(myOrg);
+            }
+
+        } catch (Exception ex){
+            myResponse.setErrorMessage("Exception while accessing org profile");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    @RequestMapping (path= "/memberProfile.json", method = RequestMethod.GET)
+    public MemberResponseContainer thisMember(HttpSession session, @RequestBody Integer memberId) throws Exception {
+        MemberResponseContainer myResponse = new MemberResponseContainer();
+        Member myMember = members.findOne(memberId);
+        try{
+            if (myMember == null){
+                myResponse.setErrorMessage("Member was null");
+            } else {
+                myResponse.setResponseMember(myMember);
+            }
+
+        } catch (Exception ex){
+            myResponse.setErrorMessage("Exception while accessing member profile");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
+
 }
