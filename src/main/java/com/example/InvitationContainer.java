@@ -7,9 +7,15 @@ import java.util.List;
  */
 public class InvitationContainer {
     String errorMessage;
+    String successMessage;
 
+    public String getSuccessMessage() {
+        return successMessage;
+    }
 
-
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
 
     public InvitationContainer() {
     }

@@ -228,14 +228,12 @@ public class CommunityJsonController {
             if (invitedEmail == null){
                 myResponse.setErrorMessage("Invited email was null");
             } else {
-                //do we really want to send an invite back ... what should that entail?
-
+            myResponse.setSuccessMessage("Invitation sent successfully");
             }
 
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");
         }
-
         return myResponse;
     }
 }
