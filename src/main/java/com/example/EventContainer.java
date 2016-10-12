@@ -8,6 +8,15 @@ import java.util.List;
 public class EventContainer {
     List<Event> eventList;
     String errorMessage;
+
+    public Event getResponseEvent() {
+        return responseEvent;
+    }
+
+    public void setResponseEvent(Event responseEvent) {
+        this.responseEvent = responseEvent;
+    }
+
     Event responseEvent;
 
 
