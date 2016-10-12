@@ -36,6 +36,12 @@ public class Post {
         this.author = author;
     }
 
+    public Post(String date, String title, String body) {
+        this.date = date;
+        this.title = title;
+        this.body = body;
+    }
+
     public int getId() {
         return id;
     }
@@ -72,7 +78,7 @@ public class Post {
         return author;
     }
 
-    public void setMember(Member member) {
+    public void setMember(Member author) {
         this.author = author;
     }
 }
