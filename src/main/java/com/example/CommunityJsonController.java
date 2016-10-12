@@ -226,7 +226,6 @@ public class CommunityJsonController {
     @RequestMapping(path = "/eventsList.json", method = RequestMethod.GET)
     public EventContainer eventThings(HttpSession session) {
         EventContainer myResponse = new EventContainer();
-
         ArrayList<Event> myEvents = getAllEvents();
         int myEventListSize = myEvents.size();
 
@@ -342,5 +341,5 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
-    
+
 }
