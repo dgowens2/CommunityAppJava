@@ -342,7 +342,5 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
-
-
-
+    
 }

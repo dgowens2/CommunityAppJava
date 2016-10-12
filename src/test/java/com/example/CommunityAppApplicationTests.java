@@ -799,6 +799,8 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+
+
 //	@Test
 //	public void testRevisedMemberEventQueries() {
 //		Member testMember = new Member();
