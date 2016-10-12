@@ -218,4 +218,19 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+
+    @RequestMapping(path = "/sendInvitation.json", method = RequestMethod.POST)
+    public InvitationContainer evite(HttpSession session) throws Exception {
+        InvitationContainer myResponse = new InvitationContainer();
+        try{
+            if 
+
+
+
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("An error occurred while trying to send an invite");
+        }
+
+        return myResponse;
+    }
 }
