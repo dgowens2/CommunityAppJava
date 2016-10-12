@@ -785,22 +785,25 @@ public class CommunityAppApplicationTests {
 			organizations.delete(testOrganization);
 		}
 	}
-//
-//	@Test
-//	public void testMemberInfo() {
-//	Member testMember = new Member();
-//	Member dbMember = new Member();
-//		try{
-//			testMember.firstName = "Hirum";
-//			testMember.lastName = "Wilcox";
-//			testMember.streetAddress = "539 Fells Creek Rd ..";
-//			testMember.email= "lostrd@ymail.com";
-//			testMember.password = "newroad";
-//			members.save(testMember);
 
-//		}finally {
-//			members.delete(testMember);
-//		}
-//	}
+	@Test
+	public void testMemberInfo() {
+	Member testMember = new Member();
+	Member dbMember = new Member();
+		try{
+			testMember.firstName = "Hirum";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "lostrd@ymail.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			dbMember = members.findOne(testMember.getId());
+			assertEquals("Hirum", dbMember.getFirstName());
+
+		}finally {
+			members.delete(testMember);
+		}
+	}
 }
 
