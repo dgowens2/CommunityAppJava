@@ -5,6 +5,9 @@ angular.module('CommunityApp', [])
     $scope.member = {};
     $scope.currentUser;
     $scope.returningUser = {};
+    $scope.event = {};
+    $scope.allEvents = {};
+    $scope.listOfEvents = {};
 
         $scope.register = function(firstName, lastName, email, password, streetAddress) {
             console.log("In register function in ng controller");
@@ -85,6 +88,7 @@ angular.module('CommunityApp', [])
                          console.log("Adding data to scope");
                          $scope.newEventContainer = response.data;
                          $scope.allEvents = response.data;
+                         $scope.allEvents = $scope.listEvents;
                      },
                      function errorCallback(response) {
                          console.log("Unable to get data...");
@@ -93,19 +97,41 @@ angular.module('CommunityApp', [])
 
     console.log("before joinEvent");
 
+//trying list events here
+
+
+ $scope.listTheEvents = function() {
+        console.log("Getting list of events");
+        $http.get("/eventsList.json")
+        .then(
+            function successCallBack(response) {
+                console.log(response.data);
+                console.log("retrieving events...");
+//                $scope.createdEvent = response.data;
+//                $scope.listEvents = $scope.createdEvent.responseEventContainer;
+                $scope.allEvents = response.data;
+                $scope.listOfEvents = $scope.allEvents.eventList;
+                console.log($scope.allEvents);
+
+            },
+            function errorCallBack(response) {
+                console.log("Unable to retrieve events");
+            });
+         console.log("Done with the callback");
+    };
+
+
+
+
+//end list events
+
 //        not listed in our endpoints
-        $scope.joinEvent = function(myMemberId, eventIWantToJoinId) {
+        $scope.joinEvent = function(event) {
              console.log("In joinEvent function in ng controller");
 
-             //Make a container
-             var newUserEvent = {
-                  memberId: myMemberId,
-                  eventId: eventIWantToJoinId
-             }
+             console.log("Container we're about to send: " + event.name);
 
-             console.log("Container we're about to send: " + newUserEvent.myMemberId + " " + newUserEvent.eventIWantToJoinId);
-
-             $http.post("/joinEvent.json", newUserEvent)
+             $http.post("/attendEvent.json", event)
                   .then(
                      function successCallback(response) {
                          console.log(response.data);
