@@ -177,6 +177,7 @@ public class CommunityJsonController {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
         thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name);
+
         try{
             if(thisEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
@@ -274,12 +275,11 @@ public class CommunityJsonController {
     public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
         MemberEventContainer myResponse = new MemberEventContainer();
         Member member = (Member) session.getAttribute("member");
-        try {
 
+        try {
             MemberEvent attendingEvent = new MemberEvent(member, event);
 
             memberevents.save(attendingEvent);
-
 
             myResponse.setEventList(memberevents.findMembersByEvent(event));
 

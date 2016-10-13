@@ -103,7 +103,7 @@ angular.module('CommunityApp', [])
                   eventId: eventIWantToJoinId
              }
 
-             console.log("Container we're about to send: " + newUserEvent.myMemberId + " " + newUserEvent.eventIWantToJoinId);
+             console.log("Container we're about to send: " + newUserEvent.memberId + " " + newUserEvent.eventId);
 
              $http.post("/attendEvent.json", newUserEvent)
                   .then(
