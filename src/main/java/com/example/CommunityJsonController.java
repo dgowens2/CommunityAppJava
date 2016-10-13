@@ -275,11 +275,14 @@ public class CommunityJsonController {
         MemberEventContainer myResponse = new MemberEventContainer();
         Member member = (Member) session.getAttribute("member");
         try {
+
             MemberEvent attendingEvent = new MemberEvent(member, event);
 
             memberevents.save(attendingEvent);
 
+
             myResponse.setEventList(memberevents.findMembersByEvent(event));
+
         } catch (Exception ex){
             myResponse.setErrorMessage("A problem occurred while trying to attend an event");
             ex.printStackTrace();

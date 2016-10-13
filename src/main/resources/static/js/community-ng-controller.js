@@ -105,7 +105,7 @@ angular.module('CommunityApp', [])
 
              console.log("Container we're about to send: " + newUserEvent.myMemberId + " " + newUserEvent.eventIWantToJoinId);
 
-             $http.post("/joinEvent.json", newUserEvent)
+             $http.post("/attendEvent.json", newUserEvent)
                   .then(
                      function successCallback(response) {
                          console.log(response.data);
