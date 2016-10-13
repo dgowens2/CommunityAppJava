@@ -36,10 +36,12 @@ public class CommunityJsonController {
         try {
             if (newMember == null) {
                 myResponse.errorMessage = "User does not exist or was input incorrectly";
+                System.out.println(" Username was null");
             } else if (!member.password.equals(newMember.getPassword())) {
                 myResponse.errorMessage = "Incorrect password";
+                System.out.println("Password attempt failed. Incorrect password");
             } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
-                System.out.println(newMember.email + " is logging in");
+                System.out.println(newMember.firstName + " " + newMember.lastName + " is logging in");
                 session.setAttribute("member", newMember);
                 myResponse.responseMember = newMember;
             }
@@ -309,6 +311,29 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+    @RequestMapping (path= "/createOrganization.json", method = RequestMethod.POST)
+    public OrganizationContainer createOrganization(HttpSession session, @RequestBody Organization organization) throws  Exception {
+        Member organizationAdmin = (Member) session.getAttribute("member");
+        OrganizationContainer organizationContainer = new OrganizationContainer();
+        organization = new Organization(organization.name);
+        try {
+            if (organization == null) {
+                organizationContainer.setErrorMessage("Organization name was empty and therefore cannot be saved");
+
+            } else {
+                organization = new Organization(organization.name);
+                organizations.save(organization);
+                organizationContainer.setResponseOrganization(organization);
+                System.out.println("Organization id = " + organization.id);
+            }
+        } catch (Exception ex){
+            organizationContainer.setErrorMessage("An exception occurred creating an organization");
+            ex.printStackTrace();
+        }
+        return organizationContainer;
+    }
+
+
     @RequestMapping (path= "/organizationProfile.json", method = RequestMethod.GET)
     public OrganizationContainer thisOrg(HttpSession session, @RequestBody Integer organizationId) throws Exception {
         OrganizationContainer myResponse = new OrganizationContainer();
@@ -344,5 +369,7 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
+
+
 
 }
