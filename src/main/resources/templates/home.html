@@ -50,11 +50,6 @@ Event name: <input type="text" ng-model="newEventName"/> <br/>
 Date: <input type="date" ng-model="newEventDate"/> <br/>
 Location: <input type="text" ng-model="newEventLocation"/> <br/>
 Information: <input type="text" ng-model="newEventInformation"/> <br/>
-Organizer: <select type="text" ng-model="newEventOrganizer"/> <br/>
-    <option selected disabled>Organizer</option>
-    <option ng-repeat="member in members">Organizer</option>
-    <!--figure out how to use this-->
-    </select>
 <br/>
 <input type="button" ng-click="createNewEvent(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer)" value="Create"/> <br/>
 

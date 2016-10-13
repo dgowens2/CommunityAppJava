@@ -176,16 +176,17 @@ public class CommunityJsonController {
     public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
-        thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name, thisEvent.organizer);
+        thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name);
         try{
             if(thisEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
+                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer);
+                thisEvent.setOrganizer(member);
                 events.save(thisEvent);
 
                 System.out.println("Creating event");
-
                 myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             }
