@@ -5,6 +5,10 @@ angular.module('CommunityApp', [])
     $scope.member = {};
     $scope.currentUser;
     $scope.returningUser = {};
+    //list event testing again
+    $scope.createdEvent;
+    $scope.listEvents = {};
+    //ends here
 
         $scope.register = function(firstName, lastName, email, password, streetAddress) {
             console.log("In register function in ng controller");
@@ -85,6 +89,7 @@ angular.module('CommunityApp', [])
                          console.log("Adding data to scope");
                          $scope.newEventContainer = response.data;
                          $scope.allEvents = response.data;
+                         $scope.allEvents = $scope.listEvents;
                      },
                      function errorCallback(response) {
                          console.log("Unable to get data...");
@@ -92,6 +97,31 @@ angular.module('CommunityApp', [])
          };
 
     console.log("before joinEvent");
+
+//trying list events here
+
+
+ $scope.listEvents = function() {
+        console.log("Getting list of events");
+        $http.get("/eventsList.json")
+        .then(
+            function successCallBack(response) {
+                console.log(response.data);
+                console.log("retrieving events...");
+//                $scope.createdEvent = response.data;
+//                $scope.listEvents = $scope.createdEvent.responseEventContainer;
+                $scope.allEvents = response.data;
+            },
+            function errorCallBack(response) {
+                console.log("Unable to retrieve events");
+            });
+         console.log("Done with the callback");
+    };
+
+
+
+
+//end list events
 
 //        not listed in our endpoints
         $scope.joinEvent = function(myMemberId, eventIWantToJoinId) {

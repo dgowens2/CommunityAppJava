@@ -176,7 +176,7 @@ public class CommunityJsonController {
     public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
-        thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name);
+        thisEvent = new Event(thisEvent.name, thisEvent.date, thisEvent.location, thisEvent.information);
 
         try{
             if(thisEvent == null) {
@@ -233,10 +233,11 @@ public class CommunityJsonController {
             myResponse.setErrorMessage("No events to display");
 
         } else {
-            for (Event myEvent : myEvents) {
-                myResponse.eventList.add(myEvent);
-                System.out.println("returning list of events");
-            }
+            myResponse.setEventList(myEvents);
+//            for (Event myEvent : myEvents) {
+//                myResponse.eventList.add(myEvent);
+//                System.out.println("returning list of events");
+//            }
         }
         return myResponse;
     }

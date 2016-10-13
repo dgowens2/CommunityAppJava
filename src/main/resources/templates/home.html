@@ -56,10 +56,19 @@ Information: <input type="text" ng-model="newEventInformation"/> <br/>
 <br/>
 
 <!--list all events-->
-All Events: <br/>
-<span ng-repeat="currentEvent in allEvents">
-{{currentEvent}} <br/>
-</span>
+
+    <input type="button" ng-click="listEvents()" value="Get list of events"/>
+    <table>
+        <tr>
+            <th>Event Name</th>
+        </tr>
+        <tr ng-repeat="currentEvent in allEvents">
+            <td>{{currentEvent.newEventName}}</td>
+            <td><input type="submit" ng-click="attendingEvent(event)" value="Attending Event"/></td>
+        </tr>
+    </table>
+
+
 
 <!--join an event-->
 <br/><br/><br/><br/><br/>
