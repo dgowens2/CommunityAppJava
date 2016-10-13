@@ -5,10 +5,9 @@ angular.module('CommunityApp', [])
     $scope.member = {};
     $scope.currentUser;
     $scope.returningUser = {};
-    //list event testing again
-    $scope.createdEvent;
-    $scope.listEvents = {};
-    //ends here
+    $scope.event = {};
+    $scope.allEvents = {};
+    $scope.listOfEvents = {};
 
         $scope.register = function(firstName, lastName, email, password, streetAddress) {
             console.log("In register function in ng controller");
@@ -101,7 +100,7 @@ angular.module('CommunityApp', [])
 //trying list events here
 
 
- $scope.listEvents = function() {
+ $scope.listTheEvents = function() {
         console.log("Getting list of events");
         $http.get("/eventsList.json")
         .then(
@@ -111,6 +110,9 @@ angular.module('CommunityApp', [])
 //                $scope.createdEvent = response.data;
 //                $scope.listEvents = $scope.createdEvent.responseEventContainer;
                 $scope.allEvents = response.data;
+                $scope.listOfEvents = $scope.allEvents.eventList;
+                console.log($scope.allEvents);
+
             },
             function errorCallBack(response) {
                 console.log("Unable to retrieve events");
@@ -124,18 +126,12 @@ angular.module('CommunityApp', [])
 //end list events
 
 //        not listed in our endpoints
-        $scope.joinEvent = function(myMemberId, eventIWantToJoinId) {
+        $scope.joinEvent = function(event) {
              console.log("In joinEvent function in ng controller");
 
-             //Make a container
-             var newUserEvent = {
-                  memberId: myMemberId,
-                  eventId: eventIWantToJoinId
-             }
+             console.log("Container we're about to send: " + event.name);
 
-             console.log("Container we're about to send: " + newUserEvent.memberId + " " + newUserEvent.eventId);
-
-             $http.post("/attendEvent.json", newUserEvent)
+             $http.post("/attendEvent.json", event)
                   .then(
                      function successCallback(response) {
                          console.log(response.data);

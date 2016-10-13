@@ -56,17 +56,12 @@ Information: <input type="text" ng-model="newEventInformation"/> <br/>
 <br/>
 
 <!--list all events-->
-
-    <input type="button" ng-click="listEvents()" value="Get list of events"/>
-    <table>
-        <tr>
-            <th>Event Name</th>
-        </tr>
-        <tr ng-repeat="currentEvent in allEvents">
-            <td>{{currentEvent.newEventName}}</td>
-            <td><input type="submit" ng-click="attendingEvent(event)" value="Attending Event"/></td>
-        </tr>
-    </table>
+    <input type="button" ng-click="listTheEvents()" value="Get All Events"/>
+    All Events: <br/>
+    <span ng-repeat="event in listOfEvents">
+    {{event.name}} {{event.date}} {{event.location}} {{event.details}} {{event.organizer.firstName}}<br/>
+        <input type="submit" ng-click="joinEvent(event)" value="Attending Event"/>
+    </span>
 
 
 
