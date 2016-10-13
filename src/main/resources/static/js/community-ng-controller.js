@@ -62,6 +62,65 @@ angular.module('CommunityApp', [])
                     });
         };
 
+   console.log("before sendPost");
+
+        $scope.sendPost = function (newPostDate, newPostTitle, bodyOfNewPost) {
+             console.log("In sendPost function in ng controller");
+
+             //Make a container
+             var postContainer = {
+                  date: newPostDate,
+                  title: newPostTitle,
+                  body: bodyOfNewPost,
+                  member: $scope.currentUser
+             }
+
+             console.log("Container we're about to send: " + postContainer.date + " " + postContainer.title + " " + postContainer.body);
+
+//             $http.post("/createPost/" + $scope.currentUser.responseMember.id + ".json", postContainer)
+              $http.post("/createPost.json", postContainer)
+
+                  .then(
+                     function successCallback(response) {
+                         console.log(response.data);
+                         console.log("Adding data to scope");
+                         // Returns container with error or user
+                         $scope.allPosts = response.data;
+                     },
+                     function errorCallback(response) {
+                         console.log("Unable to get data...");
+                     });
+        };
+
+
+    console.log("before createOrganization")
+
+                $scope.createOrganization = function (newOrganizationName) {
+                     console.log("In createOrganization function in ng controller");
+
+                     //Make a container
+                     var organizationContainer = {
+                          name: newOrganizationName,
+                          }
+
+                     console.log("Container we're about to send: " + organizationContainer.name);
+
+                      $http.post("/createOrganization.json", organizationContainer)
+
+                          .then(
+                             function successCallback(response) {
+                                 console.log(response.data);
+                                 console.log("Adding data to scope");
+                                 // Returns container with error or user
+                                 $scope.allOrganizations = response.data;
+                             },
+                             function errorCallback(response) {
+                                 console.log("Unable to get data...");
+                             });
+                };
+
+
+
     console.log("before createNewEvent");
 
         $scope.createNewEvent = function(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer) {
@@ -118,35 +177,7 @@ angular.module('CommunityApp', [])
                      });
         };
 
-    console.log("before sendPost");
 
-        $scope.sendPost = function (newPostDate, newPostTitle, bodyOfNewPost) {
-             console.log("In sendPost function in ng controller");
-
-             //Make a container
-             var postContainer = {
-                  date: newPostDate,
-                  title: newPostTitle,
-                  body: bodyOfNewPost,
-                  member: $scope.currentUser
-             }
-
-             console.log("Container we're about to send: " + postContainer.date + " " + postContainer.title + " " + postContainer.body);
-
-//             $http.post("/createPost/" + $scope.currentUser.responseMember.id + ".json", postContainer)
-              $http.post("/createPost.json", postContainer)
-
-                  .then(
-                     function successCallback(response) {
-                         console.log(response.data);
-                         console.log("Adding data to scope");
-                         // Returns container with error or user
-                         $scope.allPosts = response.data;
-                     },
-                     function errorCallback(response) {
-                         console.log("Unable to get data...");
-                     });
-        };
 
     console.log("Page loaded!");
 
