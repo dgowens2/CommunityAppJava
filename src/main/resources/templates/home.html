@@ -40,7 +40,9 @@ Password: <input type="password" ng-model="loginPassword"/> <br/>
 
 </div>
 
-<div ng-if="currentUser"> {{currentUser.responseMember.firstName}} is logged in1
+<div ng-if="currentUser"> {{currentUser.responseMember.firstName}} is logged in
+<button type="submit"><a href="/logout">Logout</a></button>
+
 <!--<div>-->
 <br/><br/><br/><br/><br/>
 
@@ -98,13 +100,14 @@ Updated posts: <br/>
 {{currentPost}} <br/>
 </span>
 
-</div>
-
 <br/><br/><br/><br/><br/>
 Create an organization: <br/>
 Organization name: <input type="text" ng-model="newOrganizationName"/><br/>
 <input type="button" ng-click="createOrganization(newOrganizationName)" value="Submit"><br/>
-<br/><br/><br/><br/><br/><br/>
+
+</div>
+
+
 <div ng-if="currentUser">Logged in</div>
 </body>
 </html>

@@ -36,10 +36,12 @@ public class CommunityJsonController {
         try {
             if (newMember == null) {
                 myResponse.errorMessage = "User does not exist or was input incorrectly";
+                System.out.println(" Username was null");
             } else if (!member.password.equals(newMember.getPassword())) {
                 myResponse.errorMessage = "Incorrect password";
+                System.out.println("Password attempt failed. Incorrect password");
             } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
-                System.out.println(newMember.email + " is logging in");
+                System.out.println(newMember.firstName + " " + newMember.lastName + " is logging in");
                 session.setAttribute("member", newMember);
                 myResponse.responseMember = newMember;
             }

@@ -4,7 +4,7 @@ angular.module('CommunityApp', [])
     console.log("before register");
     $scope.member = {};
     $scope.currentUser;
-    $scope.returningUser = {};
+//    $scope.returningUser = {};
 
         $scope.register = function(firstName, lastName, email, password, streetAddress) {
             console.log("In register function in ng controller");
