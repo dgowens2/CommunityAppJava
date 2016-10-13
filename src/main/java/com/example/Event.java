@@ -40,6 +40,14 @@ public class Event {
        this.organizer = organizer;
     }
 
+    public Event(String name, String date, String location, String information) {
+        this.name = name;
+        this.date = date; //user will enter date~time
+        this.location = location;
+        this.information = information;
+//        this.organizer = organizer;
+    }
+
     public int getId() {
         return id;
     }

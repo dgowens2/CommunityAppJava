@@ -178,16 +178,18 @@ public class CommunityJsonController {
     public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
         Member member = (Member) session.getAttribute("member");
         EventContainer myResponse = new EventContainer();
-        thisEvent = new Event(thisEvent.name, thisEvent.location, thisEvent.date, thisEvent.name, thisEvent.organizer);
+        thisEvent = new Event(thisEvent.name, thisEvent.date, thisEvent.location, thisEvent.information);
+
         try{
             if(thisEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
+                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer);
+                thisEvent.setOrganizer(member);
                 events.save(thisEvent);
 
                 System.out.println("Creating event");
-
                 myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             }
@@ -233,10 +235,11 @@ public class CommunityJsonController {
             myResponse.setErrorMessage("No events to display");
 
         } else {
-            for (Event myEvent : myEvents) {
-                myResponse.eventList.add(myEvent);
-                System.out.println("returning list of events");
-            }
+            myResponse.setEventList(myEvents);
+//            for (Event myEvent : myEvents) {
+//                myResponse.eventList.add(myEvent);
+//                System.out.println("returning list of events");
+//            }
         }
         return myResponse;
     }
@@ -275,12 +278,14 @@ public class CommunityJsonController {
     public MemberEventContainer checkInAtEvent(HttpSession session, @RequestBody Event event) throws Exception{
         MemberEventContainer myResponse = new MemberEventContainer();
         Member member = (Member) session.getAttribute("member");
+
         try {
             MemberEvent attendingEvent = new MemberEvent(member, event);
 
             memberevents.save(attendingEvent);
 
             myResponse.setEventList(memberevents.findMembersByEvent(event));
+
         } catch (Exception ex){
             myResponse.setErrorMessage("A problem occurred while trying to attend an event");
             ex.printStackTrace();
