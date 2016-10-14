@@ -402,6 +402,14 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
+    @RequestMapping(path = "/organizationsList.json", method = RequestMethod.GET)
+    public List<Organization> getAllOrganizations() {
+        Iterable<Organization> allOrganizations = organizations.findAll();
+        List<Organization> organizationsList = new ArrayList<>();
+        for (Organization thisOrganization : allOrganizations) {
+            organizationsList.add(thisOrganization);
+        }
+        return organizationsList;
+    }
 
 }
