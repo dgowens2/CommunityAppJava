@@ -29,6 +29,9 @@ public class CommunityJsonController {
     @Autowired
     OrganizationRepository organizations;
 
+    @Autowired
+    OrganizationMemberRepository organizationMembers;
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -333,7 +336,6 @@ public class CommunityJsonController {
         return organizationContainer;
     }
 
-
     @RequestMapping (path= "/organizationProfile.json", method = RequestMethod.GET)
     public OrganizationContainer thisOrg(HttpSession session, @RequestBody Integer organizationId) throws Exception {
         OrganizationContainer myResponse = new OrganizationContainer();
@@ -350,6 +352,36 @@ public class CommunityJsonController {
             ex.printStackTrace();
         }
         return myResponse;
+    }
+
+    @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
+    public OrganizationMemberContainer joinOrganization(HttpSession session, @RequestBody Integer organizationId) throws Exception {
+        OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
+        Member member = (Member) session.getAttribute("member");
+        Organization organization = organizations.findOne(organizationId);
+
+        try {
+            OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+            organizationMemberAssociation.setOrganization(organization);
+            organizationMembers.save(organizationMemberAssociation);
+            myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
+            System.out.println("organization set");
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("A problem occurred while trying to join an organization");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    public ArrayList<OrganizationMember> refreshOrganizationMemberList() {
+        ArrayList<OrganizationMember> organizationMembersArrayList = new ArrayList<>();
+        Iterable<OrganizationMember> allOrganizationMembers = organizationMembers.findAll();
+
+        for (OrganizationMember orgMem : allOrganizationMembers) {
+            organizationMembersArrayList.add(orgMem);
+
+        }
+        return organizationMembersArrayList;
     }
 
     @RequestMapping (path= "/memberProfile.json", method = RequestMethod.GET)
