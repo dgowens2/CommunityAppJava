@@ -30,7 +30,7 @@ Street Address: <input type="text" ng-model="streetAddress"/> <br/>
 {{loginContainer}}
 
 <!--login-->
-<br/><br/><br/><br/><br/>
+<br/><br/><br/>
 OR login to your existing account:<br/>
 Email: <input type="email" ng-model="loginEmail"/> <br/>
 Password: <input type="password" ng-model="loginPassword"/> <br/>
@@ -41,12 +41,17 @@ Password: <input type="password" ng-model="loginPassword"/> <br/>
 </div>
 
 <div ng-if="currentUser"> {{currentUser.responseMember.firstName}} is logged in
+
 <button type="submit"><a href="/logout">Logout</a></button>
 
-<!--<div>-->
-<br/><br/><br/><br/><br/>
+<br/><br/><br/> To view all members in JSON format, point to /memberList.json (all members) or /memberProfile.json(single member)
+
+
+    <!--<div>-->
+<br/><br/><br/>
 
 <!--add event-->
+To view events in JSON format, view /eventsList.json (all events), /event.json (single event)
 Add an event:<br/>
 Event name: <input type="text" ng-model="newEventName"/> <br/>
 Date: <input type="date" ng-model="newEventDate"/> <br/>
@@ -58,23 +63,12 @@ Information: <input type="text" ng-model="newEventInformation"/> <br/>
 <br/>
 
 <!--list all events-->
-    <input type="button" ng-click="listTheEvents()" value="Get All Events"/>
-    All Events: <br/>
-    <span ng-repeat="event in listOfEvents">
-    {{event.name}} {{event.date}} {{event.location}} {{event.details}} {{event.organizer.firstName}}<br/>
-        <input type="submit" ng-click="joinEvent(event)" value="Attending Event"/>
-    </span>
-
-
-
-<!--join an event-->
-<br/><br/><br/><br/><br/>
-Join an event:<br/>
-Your member id: <input type="number" ng-model="myMemberId"/>
-Event id: <input type="number" ng-model="eventIWantToJoinId"/>
-<input type="button" ng-click="joinEvent(myMemberId, eventIWantToJoinId)" value="Join"/> <br/>
-
-<br/>
+<input type="button" ng-click="listTheEvents()" value="Get All Events"/>
+All Events: <br/>
+<span ng-repeat="event in listOfEvents">
+{{event.name}} {{event.date}} {{event.location}} {{event.details}} {{event.organizer.firstName}}<br/>
+    <input type="submit" ng-click="joinEvent(event)" value="Attending Event"/>
+</span>
 
 <!--event attendee list-->
 Updated attendees at this event: <br/>
@@ -83,7 +77,9 @@ Updated attendees at this event: <br/>
 </span>
 
 <!--Post a message-->
-<br/><br/><br/><br/><br/>
+<br/><br/>
+To view all posts in JSON format, point to /postsList.json, /postsListByMember.json & /singlePost.json
+<br/><br/><br/>
 Post a message: <br/>
 Date: <input type="date" ng-model="newPostDate"/> <br/>
 Title: <input type="text" ng-model="newPostTitle"/><br/>
@@ -99,12 +95,13 @@ Updated posts: <br/>
 {{currentPost}} <br/>
 </span>
 
-<br/><br/><br/><br/><br/>
+<br/><br/><br/>
+To view organization data in JSON format, point to /organizationProfile.json (single organization) or /organizationsList.json (all organizations)
 Create an organization: <br/>
 Organization name: <input type="text" ng-model="newOrganizationName"/><br/>
 <input type="button" ng-click="createOrganization(newOrganizationName)" value="Submit"><br/>
 
-<br/><br/><br/><br/><br/>
+<br/><br/><br/>
 Join an organization:<br/>
 Organization id: <input type="number" ng-model="organizationIWantToJoinId"/>
 <input type="button" ng-click="joinOrganization(organizationIWantToJoinId)" value="Join"/> <br/>
