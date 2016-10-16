@@ -426,7 +426,9 @@ public class CommunityAppApplicationTests {
 			testMember.email = "canterase@gmail.com";
 			members.save(testMember);
 
-			orgMember = new OrganizationMember(testOrganization, testMember);
+			Organization orgId = organizations.findById(testOrganization.getId());
+
+			orgMember = new OrganizationMember(orgId, testMember);
 			organizationmembers.save(orgMember);
 
 			dbOrganizations = organizationmembers.findByMemberId(testMember.getId());
