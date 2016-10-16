@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -801,67 +802,61 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testFindEventsByOrganizer() {
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		Event testEvent = new Event();
+		Event secondTestEvent = new Event();
+		ArrayList<Event> dbEvents = new ArrayList<>();
+		ArrayList<Event> dbEventsNone = new ArrayList<>();
+
+		try{
+			testMember.firstName = "Hirum";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "lostrd@ymail.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			secondTestMember.firstName = "Gemma";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "gteller@soa.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			testEvent.organizer = secondTestMember;
+			testEvent.date ="9/9/2017 ~ 15:30";
+			testEvent.name = "Charity Ride";
+			testEvent.information= "Two day for children";
+			testEvent.location ="Dragon Tail";
+			events.save(testEvent);
+
+			secondTestEvent.organizer = secondTestMember;
+			secondTestEvent.date ="5/24/2017 ~ 13:00";
+			secondTestEvent.name = "County Fair";
+			secondTestEvent.information= "Fun for the whole family";
+			secondTestEvent.location ="Charming Square";
+			events.save(secondTestEvent);
+
+			dbEventsNone= events.findByOrganizer(testMember);
+			assertEquals(0,dbEventsNone.size());
+
+			dbEvents= events.findByOrganizer(secondTestMember);
+			assertEquals(2, dbEvents.size());
 
 
-//	@Test
-//	public void testRevisedMemberEventQueries() {
-//		Member testMember = new Member();
-//		Member secondTestMember = new Member();
-//		Event testEvent = new Event();
-//
-//		MemberEvent testMemberEvent = new MemberEvent();
-//		MemberEvent secondTestMemberEvent = new MemberEvent();
-//
-//		ArrayList<Member> dbMemberForEvents = new ArrayList<Member>();
-//		ArrayList<Event> dbEventsForMember = new ArrayList<Event>();
-//
-//		try{
-//			testMember.firstName = "Kd";
-//			testMember.lastName = "Zee";
-//			testMember.streetAddress = "657 Gallows Way ...";
-//			testMember.email= "kd@gmail.com";
-//			testMember.password = "123yeeeee";
-//			members.save(testMember);
-//
-//			secondTestMember.firstName = "Ttc";
-//			secondTestMember.lastName = "Metro";
-//			secondTestMember.streetAddress= "490 Greenred Lane";
-//			secondTestMember.email = "ttc@yahoo.com";
-//			secondTestMember.password = "setup";
-//			members.save(secondTestMember);
-//
-//			testEvent.name = "Bentley Meet & Greet";
-//			testEvent.location = "Headquarters";
-//			testEvent.information= "See the future Bentley prototypes";
-//			testEvent.date = "4/21/2021 ~ 4:30 PM";
-//			testEvent.organizer = testMember;
-//			events.save(testEvent);
-//
-//			testMemberEvent = new MemberEvent(testMember, testEvent);
-//			memberevents.save(testMemberEvent);
-//
-////			secondTestMemberEvent = new MemberEvent(secondTestMember, testEvent);
-////			memberevents.save(secondTestMemberEvent);
-//
-//			ArrayList<Member> dbIterableMembers = memberevents.findActualMembersByEvent(testEvent);
-//			for (Member currentMember: dbIterableMembers) {
-////				dbMemberForEvents.add(currentMember);
-//				String name = currentMember.firstName;
-//				assertEquals("KD", name);
-//			}
-//
-//
-//		} finally {
-//			memberevents.delete(testMemberEvent);
-////			memberevents.delete(secondTestMemberEvent);
-//			events.delete(testEvent);
-//			members.delete(testMember);
-//			members.delete(secondTestMember);
-//		}
-//
-//
-//
-//	}
+		}finally {
+
+			events.delete(testEvent);
+			events.delete(secondTestEvent);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
+
+
 
 
 }

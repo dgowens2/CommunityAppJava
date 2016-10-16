@@ -425,14 +425,14 @@ public class CommunityJsonController {
         return orgMemberPostList;
     }
 
-//    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
-//    public List<Post> getAllEvents(HttpSession session, @RequestBody Organization organization){
-//        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-//        List <Post> orgMemberEventList = new ArrayList<>();
-//        for (OrganizationMember thisOrgMember: allOrgMembers){
-//            orgMemberEventList.addAll(events.fin
-//        }
-//        return orgMemberEventList;
-//    }
-//
+    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
+    public List<Event> getAllEvents(HttpSession session, @RequestBody Organization organization){
+        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+        List <Event> orgMemberEventList = new ArrayList<>();
+        for (OrganizationMember thisOrgMember: allOrgMembers){
+            orgMemberEventList.addAll(events.findByOrganizer(thisOrgMember.getMember()));
+        }
+        return orgMemberEventList;
+    }
+
 }
