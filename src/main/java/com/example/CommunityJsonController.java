@@ -1,10 +1,12 @@
 package com.example;
 
+import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -412,4 +414,25 @@ public class CommunityJsonController {
         return organizationsList;
     }
 
+
+    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
+    public List<Post> getAllPosts(HttpSession session, @RequestBody Organization organization){
+        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+        List <Post> orgMemberPostList = new ArrayList<>();
+        for (OrganizationMember thisOrgMember: allOrgMembers){
+           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+        }
+        return orgMemberPostList;
+    }
+
+//    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
+//    public List<Post> getAllEvents(HttpSession session, @RequestBody Organization organization){
+//        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+//        List <Post> orgMemberEventList = new ArrayList<>();
+//        for (OrganizationMember thisOrgMember: allOrgMembers){
+//            orgMemberEventList.addAll(events.fin
+//        }
+//        return orgMemberEventList;
+//    }
+//
 }
