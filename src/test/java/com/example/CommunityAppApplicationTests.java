@@ -995,7 +995,7 @@ public class CommunityAppApplicationTests {
 		Post threePost = new Post();
 
 		try{
-			testOrg.name="no name org";
+			testOrg.name="Lost";
 			organizations.save(testOrg);
 
 			testMember.firstName = "Hirum";
@@ -1005,7 +1005,7 @@ public class CommunityAppApplicationTests {
 			testMember.password = "newroad";
 			members.save(testMember);
 
-			onePost.title = "Boat Surfing";
+			onePost.title = "Famous Songs";
 			onePost.date = "3/4/16 12:00";
 			onePost.body ="Come sail away with me";
 			onePost.author = testMember;
@@ -1022,14 +1022,14 @@ public class CommunityAppApplicationTests {
 
 			twoPost.author = secondTestMember;
 			twoPost.date = "2/20/2018 16:00";
-			twoPost.title = "Whiplash's the Dance";
+			twoPost.title = "Defensive Driving";
 			twoPost.body="Car accidents hurt";
 			twoPost.organization = testOrg;
 			posts.save(twoPost);
 
 			threePost.author = secondTestMember;
 			threePost.date = "4/5/2018 16:00";
-			threePost.title = "Oh man My Man";
+			threePost.title = "Names";
 			threePost.body="Naming conventions are sometimes hard";
 			threePost.organization = testOrg;
 			posts.save(threePost);
@@ -1037,12 +1037,14 @@ public class CommunityAppApplicationTests {
 			orgMember = new OrganizationMember(testOrg, secondTestMember);
 			organizationmembers.save(orgMember);
 
-			Iterable<OrganizationMember> allOrgMembers = organizationmembers.findMembersByOrganization(testOrg);
-			List<Post> orgMemberPostList = new ArrayList<>();
-			for (OrganizationMember thisOrgMember: allOrgMembers){
-				orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
-			}
-			assertEquals(2, orgMemberPostList.size());
+//			Iterable<OrganizationMember> allOrgMembers = organizationmembers.findMembersByOrganization(testOrg);
+//			List<Post> orgMemberPostList = new ArrayList<>();
+//			for (OrganizationMember thisOrgMember: allOrgMembers){
+//				orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+//			}
+
+			List<Post> orgMemberPostListTwo = posts.findByOrganization(testOrg);
+			assertEquals(3, orgMemberPostListTwo.size());
 
 		}finally {
 			organizationmembers.delete(orgMember);

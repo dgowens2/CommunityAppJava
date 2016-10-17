@@ -457,11 +457,11 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
     public List<Post> getAllPosts(HttpSession session, @RequestBody Organization organization){
-        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Post> orgMemberPostList = new ArrayList<>();
-        for (OrganizationMember thisOrgMember: allOrgMembers){
-           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
-        }
+//        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+        List <Post> orgMemberPostList = posts.findByOrganization(organization);
+//        for (OrganizationMember thisOrgMember: allOrgMembers){
+//           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+//        }
         return orgMemberPostList;
     }
 
