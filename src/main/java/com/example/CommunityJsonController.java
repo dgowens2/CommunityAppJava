@@ -97,7 +97,7 @@ public class CommunityJsonController {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author);
+                post = new Post(post.date, post.title, post.body, post.author, post.organization);
                 post.setMember(author);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
@@ -457,11 +457,11 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
     public List<Post> getAllPosts(HttpSession session, @RequestBody Organization organization){
-        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Post> orgMemberPostList = new ArrayList<>();
-        for (OrganizationMember thisOrgMember: allOrgMembers){
-           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
-        }
+//        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+        List <Post> orgMemberPostList = posts.findByOrganization(organization);
+//        for (OrganizationMember thisOrgMember: allOrgMembers){
+//           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+//        }
         return orgMemberPostList;
     }
 

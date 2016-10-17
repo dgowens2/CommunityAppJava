@@ -845,7 +845,7 @@ public class CommunityAppApplicationTests {
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
-			testMember.email= "lostrd@ymail.com";
+			testMember.email= "loster@ymail.com";
 			testMember.password = "newroad";
 			members.save(testMember);
 
@@ -870,27 +870,27 @@ public class CommunityAppApplicationTests {
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
-			testMember.email= "lostrd@ymail.com";
+			testMember.email= "lostrday@ymail.com";
 			testMember.password = "newroad";
 			members.save(testMember);
 
 			secondTestMember.firstName = "Gemma";
 			secondTestMember.lastName = "Teller";
 			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
-			secondTestMember.email= "gteller@soa.com";
+			secondTestMember.email= "gtellersad@soa.com";
 			secondTestMember.password = "redwoodorginal";
 			members.save(secondTestMember);
 
 			testEvent.organizer = secondTestMember;
 			testEvent.date ="9/9/2017 ~ 15:30";
-			testEvent.name = "Charity Ride";
+			testEvent.name = "Charity Rides for children";
 			testEvent.information= "Two day for children";
 			testEvent.location ="Dragon Tail";
 			events.save(testEvent);
 
 			secondTestEvent.organizer = secondTestMember;
 			secondTestEvent.date ="5/24/2017 ~ 13:00";
-			secondTestEvent.name = "County Fair";
+			secondTestEvent.name = "County Fair at the Square";
 			secondTestEvent.information= "Fun for the whole family";
 			secondTestEvent.location ="Charming Square";
 			events.save(secondTestEvent);
@@ -922,20 +922,20 @@ public class CommunityAppApplicationTests {
 		Event notOrgEvent = new Event();
 
 		try{
-			testOrg.name="SOA";
+			testOrg.name="Danver Dance Group";
 			organizations.save(testOrg);
 
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
-			testMember.email= "lostrd@ymail.com";
+			testMember.email= "lostredrd@ymail.com";
 			testMember.password = "newroad";
 			members.save(testMember);
 
 			secondTestMember.firstName = "Gemma";
 			secondTestMember.lastName = "Teller";
 			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
-			secondTestMember.email= "gteller@soa.com";
+			secondTestMember.email= "gemmateller@soa.com";
 			secondTestMember.password = "redwoodorginal";
 			members.save(secondTestMember);
 
@@ -995,57 +995,63 @@ public class CommunityAppApplicationTests {
 		Post threePost = new Post();
 
 		try{
-			testOrg.name="SOA";
+			testOrg.name="Lost";
 			organizations.save(testOrg);
 
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
-			testMember.email= "lostrd@ymail.com";
+			testMember.email= "roadd@ymail.com";
 			testMember.password = "newroad";
 			members.save(testMember);
 
-			onePost.title = "Boat";
+			onePost.title = "Famous Songs";
 			onePost.date = "3/4/16 12:00";
 			onePost.body ="Come sail away with me";
 			onePost.author = testMember;
+			onePost.organization = testOrg;
+
 			posts.save(onePost);
 
 			secondTestMember.firstName = "Gemma";
 			secondTestMember.lastName = "Teller";
 			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
-			secondTestMember.email= "gteller@soa.com";
+			secondTestMember.email= "gellerrosa@soa.com";
 			secondTestMember.password = "redwoodorginal";
 			members.save(secondTestMember);
 
 			twoPost.author = secondTestMember;
 			twoPost.date = "2/20/2018 16:00";
-			twoPost.title = "Whiplash";
+			twoPost.title = "Defensive Driving";
 			twoPost.body="Car accidents hurt";
+			twoPost.organization = testOrg;
 			posts.save(twoPost);
 
 			threePost.author = secondTestMember;
 			threePost.date = "4/5/2018 16:00";
-			threePost.title = "Oh man";
+			threePost.title = "Names";
 			threePost.body="Naming conventions are sometimes hard";
+			threePost.organization = testOrg;
 			posts.save(threePost);
 
 			orgMember = new OrganizationMember(testOrg, secondTestMember);
 			organizationmembers.save(orgMember);
 
-			Iterable<OrganizationMember> allOrgMembers = organizationmembers.findMembersByOrganization(testOrg);
-			List<Post> orgMemberPostList = new ArrayList<>();
-			for (OrganizationMember thisOrgMember: allOrgMembers){
-				orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
-			}
-			assertEquals(2, orgMemberPostList.size());
+//			Iterable<OrganizationMember> allOrgMembers = organizationmembers.findMembersByOrganization(testOrg);
+//			List<Post> orgMemberPostList = new ArrayList<>();
+//			for (OrganizationMember thisOrgMember: allOrgMembers){
+//				orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+//			}
+
+			List<Post> orgMemberPostListTwo = posts.findByOrganization(testOrg);
+			assertEquals(3, orgMemberPostListTwo.size());
 
 		}finally {
 			organizationmembers.delete(orgMember);
-			organizations.delete(testOrg);
 			posts.delete(onePost);
 			posts.delete(twoPost);
 			posts.delete(threePost);
+			organizations.delete(testOrg);
 			members.delete(testMember);
 			members.delete(secondTestMember);
 		}
