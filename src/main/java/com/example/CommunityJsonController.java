@@ -326,7 +326,7 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/createOrganization.json", method = RequestMethod.POST)
     public OrganizationContainer createOrganization(HttpSession session, @RequestBody Organization organization) throws  Exception {
-        Member organizationAdmin = (Member) session.getAttribute("member");
+        Member member = (Member) session.getAttribute("member");
         OrganizationContainer organizationContainer = new OrganizationContainer();
         organization = new Organization(organization.name);
         try {
@@ -337,6 +337,7 @@ public class CommunityJsonController {
                 organization = new Organization(organization.name);
                 organizations.save(organization);
                 organizationContainer.setResponseOrganization(organization);
+                OrganizationMember newOrgMember = new OrganizationMember(organization, member);
                 System.out.println("Organization id = " + organization.id);
             }
         } catch (Exception ex){
