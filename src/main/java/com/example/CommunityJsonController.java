@@ -458,7 +458,18 @@ public class CommunityJsonController {
     @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
     public List<Post> getAllPosts(HttpSession session, @RequestBody Organization organization){
 //        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Post> orgMemberPostList = posts.findByOrganization(organization);
+        Member member = (Member) session.getAttribute("member");
+        List <Post> orgMemberPostList = new ArrayList<>();
+        ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+        int sizeOfAL = memberOrgs.size();
+        if (sizeOfAL == 1){
+            orgMemberPostList = posts.findByOrganization(organization);
+        } else {
+            for (OrganizationMember currentOrgMember: memberOrgs){
+                Organization currentOrg =  currentOrgMember.getOrganization();
+                orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
+            }
+        }
 //        for (OrganizationMember thisOrgMember: allOrgMembers){
 //           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
 //        }
