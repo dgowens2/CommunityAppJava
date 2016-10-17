@@ -732,7 +732,7 @@ public class CommunityAppApplicationTests {
 		Organization testOrganization = new Organization();
 		OrganizationMember newOrgMember = null;
 		Invitation theInvite = null;
-		Invitation dbInvite = null;
+		ArrayList<Invitation> dbInvite = null;
 
 		try{
 			aMember.firstName = "Charlie";
@@ -771,9 +771,10 @@ public class CommunityAppApplicationTests {
 		OrganizationMember newOrgMember = null;
 		OrganizationMember secondOrgMember = null;
 		Invitation theInvite = null;
-		Invitation dbInvite = null;
-		Invitation dbInviteTwo = null;
+		ArrayList<Invitation> dbInvite = null;
+		ArrayList<Invitation> dbInviteTwo = null;
 		Invitation theSecondInvite = null;
+
 		try {
 			aMember.firstName = "Charlie";
 			aMember.lastName = "Coach";

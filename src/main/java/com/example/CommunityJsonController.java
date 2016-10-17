@@ -387,6 +387,33 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+    @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
+    public OrganizationMemberContainer joinOrganization(HttpSession session) throws Exception {
+        OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
+        Member member = (Member) session.getAttribute("member");
+        ArrayList<Invitation> allInvites =  invitations.findByInvitedEmail(member.getEmail());
+
+        try {
+            if(allInvites != null) {
+                for (Invitation currentInvite: allInvites) {
+                    Organization organization = currentInvite.getOrganization();
+                    OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+                    organizationMemberAssociation.setOrganization(organization);
+                    organizationMembers.save(organizationMemberAssociation);
+                    myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
+                    System.out.println("organization set");
+                }
+            } else {
+                myResponse.setErrorMessage("User was not invited to join this organization");
+            }
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("A problem occurred while trying to join an organization");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
     public ArrayList<OrganizationMember> refreshOrganizationMemberList() {
         ArrayList<OrganizationMember> organizationMembersArrayList = new ArrayList<>();
         Iterable<OrganizationMember> allOrganizationMembers = organizationMembers.findAll();
