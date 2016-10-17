@@ -412,20 +412,20 @@ public class CommunityAppApplicationTests {
 		Organization testOrganization = new Organization();
 		Organization dbOrg = new Organization();
 		Member testMember = new Member();
-		OrganizationMember orgMember = null;
+		OrganizationMember orgMember = new OrganizationMember();
 		ArrayList<OrganizationMember> dbOrganizations = new ArrayList<OrganizationMember>();
 		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
 
 
 		try{
-			testOrganization.name = "Peace Corps";
+			testOrganization.name = "Sally Beauty";
 			organizations.save(testOrganization);
 
 			testMember.firstName = "Creep";
 			testMember.lastName = "Promised";
 			testMember.streetAddress= "333 Promise Ave, Utoy, UT 23094";
 			testMember.password = "scratchedouryourname";
-			testMember.email = "canterase@gmail.com";
+			testMember.email = "canterae@gmail.com";
 			members.save(testMember);
 
 			Organization orgId = organizations.findById(testOrganization.getId());
@@ -453,13 +453,11 @@ public class CommunityAppApplicationTests {
 		Organization dbOrg = new Organization();
 		Member testMember = new Member();
 		Member testMemberTwo = new Member();
-		OrganizationMember orgMember = null;
-		OrganizationMember orgMemberTwo = null;
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember orgMemberTwo = new OrganizationMember();
 		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
-
-
 		try{
-			testOrganization.name = "Peace Corps";
+			testOrganization.name = "Lost at Sea";
 			organizations.save(testOrganization);
 
 			testMember.firstName = "Unit";

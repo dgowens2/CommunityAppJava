@@ -364,28 +364,28 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-    @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
-    public OrganizationMemberContainer joinOrganization(HttpSession session, @RequestBody Integer organizationId) throws Exception {
-        OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
-        Member member = (Member) session.getAttribute("member");
-        Organization organization = organizations.findOne(organizationId);
-
-        try {
-            if(member.email.equals(invitations.findByInvitedEmail(member.getEmail()))) {
-                OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
-                organizationMemberAssociation.setOrganization(organization);
-                organizationMembers.save(organizationMemberAssociation);
-                myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
-                System.out.println("organization set");
-            } else {
-                myResponse.setErrorMessage("User was not invited to join this organization");
-            }
-        } catch (Exception ex) {
-            myResponse.setErrorMessage("A problem occurred while trying to join an organization");
-            ex.printStackTrace();
-        }
-        return myResponse;
-    }
+//    @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
+//    public OrganizationMemberContainer joinOrganization(HttpSession session, @RequestBody Integer organizationId) throws Exception {
+//        OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
+//        Member member = (Member) session.getAttribute("member");
+//        Organization organization = organizations.findOne(organizationId);
+//
+//        try {
+//            if(member.email.equals(invitations.findByInvitedEmail(member.getEmail()))) {
+//                OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+//                organizationMemberAssociation.setOrganization(organization);
+//                organizationMembers.save(organizationMemberAssociation);
+//                myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
+//                System.out.println("organization set");
+//            } else {
+//                myResponse.setErrorMessage("User was not invited to join this organization");
+//            }
+//        } catch (Exception ex) {
+//            myResponse.setErrorMessage("A problem occurred while trying to join an organization");
+//            ex.printStackTrace();
+//        }
+//        return myResponse;
+//    }
 
     @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
     public OrganizationMemberContainer joinOrganization(HttpSession session) throws Exception {
