@@ -35,6 +35,9 @@ public class CommunityJsonController {
     @Autowired
     OrganizationMemberRepository organizationMembers;
 
+    @Autowired
+    InvitationRepository invitations;
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -69,6 +72,7 @@ public class CommunityJsonController {
                 members.save(member);
                 myResponse.responseMember = member;
                 session.setAttribute("member", member);
+                //later they would create an org
             } else {
                 myResponse.setErrorMessage("User already exists");
             }
@@ -78,6 +82,9 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
+
+
+
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
@@ -364,11 +371,15 @@ public class CommunityJsonController {
         Organization organization = organizations.findOne(organizationId);
 
         try {
-            OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
-            organizationMemberAssociation.setOrganization(organization);
-            organizationMembers.save(organizationMemberAssociation);
-            myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
-            System.out.println("organization set");
+            if(member.email.equals(invitations.findByInvitedEmail(member.getEmail()))) {
+                OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+                organizationMemberAssociation.setOrganization(organization);
+                organizationMembers.save(organizationMemberAssociation);
+                myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
+                System.out.println("organization set");
+            } else {
+                myResponse.setErrorMessage("User was not invited to join this organization");
+            }
         } catch (Exception ex) {
             myResponse.setErrorMessage("A problem occurred while trying to join an organization");
             ex.printStackTrace();
