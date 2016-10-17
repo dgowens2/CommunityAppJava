@@ -412,20 +412,20 @@ public class CommunityAppApplicationTests {
 		Organization testOrganization = new Organization();
 		Organization dbOrg = new Organization();
 		Member testMember = new Member();
-		OrganizationMember orgMember = null;
+		OrganizationMember orgMember = new OrganizationMember();
 		ArrayList<OrganizationMember> dbOrganizations = new ArrayList<OrganizationMember>();
 		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
 
 
 		try{
-			testOrganization.name = "Peace Corps";
+			testOrganization.name = "Sally Beauty";
 			organizations.save(testOrganization);
 
 			testMember.firstName = "Creep";
 			testMember.lastName = "Promised";
 			testMember.streetAddress= "333 Promise Ave, Utoy, UT 23094";
 			testMember.password = "scratchedouryourname";
-			testMember.email = "canterase@gmail.com";
+			testMember.email = "canterae@gmail.com";
 			members.save(testMember);
 
 			Organization orgId = organizations.findById(testOrganization.getId());
@@ -453,13 +453,11 @@ public class CommunityAppApplicationTests {
 		Organization dbOrg = new Organization();
 		Member testMember = new Member();
 		Member testMemberTwo = new Member();
-		OrganizationMember orgMember = null;
-		OrganizationMember orgMemberTwo = null;
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember orgMemberTwo = new OrganizationMember();
 		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
-
-
 		try{
-			testOrganization.name = "Peace Corps";
+			testOrganization.name = "Lost at Sea";
 			organizations.save(testOrganization);
 
 			testMember.firstName = "Unit";
@@ -494,13 +492,68 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testOrgMembersInvited() {
+		Organization testOrganization = new Organization();
+		Organization dbOrg = new Organization();
+		Member testMember = new Member();
+		Member anotherMember = new Member();
+		OrganizationMember organizationMemberAssociation = new OrganizationMember();
+		Invitation newInvite = null;
+		ArrayList<OrganizationMember> dbOrganizations = new ArrayList<OrganizationMember>();
+		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
+
+
+		try{
+			testOrganization.name = "A Night to Remember - Prom";
+			organizations.save(testOrganization);
+
+			testMember.firstName = "Creep";
+			testMember.lastName = "Promised";
+			testMember.streetAddress= "333 Promise Ave, Utoy, UT 23094";
+			testMember.password = "scratchedouryourname";
+			testMember.email = "icantstos@gmail.com";
+			members.save(testMember);
+
+			newInvite = new Invitation(testMember, "bestbuy@gmail.com", testOrganization);
+			invitations.save(newInvite);
+
+			anotherMember.firstName = "Billy";
+			anotherMember.lastName= "Bob";
+			anotherMember.streetAddress = "488 Random Isle ";
+			anotherMember.email = "bestbuy@gmail.com";
+			anotherMember.password = "hi";
+			members.save(anotherMember);
+
+			try {
+				if(anotherMember.email.equals(invitations.findByInvitedEmail(anotherMember.getEmail()))) {
+					organizationMemberAssociation = new OrganizationMember(testOrganization, anotherMember);
+					organizationmembers.save(organizationMemberAssociation);
+					System.out.println("organization set");
+
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+			assertNotNull(organizationmembers.findByOrganizationName("A Night to Remember - Prom"));
+
+		} finally {
+			invitations.delete(newInvite);
+			organizationmembers.delete(organizationMemberAssociation);
+			organizations.delete(testOrganization);
+			members.delete(testMember);
+			members.delete(anotherMember);
+		}
+	}
+
 
 	@Test
 	public void testAttendingEvent() {
 		Member aEventMember = new Member();
 		Event attendEvent = new Event();
 		MemberEvent theMemberEvent = new MemberEvent();
-		MemberEvent dbMemberEvent = new MemberEvent();;
+		MemberEvent dbMemberEvent = new MemberEvent();
 		try{
 			aEventMember.firstName = "Rod";
 			aEventMember.lastName = "Johnson";
@@ -677,7 +730,7 @@ public class CommunityAppApplicationTests {
 		Organization testOrganization = new Organization();
 		OrganizationMember newOrgMember = null;
 		Invitation theInvite = null;
-		Invitation dbInvite = null;
+		ArrayList<Invitation> dbInvite = null;
 
 		try{
 			aMember.firstName = "Charlie";
@@ -716,9 +769,10 @@ public class CommunityAppApplicationTests {
 		OrganizationMember newOrgMember = null;
 		OrganizationMember secondOrgMember = null;
 		Invitation theInvite = null;
-		Invitation dbInvite = null;
-		Invitation dbInviteTwo = null;
+		ArrayList<Invitation> dbInvite = null;
+		ArrayList<Invitation> dbInviteTwo = null;
 		Invitation theSecondInvite = null;
+
 		try {
 			aMember.firstName = "Charlie";
 			aMember.lastName = "Coach";
