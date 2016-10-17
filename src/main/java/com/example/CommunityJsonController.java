@@ -97,7 +97,7 @@ public class CommunityJsonController {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author);
+                post = new Post(post.date, post.title, post.body, post.author, post.organization);
                 post.setMember(author);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
