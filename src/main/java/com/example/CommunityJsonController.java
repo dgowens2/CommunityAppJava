@@ -504,7 +504,7 @@ public class CommunityJsonController {
     }
 
 
-    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
+    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.POST)
     public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
         PostContainer myResponse = new PostContainer();
         try {
@@ -528,7 +528,7 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
+    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.POST)
     public EventContainer getAllEvents(HttpSession session, @RequestBody Organization organization){
         EventContainer myResponse = new EventContainer();
         try {
