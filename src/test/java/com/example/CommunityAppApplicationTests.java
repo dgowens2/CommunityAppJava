@@ -66,6 +66,41 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testCreateMemberWithInvitation(){
+		Member invitingMember = new Member();
+		Member invitedMember = new Member();
+		OrganizationMember memberInvitingMember = new OrganizationMember();
+		OrganizationMember memberInvitedMember = new OrganizationMember();
+		Organization theOrg = new Organization();
+		Invitation theInvite = new Invitation();
+
+
+		Member dbMember = new Member();
+
+		try {
+			invitingMember.firstName = "Testing";
+			invitingMember.lastName = "McTesterson";
+			invitingMember.email = "Testingemail@gmail.com";
+			invitingMember.password = "notsecure";
+			invitingMember.streetAddress = "123 TIY Drive, Atlanta, GA 30102";
+			members.save(invitingMember);
+
+
+
+
+
+
+
+		} finally{
+			organizationmembers.delete(memberInvitingMember);
+			organizationmembers.delete(memberInvitedMember);
+			organizations.delete(theOrg);
+			members.delete(invitingMember);
+			members.delete(invitedMember);
+		}
+	}
+
 
 	@Test
 	public void testCreateUserThatExists() throws Exception {
