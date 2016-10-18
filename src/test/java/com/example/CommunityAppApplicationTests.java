@@ -65,6 +65,70 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testCreateMemberWithInvitation(){
+		Member invitingMember = new Member();
+		Member invitedMember = new Member();
+		OrganizationMember memberInvitingMember = new OrganizationMember();
+		OrganizationMember memberInvitedMember = new OrganizationMember();
+		Organization theOrg = new Organization();
+		Invitation theInvite = new Invitation();
+
+
+		Member dbMember = new Member();
+
+		try {
+			invitingMember.firstName = "Tess";
+			invitingMember.lastName = "Welch";
+			invitingMember.email = "Tess@gmail.com";
+			invitingMember.password = "notsecure";
+			invitingMember.streetAddress = "123 TIY Drive, Atlanta, GA 30102";
+			members.save(invitingMember);
+
+
+			theOrg.name = "Whataburger";
+			organizations.save(theOrg);
+
+			memberInvitingMember = new OrganizationMember(theOrg, invitingMember);
+			organizationmembers.save(memberInvitingMember);
+
+			theInvite = new Invitation(invitingMember, "monsters@gmail.com", theOrg);
+			invitations.save(theInvite);
+
+			ArrayList<Invitation> invitesAL = invitations.findByInvitedEmail("monsters@gmail.com");
+			int alSize = invitesAL.size();
+
+			if (alSize>=1) {
+				ArrayList<Invitation> allInvites = invitations.findByInvitedEmail("monsters@gmail.com");
+				for (Invitation currentInvite : allInvites) {
+					Organization organization = currentInvite.getOrganization();
+					invitedMember.firstName = "Sam";
+					invitedMember.lastName = "Gut";
+					invitedMember.email = "monsters@gmail.com";
+					invitedMember.password = "lola";
+					invitedMember.streetAddress = "30 Hwy 42";
+					members.save(invitedMember);
+					memberInvitedMember = new OrganizationMember(organization, invitedMember);
+					memberInvitedMember.setOrganization(organization);
+					organizationmembers.save(memberInvitedMember);
+				}
+			}else {
+				System.out.println("Didn't work");
+			}
+
+			assertNotNull(organizationmembers.findByMemberEmail("monster@gmail.com"));
+
+
+		} finally{
+			invitations.delete(theInvite);
+			organizationmembers.delete(memberInvitingMember);
+			organizationmembers.delete(memberInvitedMember);
+			organizations.delete(theOrg);
+			members.delete(invitingMember);
+			members.delete(invitedMember);
+		}
+	}
+
 
 	@Test
 	public void testCreateUserThatExists() throws Exception {
@@ -1167,5 +1231,114 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
+
+//test doensn't pass yet
+//	@Test
+//	public void testEventsByAllMembersOrgs() {
+//		Organization testOrg = new Organization();
+//		Organization secondOrg = new Organization();
+//		Member testMember = new Member();
+//		Member secondTestMember = new Member();
+//		OrganizationMember orgMember = new OrganizationMember();
+//		OrganizationMember secondOrgMember = new OrganizationMember();
+//		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+//		Event oneEvent = new Event();
+//		Event twoEvent = new Event();
+//		Event threeEvent = new Event();
+//		Event fourEvent = new Event();
+//
+//		try{
+//			testOrg.name="Dolphins";
+//			organizations.save(testOrg);
+//
+//			secondOrg.name= "Walk";
+//			organizations.save(secondOrg);
+//
+//			testMember.firstName = "Hirums";
+//			testMember.lastName = "Wilcox";
+//			testMember.streetAddress = "539 Fells Creek Rd ..";
+//			testMember.email= "ther@gmail.com";
+//			testMember.password = "newroad";
+//			members.save(testMember);
+//
+//			oneEvent.date = "3/14/16 12:00";
+//			oneEvent.name = "Pie Day Forever";
+//			oneEvent.location = "TIY";
+//			oneEvent.information = "Bring a pie";
+//			oneEvent.organizer= testMember;
+//			oneEvent.organization = testOrg;
+//			events.save(oneEvent);
+//
+//			secondTestMember.firstName = "Jax";
+//			secondTestMember.lastName = "Teller";
+//			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+//			secondTestMember.email= "thej@soa.com";
+//			secondTestMember.password = "redwoodorginal";
+//			members.save(secondTestMember);
+//
+//			twoEvent.organizer = testMember;
+//			twoEvent.date = "2/20/2018 16:00";
+//			twoEvent.name = "Wand";
+//			twoEvent.information="Great deals on the locations of your dreams";
+//			twoEvent.organization = testOrg;
+//			twoEvent.location = "5 Points";
+//			events.save(twoEvent);
+//
+//			threeEvent.organizer = secondTestMember;
+//			threeEvent.date = "4/5/2018 16:00";
+//			threeEvent.name = "April parties";
+//			threeEvent.information="Past fools day oh well";
+//			twoEvent.location= "TBD";
+//			threeEvent.organization = secondOrg;
+//			events.save(threeEvent);
+//
+//			fourEvent.organizer = secondTestMember;
+//			fourEvent.date = "6/9/2018 16:00";
+//			fourEvent.name = "Summer Smash Run";
+//			fourEvent.information="Run";
+//			twoEvent.location = "Kennesaw Mountain";
+//			fourEvent.organization = secondOrg;
+//			events.save(fourEvent);
+//
+//			orgMember = new OrganizationMember(testOrg, secondTestMember);
+//			organizationmembers.save(orgMember);
+//
+//			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+//			organizationmembers.save(secondOrgMember);
+//
+//			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+//			organizationmembers.save(secondOrgMemberTest);
+//
+//
+//			List <Event> orgMemberEventList = new ArrayList<>();
+//			ArrayList<OrganizationMember> memberOrgs = organizationmembers.findByMemberId(secondTestMember.getId());
+//			int sizeOfAL = memberOrgs.size();
+//			if (sizeOfAL == 1){
+//				orgMemberEventList = events.findByOrganization(testOrg);
+//			} else {
+//				for (OrganizationMember currentOrgMember: memberOrgs){
+//					Organization currentOrg =  currentOrgMember.getOrganization();
+//					orgMemberEventList.addAll(events.findByOrganization(currentOrg));
+//				}
+//			}
+//
+//			assertEquals(4, orgMemberEventList.size());
+//
+//		}finally {
+//			events.delete(oneEvent);
+//			events.delete(twoEvent);
+//			events.delete(threeEvent);
+//			events.delete(fourEvent);
+//			organizationmembers.delete(orgMember);
+//			organizationmembers.delete(secondOrgMember);
+//			organizationmembers.delete(secondOrgMemberTest);
+//			organizations.delete(testOrg);
+//			organizations.delete(secondOrg);
+//			members.delete(testMember);
+//			members.delete(secondTestMember);
+//		}
+//	}
+//
+
 }
 

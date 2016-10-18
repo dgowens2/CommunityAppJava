@@ -68,15 +68,30 @@ public class CommunityJsonController {
         System.out.println(member.email + " is about to be created");
         try {
             if (newMember == null) {
-                member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
-                members.save(member);
-                myResponse.responseMember = member;
-                session.setAttribute("member", member);
-                //later they would create an org
+                ArrayList<Invitation> listInvites = invitations.findByInvitedEmail(newMember.getEmail());
+                int size = listInvites.size();
+                if (size>=1) {
+                    ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
+                    for (Invitation currentInvite : allInvites) {
+                        Organization organization = currentInvite.getOrganization();
+                        member = new Member(member.firstName, member.lastName, member.email, member.streetAddress, member.password);
+                        members.save(member);
+                        OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+                        organizationMemberAssociation.setOrganization(organization);
+                        organizationMembers.save(organizationMemberAssociation);
+                        myResponse.responseMember = member;
+                    }
+                } else {
+                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
+                    members.save(member);
+                    myResponse.responseMember = member;
+                    session.setAttribute("member", member);
+                    //later they would create an org
+                }
             } else {
-                myResponse.setErrorMessage("User already exists");
+                    myResponse.setErrorMessage("User already exists");
             }
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             myResponse.setErrorMessage("An exception occurred while registering");
             ex.printStackTrace();
         }
@@ -475,10 +490,19 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
     public List<Event> getAllEvents(HttpSession session, @RequestBody Organization organization){
+        Member member = (Member) session.getAttribute("member");
         Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Event> orgMemberEventList = new ArrayList<>();
-        for (OrganizationMember thisOrgMember: allOrgMembers){
-            orgMemberEventList.addAll(events.findByOrganizer(thisOrgMember.getMember()));
+        List<Event> orgMemberEventList = new ArrayList<>();
+        ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+        int sizeOfAL = memberOrgs.size();
+
+        if (sizeOfAL == 1){
+            orgMemberEventList = events.findByOrganization(organization);
+        } else {
+            for (OrganizationMember currentOrgMember: memberOrgs){
+                Organization currentOrg =  currentOrgMember.getOrganization();
+                orgMemberEventList.addAll(events.findByOrganization(currentOrg));
+            }
         }
         return orgMemberEventList;
     }
