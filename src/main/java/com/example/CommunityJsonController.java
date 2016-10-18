@@ -68,15 +68,28 @@ public class CommunityJsonController {
         System.out.println(member.email + " is about to be created");
         try {
             if (newMember == null) {
-                member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
-                members.save(member);
-                myResponse.responseMember = member;
-                session.setAttribute("member", member);
-                //later they would create an org
+                if (newMember.getEmail().equals(invitations.findByInvitedEmail(newMember.getEmail()))) {
+                    ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
+                    for (Invitation currentInvite : allInvites) {
+                        Organization organization = currentInvite.getOrganization();
+                        member = new Member(member.firstName, member.lastName, member.email, member.streetAddress, member.password);
+                        members.save(member);
+                        OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+                        organizationMemberAssociation.setOrganization(organization);
+                        organizationMembers.save(organizationMemberAssociation);
+                        myResponse.responseMember = member;
+                    }
+                } else {
+                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
+                    members.save(member);
+                    myResponse.responseMember = member;
+                    session.setAttribute("member", member);
+                    //later they would create an org
+                }
             } else {
-                myResponse.setErrorMessage("User already exists");
+                    myResponse.setErrorMessage("User already exists");
             }
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             myResponse.setErrorMessage("An exception occurred while registering");
             ex.printStackTrace();
         }
