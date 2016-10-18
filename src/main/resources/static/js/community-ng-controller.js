@@ -9,7 +9,7 @@ angular.module('CommunityApp', [])
     $scope.allEvents = {};
     $scope.listOfEvents = {};
 
-        $scope.register = function(firstName, lastName, email, password, streetAddress) {
+        $scope.register = function(firstName, lastName, email, password, streetAddress, photoURL) {
             console.log("In register function in ng controller");
 
             //Make a container
@@ -18,10 +18,11 @@ angular.module('CommunityApp', [])
                 lastName: lastName,
                 email: email,
                 password: password,
-                streetAddress: streetAddress
+                streetAddress: streetAddress,
+                photo: photoURL
             }
 
-            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress);
+            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress + " " + newMember.photo);
 
             $http.post("/register.json", newMember)
                 .then(
@@ -35,6 +36,22 @@ angular.module('CommunityApp', [])
                         console.log("Unable to get data...");
                     });
         };
+
+    $scope.uploadPhoto = function(photoURL) {
+        console.log("In upload photo function")
+
+        $http.post("https://api.imgur.com/3/upload", photoURL)
+            .then(
+                function successCallback(response) {
+                    console.log(response.data);
+                    console.log("Adding Data to scope");
+                    $scope.photoContainer = response.data;
+                },
+                function errorCallback(response) {
+                    console.log("unable to get data...");
+                });
+    };
+
 
     console.log("before login");
 
@@ -129,11 +146,9 @@ $scope.listTheOrganizations = function() {
         .then(
             function successCallBack(response) {
                 console.log(response.data);
-                console.log("retrieving events...");
-//                $scope.createdEvent = response.data;
-//                $scope.listEvents = $scope.createdEvent.responseEventContainer;
+                console.log("retrieving organizations...");
                 $scope.allOrganizations = response.data;
-                $scope.listOfOrganizations = $scope.allOrganizations.orgList;
+//                $scope.listOfOrganizations = $scope.allOrganizations.orgList;
                 console.log($scope.allOrganizations);
 
             },
@@ -276,6 +291,8 @@ $scope.listTheOrganizations = function() {
             };
 
 
+        $scope.allOrganizations = {};
+        console.log($scope.allOrganizations)
 
     console.log("Page loaded!");
 

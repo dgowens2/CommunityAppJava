@@ -85,4 +85,12 @@ public class Post {
     public void setMember(Member author) {
         this.author = author;
     }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
 }
