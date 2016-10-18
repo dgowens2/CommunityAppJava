@@ -490,10 +490,19 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
     public List<Event> getAllEvents(HttpSession session, @RequestBody Organization organization){
+        Member member = (Member) session.getAttribute("member");
         Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Event> orgMemberEventList = new ArrayList<>();
-        for (OrganizationMember thisOrgMember: allOrgMembers){
-            orgMemberEventList.addAll(events.findByOrganizer(thisOrgMember.getMember()));
+        List<Event> orgMemberEventList = new ArrayList<>();
+        ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+        int sizeOfAL = memberOrgs.size();
+
+        if (sizeOfAL == 1){
+            orgMemberEventList = events.findByOrganization(organization);
+        } else {
+            for (OrganizationMember currentOrgMember: memberOrgs){
+                Organization currentOrg =  currentOrgMember.getOrganization();
+                orgMemberEventList.addAll(events.findByOrganization(currentOrg));
+            }
         }
         return orgMemberEventList;
     }
