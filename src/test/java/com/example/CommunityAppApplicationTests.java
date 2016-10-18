@@ -78,20 +78,49 @@ public class CommunityAppApplicationTests {
 		Member dbMember = new Member();
 
 		try {
-			invitingMember.firstName = "Testing";
-			invitingMember.lastName = "McTesterson";
-			invitingMember.email = "Testingemail@gmail.com";
+			invitingMember.firstName = "Tess";
+			invitingMember.lastName = "Welch";
+			invitingMember.email = "Tess@gmail.com";
 			invitingMember.password = "notsecure";
 			invitingMember.streetAddress = "123 TIY Drive, Atlanta, GA 30102";
 			members.save(invitingMember);
 
 
+			theOrg.name = "Whataburger";
+			organizations.save(theOrg);
 
+			memberInvitingMember = new OrganizationMember(theOrg, invitingMember);
+			organizationmembers.save(memberInvitingMember);
 
+			theInvite = new Invitation(invitingMember, "monsters@gmail.com", theOrg);
+			invitations.save(theInvite);
 
+			ArrayList<Invitation> invitesAL = invitations.findByInvitedEmail("monsters@gmail.com");
+			int alSize = invitesAL.size();
+
+			if (alSize>=1) {
+				ArrayList<Invitation> allInvites = invitations.findByInvitedEmail("monsters@gmail.com");
+				for (Invitation currentInvite : allInvites) {
+					Organization organization = currentInvite.getOrganization();
+					invitedMember.firstName = "Sam";
+					invitedMember.lastName = "Gut";
+					invitedMember.email = "monsters@gmail.com";
+					invitedMember.password = "lola";
+					invitedMember.streetAddress = "30 Hwy 42";
+					members.save(invitedMember);
+					memberInvitedMember = new OrganizationMember(organization, invitedMember);
+					memberInvitedMember.setOrganization(organization);
+					organizationmembers.save(memberInvitedMember);
+				}
+			}else {
+				System.out.println("Didn't work");
+			}
+
+			assertNotNull(organizationmembers.findByMemberEmail("monster@gmail.com"));
 
 
 		} finally{
+			invitations.delete(theInvite);
 			organizationmembers.delete(memberInvitingMember);
 			organizationmembers.delete(memberInvitedMember);
 			organizations.delete(theOrg);

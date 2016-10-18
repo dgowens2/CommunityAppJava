@@ -68,7 +68,9 @@ public class CommunityJsonController {
         System.out.println(member.email + " is about to be created");
         try {
             if (newMember == null) {
-                if (newMember.getEmail().equals(invitations.findByInvitedEmail(newMember.getEmail()))) {
+                ArrayList<Invitation> listInvites = invitations.findByInvitedEmail(newMember.getEmail());
+                int size = listInvites.size();
+                if (size>=1) {
                     ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
                     for (Invitation currentInvite : allInvites) {
                         Organization organization = currentInvite.getOrganization();
