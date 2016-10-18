@@ -94,7 +94,7 @@ public class CommunityJsonController {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author);
+                post = new Post(post.date, post.title, post.body, post.author, post.organization);
                 post.setMember(author);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
@@ -323,7 +323,7 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/createOrganization.json", method = RequestMethod.POST)
     public OrganizationContainer createOrganization(HttpSession session, @RequestBody Organization organization) throws  Exception {
-        Member organizationAdmin = (Member) session.getAttribute("member");
+        Member member = (Member) session.getAttribute("member");
         OrganizationContainer organizationContainer = new OrganizationContainer();
         organization = new Organization(organization.name);
         try {
@@ -334,6 +334,7 @@ public class CommunityJsonController {
                 organization = new Organization(organization.name);
                 organizations.save(organization);
                 organizationContainer.setResponseOrganization(organization);
+                OrganizationMember newOrgMember = new OrganizationMember(organization, member);
                 System.out.println("Organization id = " + organization.id);
             }
         } catch (Exception ex){
@@ -361,19 +362,45 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+//    @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
+//    public OrganizationMemberContainer joinOrganization(HttpSession session, @RequestBody Integer organizationId) throws Exception {
+//        OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
+//        Member member = (Member) session.getAttribute("member");
+//        Organization organization = organizations.findOne(organizationId);
+//
+//        try {
+//            if(member.email.equals(invitations.findByInvitedEmail(member.getEmail()))) {
+//                OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+//                organizationMemberAssociation.setOrganization(organization);
+//                organizationMembers.save(organizationMemberAssociation);
+//                myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
+//                System.out.println("organization set");
+//            } else {
+//                myResponse.setErrorMessage("User was not invited to join this organization");
+//            }
+//        } catch (Exception ex) {
+//            myResponse.setErrorMessage("A problem occurred while trying to join an organization");
+//            ex.printStackTrace();
+//        }
+//        return myResponse;
+//    }
+
     @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
-    public OrganizationMemberContainer joinOrganization(HttpSession session, @RequestBody Integer organizationId) throws Exception {
+    public OrganizationMemberContainer joinOrganization(HttpSession session) throws Exception {
         OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
         Member member = (Member) session.getAttribute("member");
-        Organization organization = organizations.findOne(organizationId);
+        ArrayList<Invitation> allInvites =  invitations.findByInvitedEmail(member.getEmail());
 
         try {
-            if(member.email.equals(invitations.findByInvitedEmail(member.getEmail()))) {
-                OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
-                organizationMemberAssociation.setOrganization(organization);
-                organizationMembers.save(organizationMemberAssociation);
-                myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
-                System.out.println("organization set");
+            if(allInvites != null) {
+                for (Invitation currentInvite: allInvites) {
+                    Organization organization = currentInvite.getOrganization();
+                    OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+                    organizationMemberAssociation.setOrganization(organization);
+                    organizationMembers.save(organizationMemberAssociation);
+                    myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
+                    System.out.println("organization set");
+                }
             } else {
                 myResponse.setErrorMessage("User was not invited to join this organization");
             }
@@ -383,6 +410,7 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
+
 
     public ArrayList<OrganizationMember> refreshOrganizationMemberList() {
         ArrayList<OrganizationMember> organizationMembersArrayList = new ArrayList<>();
@@ -426,11 +454,22 @@ public class CommunityJsonController {
 
     @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
     public List<Post> getAllPosts(HttpSession session, @RequestBody Organization organization){
-        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+//        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+        Member member = (Member) session.getAttribute("member");
         List <Post> orgMemberPostList = new ArrayList<>();
-        for (OrganizationMember thisOrgMember: allOrgMembers){
-           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+        ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+        int sizeOfAL = memberOrgs.size();
+        if (sizeOfAL == 1){
+            orgMemberPostList = posts.findByOrganization(organization);
+        } else {
+            for (OrganizationMember currentOrgMember: memberOrgs){
+                Organization currentOrg =  currentOrgMember.getOrganization();
+                orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
+            }
         }
+//        for (OrganizationMember thisOrgMember: allOrgMembers){
+//           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
+//        }
         return orgMemberPostList;
     }
 
