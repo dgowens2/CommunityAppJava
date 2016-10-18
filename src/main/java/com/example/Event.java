@@ -29,15 +29,19 @@ public class Event {
     @OneToOne
     Member organizer;
 
+    @OneToOne
+    Organization organization;
+
     public Event() {
     }
 
-    public Event(String name, String date, String location, String information, Member organizer) {
+    public Event(String name, String date, String location, String information, Member organizer, Organization organization) {
         this.name = name;
         this.date = date; //user will enter date~time
         this.location = location;
         this.information = information;
         this.organizer = organizer;
+        this.organization = organization;
     }
 
     public Event(String name, String date, String location, String information) {
@@ -94,5 +98,13 @@ public class Event {
 
     public void setOrganizer(Member organizer) {
         this.organizer = organizer;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

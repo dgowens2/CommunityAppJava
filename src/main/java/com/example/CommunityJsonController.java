@@ -96,9 +96,6 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
-
-
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
@@ -211,7 +208,7 @@ public class CommunityJsonController {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
-                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer);
+                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer, thisEvent.organization);
                 thisEvent.setOrganizer(member);
                 events.save(thisEvent);
 
@@ -498,5 +495,7 @@ public class CommunityJsonController {
         }
         return orgMemberEventList;
     }
+
+
 
 }
