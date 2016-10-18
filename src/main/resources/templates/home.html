@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Community Homepage</title>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <!--<script type="text/javascript" src="http://mod.postimage.org/website-english.js" charset="utf-8"></script>-->
     <script src="../static/js/community-ng-controller.js"></script>
     <script src="js/community-ng-controller.js"></script>
 </head>
@@ -26,7 +27,7 @@ Password: <input type="password" ng-model="password"/> <br/>
 Street Address: <input type="text" ng-model="streetAddress"/> <br/>
 <input type="button" ng-click="register(firstName, lastName, email, password, streetAddress)" value="Register"/>
 
-<br/>
+    <br/>
 {{loginContainer}}
 
 <!--login-->
@@ -57,8 +58,16 @@ Event name: <input type="text" ng-model="newEventName"/> <br/>
 Date: <input type="date" ng-model="newEventDate"/> <br/>
 Location: <input type="text" ng-model="newEventLocation"/> <br/>
 Information: <input type="text" ng-model="newEventInformation"/> <br/>
+<!--Organization: <input type="text" ng-model="newEventOrganization"/> <br/>-->
+Organization 2: <select name="listOfOrganizations" ng-options="currentOrganization in listOfOrganizations" ng-model="newEventOrganization">
+        <option value="currentOrganization">{{currentOrganization.name}}</option>
+    </select>
 <br/>
-<input type="button" ng-click="createNewEvent(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer)" value="Create"/> <br/>
+<input type="button" ng-click="createNewEvent(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer, newEventOrganization)" value="Create"/> <br/>
+
+    <span ng-repeat="currentOrganization in listOfOrganizations">
+{{currentOrganization.name}}<br/>
+</span>
 
 <br/>
 
@@ -100,6 +109,12 @@ To view organization data in JSON format, point to /organizationProfile.json (si
 Create an organization: <br/>
 Organization name: <input type="text" ng-model="newOrganizationName"/><br/>
 <input type="button" ng-click="createOrganization(newOrganizationName)" value="Submit"><br/>
+
+<input type="button" ng-click="listTheOrganizations()" value="Get All Organizations"/>
+All Organizations: <br/>
+<span ng-repeat="currentOrganization in listOfOrganizations">
+{{currentOrganization.name}}<br/>
+</span>
 
 <br/><br/><br/>
 Join an organization:<br/>
