@@ -535,18 +535,26 @@ public class CommunityJsonController {
     public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
         PostContainer myResponse = new PostContainer();
         try {
-            Member author = (Member) session.getAttribute("author");
+//            Member author = (Member) session.getAttribute("author");
             List<Post> orgMemberPostList = new ArrayList<>();
             ArrayList<OrganizationMember> memberOrgs = organizationMembers.findMembersByOrganization(organization);
             int sizeOfAL = memberOrgs.size();
             if (sizeOfAL == 1) {
                 orgMemberPostList = posts.findByOrganization(organization);
-                myResponse.setPostList(orgMemberPostList);
+                if(orgMemberPostList == null){
+                    myResponse.setErrorMessage("This organization has no posts");
+                } else {
+                    myResponse.setPostList(orgMemberPostList);
+                }
             } else {
                 for (OrganizationMember currentOrgMember : memberOrgs) {
                     Organization currentOrg = currentOrgMember.getOrganization();
                     orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
-                    myResponse.setPostList(orgMemberPostList);
+                    if(orgMemberPostList == null) {
+                        myResponse.setErrorMessage("This organization has no posts");
+                    } else {
+                        myResponse.setPostList(orgMemberPostList);
+                    }
                 }
             }
         }catch (Exception ex){
@@ -563,16 +571,24 @@ public class CommunityJsonController {
             Member member = (Member) session.getAttribute("member");
 //            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
             List<Event> orgMemberEventList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findMembersByOrganization(organization);
             int sizeOfAL = memberOrgs.size();
             if (sizeOfAL == 1) {
                 orgMemberEventList = events.findByOrganization(organization);
-                myResponse.setEventList(orgMemberEventList);
+                if(orgMemberEventList == null){
+                    myResponse.setErrorMessage("This organization has no events");
+                } else {
+                    myResponse.setEventList(orgMemberEventList);
+                }
             } else {
                 for (OrganizationMember currentOrgMember : memberOrgs) {
                     Organization currentOrg = currentOrgMember.getOrganization();
                     orgMemberEventList.addAll(events.findByOrganization(currentOrg));
-                    myResponse.setEventList(orgMemberEventList);
+                    if (orgMemberEventList == null) {
+                    myResponse.setErrorMessage("This organization has no events");
+                    } else {
+                        myResponse.setEventList(orgMemberEventList);
+                    }
                 }
             }
         } catch (Exception ex){
