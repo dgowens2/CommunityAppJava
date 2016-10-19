@@ -97,8 +97,16 @@ public class CommunityJsonController {
         members.save(wsMember);
         //join bb to ws
 
+        OrganizationMember wsToSports = new OrganizationMember(sportsOrg, wsMember);
+        organizationMembers.save(wsToSports);
 
-
+        Event bbGame = new Event();
+        bbGame.name = "WildCats vs Panthers";
+        bbGame.date = "11/2/2016 ~ 19:00";
+        bbGame.location = "GSU";
+        bbGame.organization = sportsOrg;
+        bbGame.organizer = wsMember;
+        events.save(bbGame);
     }
 
 
