@@ -229,10 +229,14 @@ public class CommunityJsonController {
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
 //        author = (Member) session.getAttribute("member");
         author = members.findFirstByEmail(author.getEmail());
+        System.out.println("Author is: " + author.firstName + " " + author.getFirstName());
         PostContainer postContainer = new PostContainer();
         Iterable<Post> allPosts = posts.findByAuthor(author);
+        System.out.println("Iterable created");
         List<Post> postList = new ArrayList<>();
+        System.out.println("ArrayList created");
         for (Post currentPost : allPosts) {
+            System.out.println("inside of for loop");
             postList.add(currentPost);
             try {
                 if (postList == null) {
