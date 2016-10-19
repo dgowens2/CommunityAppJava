@@ -508,12 +508,13 @@ public class CommunityJsonController {
     public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
         PostContainer myResponse = new PostContainer();
         try {
-            Member member = (Member) session.getAttribute("member");
+            Member author = (Member) session.getAttribute("author");
             List<Post> orgMemberPostList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(author.getId());
             int sizeOfAL = memberOrgs.size();
             if (sizeOfAL == 1) {
                 orgMemberPostList = posts.findByOrganization(organization);
+                myResponse.setPostList(orgMemberPostList);
             } else {
                 for (OrganizationMember currentOrgMember : memberOrgs) {
                     Organization currentOrg = currentOrgMember.getOrganization();
@@ -533,12 +534,13 @@ public class CommunityJsonController {
         EventContainer myResponse = new EventContainer();
         try {
             Member member = (Member) session.getAttribute("member");
-            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+//            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
             List<Event> orgMemberEventList = new ArrayList<>();
             ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
             int sizeOfAL = memberOrgs.size();
             if (sizeOfAL == 1) {
                 orgMemberEventList = events.findByOrganization(organization);
+                myResponse.setEventList(orgMemberEventList);
             } else {
                 for (OrganizationMember currentOrgMember : memberOrgs) {
                     Organization currentOrg = currentOrgMember.getOrganization();
