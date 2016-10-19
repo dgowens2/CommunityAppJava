@@ -59,7 +59,7 @@ Event name: <input type="text" ng-model="newEventName"/> <br/>
 Date: <input type="date" ng-model="newEventDate"/> <br/>
 Location: <input type="text" ng-model="newEventLocation"/> <br/>
 Information: <input type="text" ng-model="newEventInformation"/> <br/>
-<!--Organization: <input type="text" ng-model="newEventOrganization"/> <br/>-->
+Organization: <input type="text" ng-model="newEventOrganization"/> <br/>
 <label>Organization : <select ng-options="currentOrganization.name for currentOrganization in allOrganizations" ng-model="newEventOrganization" ></select>
 </label>
 
@@ -124,6 +124,27 @@ Organization id: <input type="number" ng-model="organizationIWantToJoinId"/>
 Send invitation to: <input type="text" ng-model="inviteeEmail"/>
 <label>Organization to join: <select ng-options="currentOrganization.name for currentOrganization in allOrganizations" ng-model="orgToJoin" ></select>
 </label>
+
+<br/><br/><br/>
+View member posts:
+First Name: <input type="text" ng-model="firstName"/> <br/>
+Last name: <input type="text" ng-model="lastName"/> <br/>
+Email: <input type="email" ng-model="email"/> <br/>
+Password: <input type="password" ng-model="password"/> <br/>
+Street Address: <input type="text" ng-model="streetAddress"/> <br/>
+Photo URL: <input type="text" ng-model="photoURL"/> <br/>
+<input type="button" ng-click="postsListByMember(firstName, lastName, email, password, streetAddress, photoURL)" value="View posts"/> <br/>
+
+<br/><br/><br/>
+View events by organizer:
+First Name: <input type="text" ng-model="firstName"/> <br/>
+Last name: <input type="text" ng-model="lastName"/> <br/>
+Email: <input type="email" ng-model="email"/> <br/>
+Password: <input type="password" ng-model="password"/> <br/>
+Street Address: <input type="text" ng-model="streetAddress"/> <br/>
+Photo URL: <input type="text" ng-model="photoURL"/> <br/>
+<input type="button" ng-click="eventsListByMember(firstName, lastName, email, password, streetAddress, photoURL)" value="View events"/> <br/>
+
 </div>
 
 
