@@ -295,6 +295,32 @@ $scope.listTheOrganizations = function() {
 
         $scope.allOrganizations = {};
 
+        console.log("before postListByMember")
+
+                $scope.joinOrganization = function (organizationIWantToJoinId) {
+                     console.log("In createOrganization function in ng controller");
+
+                     //Make a container
+                     var organizationMemberContainer = {
+                          organizationId: organizationIWantToJoinId
+                          }
+
+                     console.log("Container we're about to send: " + organizationMemberContainer.organizationId);
+
+                      $http.post("/postsListByMember.json", organizationIWantToJoinId)
+
+                          .then(
+                             function successCallback(response) {
+                                 console.log(response.data);
+                                 console.log("Adding data to scope");
+                                 // Returns container with error or user
+                                 $scope.allOrganizations = response.data;
+                             },
+                             function errorCallback(response) {
+                                 console.log("Unable to get data...");
+                             });
+                };
+
     console.log("Page loaded!");
 
     });
