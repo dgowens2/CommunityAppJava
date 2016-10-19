@@ -228,6 +228,7 @@ public class CommunityJsonController {
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
 //        author = (Member) session.getAttribute("member");
+        author = new Member();
         PostContainer postContainer = new PostContainer();
         Iterable<Post> allPosts = posts.findByAuthor(author);
         List<Post> postList = new ArrayList<>();
