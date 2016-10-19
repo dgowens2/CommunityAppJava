@@ -124,6 +124,9 @@ public class CommunityJsonController {
                 System.out.println("Password attempt failed. Incorrect password");
             } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
                 System.out.println(newMember.firstName + " " + newMember.lastName + " is logging in");
+                if (newMember.photoURL == null) {
+                    newMember.setPhotoURL("dummy photo URL");
+                }
                 session.setAttribute("member", newMember);
                 myResponse.responseMember = newMember;
             }
@@ -147,7 +150,10 @@ public class CommunityJsonController {
                     ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
                     for (Invitation currentInvite : allInvites) {
                         Organization organization = currentInvite.getOrganization();
-                        member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photo_URL);
+                        member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
+                        if (member.photoURL == null) {
+                            member.setPhotoURL("dummy photo URL");
+                        }
                         members.save(member);
                         OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
                         organizationMemberAssociation.setOrganization(organization);
@@ -155,7 +161,10 @@ public class CommunityJsonController {
                         myResponse.responseMember = member;
                     }
                 } else {
-                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress, member.photo_URL);
+                    member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
+                    if (member.photoURL == null) {
+                        member.setPhotoURL("dummy photo URL");
+                    }
                     members.save(member);
                     myResponse.responseMember = member;
                     session.setAttribute("member", member);
@@ -205,16 +214,42 @@ public class CommunityJsonController {
         return memberList;
     }
 
-    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
     public List<Post> getAllPostsByAuthor(Member author) {
         Iterable<Post> allPosts = posts.findByAuthor(author);
         List<Post> postList = new ArrayList<>();
         for (Post currentPost : allPosts) {
             postList.add(currentPost);
+
         }
         System.out.println("after iterable");
         return postList;
     }
+
+    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsByAuthorWithEndpoint(HttpSession session, Member author) {
+        author = (Member) session.getAttribute("member");
+        PostContainer postContainer = new PostContainer();
+        Iterable<Post> allPosts = posts.findByAuthor(author);
+        List<Post> postList = new ArrayList<>();
+        for (Post currentPost : allPosts) {
+            postList.add(currentPost);
+            try {
+                if (postList == null) {
+                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+
+                } else {
+                    postContainer.setPostList(postList);
+                    System.out.println("post id = " + postList.indexOf(currentPost));
+                }
+            } catch (Exception ex){
+                postContainer.setErrorMessage("An exception occurred creating a post list");
+                ex.printStackTrace();
+            }
+        }
+        System.out.println("after iterable");
+        return postContainer;
+    }
+
 
     @RequestMapping(path = "/postsList.json", method = RequestMethod.GET)
     public List<Post> getAllPosts() {
