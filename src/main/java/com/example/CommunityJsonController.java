@@ -105,13 +105,13 @@ public class CommunityJsonController {
         System.out.println(member.email + " is about to be created");
         try {
             if (newMember == null) {
-                ArrayList<Invitation> listInvites = invitations.findByInvitedEmail(newMember.getEmail());
+                ArrayList<Invitation> listInvites = invitations.findByInvitedEmail(member.getEmail());
                 int size = listInvites.size();
                 if (size>=1) {
                     ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
                     for (Invitation currentInvite : allInvites) {
                         Organization organization = currentInvite.getOrganization();
-                        member = new Member(member.firstName, member.lastName, member.email, member.streetAddress, member.password);
+                        member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photo_URL);
                         members.save(member);
                         OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
                         organizationMemberAssociation.setOrganization(organization);
@@ -119,7 +119,7 @@ public class CommunityJsonController {
                         myResponse.responseMember = member;
                     }
                 } else {
-                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
+                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress, member.photo_URL);
                     members.save(member);
                     myResponse.responseMember = member;
                     session.setAttribute("member", member);

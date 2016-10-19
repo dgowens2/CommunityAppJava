@@ -9,7 +9,7 @@ angular.module('CommunityApp', [])
     $scope.allEvents = {};
     $scope.listOfEvents = {};
 
-        $scope.register = function(firstName, lastName, email, password, streetAddress, photoURL) {
+        $scope.register = function(firstName, lastName, email, password, streetAddress, photo_URL) {
             console.log("In register function in ng controller");
 
             //Make a container
@@ -19,10 +19,10 @@ angular.module('CommunityApp', [])
                 email: email,
                 password: password,
                 streetAddress: streetAddress,
-                photo: photoURL
+                photo_URL: photo_URL
             }
 
-            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress + " " + newMember.photo);
+            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress + " " + newMember.photoURL);
 
             $http.post("/register.json", newMember)
                 .then(
@@ -37,20 +37,20 @@ angular.module('CommunityApp', [])
                     });
         };
 
-    $scope.uploadPhoto = function(photoURL) {
-        console.log("In upload photo function")
-
-        $http.post("https://api.imgur.com/3/upload", photoURL)
-            .then(
-                function successCallback(response) {
-                    console.log(response.data);
-                    console.log("Adding Data to scope");
-                    $scope.photoContainer = response.data;
-                },
-                function errorCallback(response) {
-                    console.log("unable to get data...");
-                });
-    };
+//    $scope.uploadPhoto = function(photoURL) {
+//        console.log("In upload photo function")
+//
+//        $http.post("https://api.imgur.com/3/upload", photoURL)
+//            .then(
+//                function successCallback(response) {
+//                    console.log(response.data);
+//                    console.log("Adding Data to scope");
+//                    $scope.photoContainer = response.data;
+//                },
+//                function errorCallback(response) {
+//                    console.log("unable to get data...");
+//                });
+//    };
 
 
     console.log("before login");
@@ -75,6 +75,7 @@ angular.module('CommunityApp', [])
                         console.log("Data added after logincontainer user")
                         $scope.currentUser = response.data; //
                         console.log("Data added after current user")
+                        $scope.listTheOrganizations();
 //                        $scope.returningUser = {};
                     },
                     function errorCallback(response) {
@@ -265,17 +266,18 @@ $scope.listTheOrganizations = function() {
 
     console.log("before sendInvitation")
 
-            $scope.sendInvitation = function (invitedEmail) {
+            $scope.sendInvitation = function (inviteeEmail, orgToJoin) {
                  console.log("In createOrganization function in ng controller");
 
                  //Make a container
                  var InvitationContainer = {
-                      inviteeEmail: invitedEmail
-                      }
+                      inviteeEmail: inviteeEmail,
+                      Organization: orgToJoin
+                     }
 
-                 console.log("Container we're about to invite: " + invitedEmail);
+                 console.log("Container we're about to invite: " + InvitationContainer.inviteeEmail + " " + InvitationContainer.Organization);
 
-                  $http.post("/sendInvitation.json", organizationIWantToJoinId)
+                  $http.post("/sendInvitation.json", InvitationContainer    )
 
                       .then(
                          function successCallback(response) {
@@ -292,7 +294,6 @@ $scope.listTheOrganizations = function() {
 
 
         $scope.allOrganizations = {};
-        console.log($scope.allOrganizations)
 
     console.log("Page loaded!");
 
