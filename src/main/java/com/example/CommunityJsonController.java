@@ -72,6 +72,42 @@ public class CommunityJsonController {
         carltonEvent.information = "Ever wondered how I dance as well as I do? Well come to the W and learn!";
         events.save(carltonEvent);
 
+        Organization girlScoutOrg = new Organization();
+        girlScoutOrg.name ="Girl Scout Troop 14565";
+        organizations.save(girlScoutOrg);
+
+        Organization puzzleOrg = new Organization();
+        puzzleOrg.name = "Puzzle Group";
+        organizations.save(puzzleOrg);
+
+        Organization sportsOrg = new Organization();
+        sportsOrg.name= "Basketball Team";
+        organizations.save(sportsOrg);
+
+        Organization jugOrg = new Organization();
+        jugOrg.name = "Java Users Group Atlanta";
+        organizations.save(jugOrg);
+
+        Member wsMember = new Member();
+        wsMember.firstName = "Will";
+        wsMember.lastName = "Smith";
+        wsMember.streetAddress = "382 Penn Ave";
+        wsMember.email= "thefreshprince@gmail.com";
+        wsMember.password= "basketball";
+        members.save(wsMember);
+
+        OrganizationMember wsToSports = new OrganizationMember(sportsOrg, wsMember);
+        organizationMembers.save(wsToSports);
+
+        Event bbGame = new Event();
+        bbGame.name = "WildCats vs Panthers";
+        bbGame.date = "11/2/2016 ~ 19:00";
+        bbGame.location = "GSU";
+        bbGame.organization = sportsOrg;
+        bbGame.organizer = wsMember;
+        events.save(bbGame);
+
+        
     }
 
 
@@ -504,22 +540,16 @@ public class CommunityJsonController {
     }
 
 
-    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
+    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.POST)
     public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
         PostContainer myResponse = new PostContainer();
         try {
-            Member member = (Member) session.getAttribute("member");
-            List<Post> orgMemberPostList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
-            int sizeOfAL = memberOrgs.size();
-            if (sizeOfAL == 1) {
-                orgMemberPostList = posts.findByOrganization(organization);
+            ArrayList<Post> postsByOrg = new ArrayList<>();
+            postsByOrg= posts.findByOrganization(organization);
+            if (postsByOrg == null){
+                myResponse.setErrorMessage("This organization has no posts");
             } else {
-                for (OrganizationMember currentOrgMember : memberOrgs) {
-                    Organization currentOrg = currentOrgMember.getOrganization();
-                    orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
-                    myResponse.setPostList(orgMemberPostList);
-                }
+                myResponse.setPostList(postsByOrg);
             }
         }catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting posts by organization");
@@ -528,23 +558,16 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
+    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.POST)
     public EventContainer getAllEvents(HttpSession session, @RequestBody Organization organization){
         EventContainer myResponse = new EventContainer();
         try {
-            Member member = (Member) session.getAttribute("member");
-            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-            List<Event> orgMemberEventList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
-            int sizeOfAL = memberOrgs.size();
-            if (sizeOfAL == 1) {
-                orgMemberEventList = events.findByOrganization(organization);
+            ArrayList<Event> eventsByOrg = new ArrayList<>();
+            eventsByOrg = events.findByOrganization(organization);
+            if (eventsByOrg == null){
+                myResponse.setErrorMessage("This organization has no events");
             } else {
-                for (OrganizationMember currentOrgMember : memberOrgs) {
-                    Organization currentOrg = currentOrgMember.getOrganization();
-                    orgMemberEventList.addAll(events.findByOrganization(currentOrg));
-                    myResponse.setEventList(orgMemberEventList);
-                }
+                myResponse.setEventList(eventsByOrg);
             }
         } catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting events by organization");
@@ -552,5 +575,4 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
-
 }
