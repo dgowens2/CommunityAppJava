@@ -72,6 +72,33 @@ public class CommunityJsonController {
         carltonEvent.information = "Ever wondered how I dance as well as I do? Well come to the W and learn!";
         events.save(carltonEvent);
 
+        Organization girlScoutOrg = new Organization();
+        girlScoutOrg.name ="Girl Scout Troop 14565";
+        organizations.save(girlScoutOrg);
+
+        Organization puzzleOrg = new Organization();
+        puzzleOrg.name = "Puzzle Group";
+        organizations.save(puzzleOrg);
+
+        Organization sportsOrg = new Organization();
+        sportsOrg.name= "Basketball Team";
+        organizations.save(sportsOrg);
+
+        Organization jugOrg = new Organization();
+        jugOrg.name = "Java Users Group Atlanta";
+        organizations.save(jugOrg);
+
+        Member wsMember = new Member();
+        wsMember.firstName = "Will";
+        wsMember.lastName = "Smith";
+        wsMember.streetAddress = "382 Penn Ave";
+        wsMember.email= "thefreshprince@gmail.com";
+        wsMember.password= "basketball";
+        members.save(wsMember);
+        //join bb to ws
+
+
+
     }
 
 
@@ -510,7 +537,7 @@ public class CommunityJsonController {
         try {
             Member author = (Member) session.getAttribute("author");
             List<Post> orgMemberPostList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(author.getId());
+            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findMembersByOrganization(organization);
             int sizeOfAL = memberOrgs.size();
             if (sizeOfAL == 1) {
                 orgMemberPostList = posts.findByOrganization(organization);
