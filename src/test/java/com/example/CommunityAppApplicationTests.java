@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class CommunityAppApplicationTests {
 	}
 
 	@Test
-	public void testCreateMember(){
+	public void testCreateMember() {
 		Member newMember = new Member();
 		Member dbMember = new Member();
 
@@ -61,8 +60,72 @@ public class CommunityAppApplicationTests {
 			dbMember = members.findFirstByEmail("Testingemail@gmail.com");
 			assertNotNull(dbMember);
 
-		} finally{
+		} finally {
 			members.delete(newMember);
+		}
+	}
+
+	@Test
+	public void testCreateMemberWithInvitation(){
+		Member invitingMember = new Member();
+		Member invitedMember = new Member();
+		OrganizationMember memberInvitingMember = new OrganizationMember();
+		OrganizationMember memberInvitedMember = new OrganizationMember();
+		Organization theOrg = new Organization();
+		Invitation theInvite = new Invitation();
+
+
+		Member dbMember = new Member();
+
+		try {
+			invitingMember.firstName = "Tess";
+			invitingMember.lastName = "Welch";
+			invitingMember.email = "Tess@gmail.com";
+			invitingMember.password = "notsecure";
+			invitingMember.streetAddress = "123 TIY Drive, Atlanta, GA 30102";
+			members.save(invitingMember);
+
+
+			theOrg.name = "Whataburger";
+			organizations.save(theOrg);
+
+			memberInvitingMember = new OrganizationMember(theOrg, invitingMember);
+			organizationmembers.save(memberInvitingMember);
+
+			theInvite = new Invitation(invitingMember, "monsters@gmail.com", theOrg);
+			invitations.save(theInvite);
+
+			ArrayList<Invitation> invitesAL = invitations.findByInvitedEmail("monsters@gmail.com");
+			int alSize = invitesAL.size();
+
+			if (alSize>=1) {
+				ArrayList<Invitation> allInvites = invitations.findByInvitedEmail("monsters@gmail.com");
+				for (Invitation currentInvite : allInvites) {
+					Organization organization = currentInvite.getOrganization();
+					invitedMember.firstName = "Sam";
+					invitedMember.lastName = "Gut";
+					invitedMember.email = "monsters@gmail.com";
+					invitedMember.password = "lola";
+					invitedMember.streetAddress = "30 Hwy 42";
+					members.save(invitedMember);
+					memberInvitedMember = new OrganizationMember(organization, invitedMember);
+					memberInvitedMember.setOrganization(organization);
+					organizationmembers.save(memberInvitedMember);
+				}
+			}else {
+				System.out.println("Didn't work");
+			}
+
+			assertNotNull(organizationmembers.findByMemberEmail("monster@gmail.com"));
+
+
+		} finally{
+			invitations.delete(theInvite);
+			organizationmembers.delete(memberInvitingMember);
+			organizationmembers.delete(memberInvitedMember);
+			organizations.delete(theOrg);
+			members.delete(invitingMember);
+			members.delete(invitedMember);
 		}
 	}
 
@@ -89,7 +152,7 @@ public class CommunityAppApplicationTests {
 			members.save(testerTwo);
 		} catch (DataIntegrityViolationException exception) {
 			thrown = true;
-		}finally {
+		} finally {
 			assertTrue(thrown);
 			members.delete(tester);
 		}
@@ -98,7 +161,7 @@ public class CommunityAppApplicationTests {
 	}
 
 	@Test
-	public void testInsertingAnEmptyValueIntoUser () throws PSQLException {
+	public void testInsertingAnEmptyValueIntoUser() throws PSQLException {
 		boolean thrown = false;
 
 		try {
@@ -119,7 +182,7 @@ public class CommunityAppApplicationTests {
 	@Test
 	public void testFindEventByName() {
 		Event newEvent = new Event();
-		Event dbEvent = new Event ();
+		Event dbEvent = new Event();
 
 		Member newMember = new Member();
 
@@ -153,19 +216,25 @@ public class CommunityAppApplicationTests {
 		Event newEvent = new Event();
 		Event dbEvent = new Event();
 		Member testOrganizer = new Member();
+		Organization testOrganization = new Organization();
 		try {
 			testOrganizer.firstName = "Q";
 			testOrganizer.lastName = "Wes";
-			testOrganizer.email = "quests@gmail.com";
+			testOrganizer.email = "quess@yahoo.com";
 			testOrganizer.streetAddress = "222 Lucky Lane";
 			testOrganizer.password = "eastside";
 			members.save(testOrganizer);
 
-			newEvent.name = "Party Hardies people";
+			testOrganization.name = "Health Org";
+			organizations.save(testOrganization);
+
+			newEvent.name = "Peoply";
 			newEvent.location = "West End";
 			newEvent.date = "4/5/2017";
 			newEvent.information = "Dinner fo thieves";
 			newEvent.organizer = testOrganizer;
+			newEvent.organization = testOrganization;
+
 
 			events.save(newEvent);
 			dbEvent = events.findOne(newEvent.getId());
@@ -173,6 +242,7 @@ public class CommunityAppApplicationTests {
 
 		} finally {
 			events.delete(newEvent);
+			organizations.delete(testOrganization);
 			members.delete(testOrganizer);
 
 
@@ -182,13 +252,13 @@ public class CommunityAppApplicationTests {
 	@Test
 	public void testEditEvent() {
 		Event newEvent = new Event();
-		Event dbEvent = new Event ();
+		Event dbEvent = new Event();
 		Member tMember = new Member();
 		try {
 
-			tMember.firstName= "Wally";
+			tMember.firstName = "Wally";
 			tMember.lastName = "Willy";
-			tMember.email ="theo@yahoo.com";
+			tMember.email = "theo@yahoo.com";
 			tMember.streetAddress = "900 Frogs Drive, Kennesaw GA 30152";
 			tMember.password = "tinktink";
 			members.save(tMember);
@@ -216,7 +286,7 @@ public class CommunityAppApplicationTests {
 	public void testEmptyFieldForEvent() throws Exception {
 		boolean thrown = false;
 		Event testEvent = new Event();
-		try{
+		try {
 			testEvent.date = "3/3/2013 ~ 3:30 PM";
 			testEvent.information = "The new new";
 			events.save(testEvent);
@@ -231,7 +301,7 @@ public class CommunityAppApplicationTests {
 	@Test
 	public void testFindEventById() {
 		Event newEvent = new Event();
-		Event dbEvent = new Event ();
+		Event dbEvent = new Event();
 		Member testMember = new Member();
 		try {
 			testMember.firstName = "Tam Tam";
@@ -265,7 +335,7 @@ public class CommunityAppApplicationTests {
 		ArrayList<Post> dbPosts = new ArrayList<Post>();
 		Member tester = new Member();
 
-		try{
+		try {
 			tester.firstName = "Tupelo";
 			tester.lastName = "MS";
 			tester.email = "twf@gmail.com";
@@ -296,7 +366,7 @@ public class CommunityAppApplicationTests {
 		Post dbPost = new Post();
 		Member tester = new Member();
 
-		try{
+		try {
 			tester.firstName = "Tupelo";
 			tester.lastName = "MS";
 			tester.email = "twf@gmail.com";
@@ -383,7 +453,7 @@ public class CommunityAppApplicationTests {
 			ArrayList dbPosts = posts.findByAuthor(tester);
 
 
-			assertEquals(2,dbPosts.size());
+			assertEquals(2, dbPosts.size());
 
 		} finally {
 			posts.delete(testPost);
@@ -397,7 +467,7 @@ public class CommunityAppApplicationTests {
 	public void testCreateOrg() {
 		Organization testOrganization = new Organization();
 		Organization dbOrg = new Organization();
-		try{
+		try {
 			testOrganization.name = "New Wave";
 			organizations.save(testOrganization);
 			dbOrg = organizations.findByName("New Wave");
@@ -423,7 +493,7 @@ public class CommunityAppApplicationTests {
 
 			testMember.firstName = "Creep";
 			testMember.lastName = "Promised";
-			testMember.streetAddress= "333 Promise Ave, Utoy, UT 23094";
+			testMember.streetAddress = "333 Promise Ave, Utoy, UT 23094";
 			testMember.password = "scratchedouryourname";
 			testMember.email = "canterae@gmail.com";
 			members.save(testMember);
@@ -436,7 +506,7 @@ public class CommunityAppApplicationTests {
 			dbOrganizations = organizationmembers.findByMemberId(testMember.getId());
 			assertNotNull(dbOrganizations);
 
-			dbMembers =  organizationmembers.findByOrganizationId(testOrganization.getId());
+			dbMembers = organizationmembers.findByOrganizationId(testOrganization.getId());
 			assertNotNull(dbMembers);
 
 
@@ -456,20 +526,21 @@ public class CommunityAppApplicationTests {
 		OrganizationMember orgMember = new OrganizationMember();
 		OrganizationMember orgMemberTwo = new OrganizationMember();
 		ArrayList<OrganizationMember> dbMembers = new ArrayList<OrganizationMember>();
+
 		try{
-			testOrganization.name = "Lost at Sea";
+			testOrganization.name = "Seasick Sailors";
 			organizations.save(testOrganization);
 
 			testMember.firstName = "Unit";
 			testMember.lastName = "Testing";
-			testMember.streetAddress= "333 Like a Bosss Canton, GA 23094";
+			testMember.streetAddress = "333 Like a Bosss Canton, GA 23094";
 			testMember.password = "lehggo";
 			testMember.email = "somanytests@gmail.com";
 			members.save(testMember);
 
 			testMemberTwo.firstName = "Love";
 			testMemberTwo.lastName = "Starland";
-			testMemberTwo.streetAddress= "237 Helpme Rd, Utoy, UT 23094";
+			testMemberTwo.streetAddress = "237 Helpme Rd, Utoy, UT 23094";
 			testMemberTwo.password = "gottawin";
 			testMemberTwo.email = "lstarland@gmail.com";
 			members.save(testMemberTwo);
@@ -554,6 +625,7 @@ public class CommunityAppApplicationTests {
 		Event attendEvent = new Event();
 		MemberEvent theMemberEvent = new MemberEvent();
 		MemberEvent dbMemberEvent = new MemberEvent();
+
 		try{
 			aEventMember.firstName = "Rod";
 			aEventMember.lastName = "Johnson";
@@ -597,7 +669,7 @@ public class CommunityAppApplicationTests {
 		MemberEvent theMemberEventTwo = new MemberEvent();
 		MemberEvent theMemberEventThree = new MemberEvent();
 
-		try{
+		try {
 			aEventMember.firstName = "Rod";
 			aEventMember.lastName = "Johnson";
 			aEventMember.email = "tatskolber@yahoo.com";
@@ -627,7 +699,7 @@ public class CommunityAppApplicationTests {
 			members.save(aEventMemberThree);
 
 
-			attendEvent.date ="3/2/16 ~ 4:45 PM";
+			attendEvent.date = "3/2/16 ~ 4:45 PM";
 			attendEvent.organizer = aEventMember;
 			attendEvent.information = "Live a day as a your favorite person";
 			attendEvent.location = "Underground";
@@ -635,7 +707,7 @@ public class CommunityAppApplicationTests {
 			events.save(attendEvent);
 
 			theMemberEvent = new MemberEvent(aEventMember, attendEvent);
-			theMemberEventOne= new MemberEvent(aEventMemberOne, attendEvent);
+			theMemberEventOne = new MemberEvent(aEventMemberOne, attendEvent);
 			theMemberEventTwo = new MemberEvent(aEventMemberTwo, attendEvent);
 			theMemberEventThree = new MemberEvent(aEventMemberThree, attendEvent);
 			memberevents.save(theMemberEvent);
@@ -676,7 +748,7 @@ public class CommunityAppApplicationTests {
 		MemberEvent theMemberEvent = new MemberEvent();
 		MemberEvent theMemberEventTwo = new MemberEvent();
 
-		try{
+		try {
 			aEventMember.firstName = "Rod";
 			aEventMember.lastName = "Johnson";
 			aEventMember.email = "tatskolber@yahoo.com";
@@ -684,14 +756,14 @@ public class CommunityAppApplicationTests {
 			aEventMember.password = "doitall";
 			members.save(aEventMember);
 
-			attendEvent.date ="3/2/16 ~ 4:45 PM";
+			attendEvent.date = "3/2/16 ~ 4:45 PM";
 			attendEvent.organizer = aEventMember;
 			attendEvent.information = "Live a day as a your favorite person";
 			attendEvent.location = "Underground";
 			attendEvent.name = "Pixar day";
 			events.save(attendEvent);
 
-			attendEventTwo.date ="3/4/16 ~ 6:45 PM";
+			attendEventTwo.date = "3/4/16 ~ 6:45 PM";
 			attendEventTwo.organizer = aEventMember;
 			attendEventTwo.information = "Tacos & Tequila";
 			attendEventTwo.location = "Nacho Mamas";
@@ -732,7 +804,7 @@ public class CommunityAppApplicationTests {
 		Invitation theInvite = null;
 		ArrayList<Invitation> dbInvite = null;
 
-		try{
+		try {
 			aMember.firstName = "Charlie";
 			aMember.lastName = "Coach";
 			aMember.email = "Jeepers@gmail.com";
@@ -743,7 +815,7 @@ public class CommunityAppApplicationTests {
 			testOrganization.name = "Horror Fandom";
 			organizations.save(testOrganization);
 
-			newOrgMember =  new OrganizationMember(testOrganization, aMember);
+			newOrgMember = new OrganizationMember(testOrganization, aMember);
 			organizationmembers.save(newOrgMember);
 
 			theInvite = new Invitation(aMember, "testemail@yahoo.com", testOrganization);
@@ -825,7 +897,7 @@ public class CommunityAppApplicationTests {
 	public void testOrgInfo() {
 		Organization testOrganization = new Organization();
 		Organization dbOrg = new Organization();
-		try{
+		try {
 			testOrganization.name = "Ahimsa";
 			organizations.save(testOrganization);
 
@@ -839,9 +911,9 @@ public class CommunityAppApplicationTests {
 
 	@Test
 	public void testMemberInfo() {
-	Member testMember = new Member();
-	Member dbMember = new Member();
-		try{
+		Member testMember = new Member();
+		Member dbMember = new Member();
+		try {
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
@@ -852,7 +924,7 @@ public class CommunityAppApplicationTests {
 			dbMember = members.findOne(testMember.getId());
 			assertEquals("Hirum", dbMember.getFirstName());
 
-		}finally {
+		} finally {
 			members.delete(testMember);
 		}
 	}
@@ -866,10 +938,11 @@ public class CommunityAppApplicationTests {
 		ArrayList<Event> dbEvents = new ArrayList<>();
 		ArrayList<Event> dbEventsNone = new ArrayList<>();
 
-		try{
+		try {
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
+
 			testMember.email= "lostrday@ymail.com";
 			testMember.password = "newroad";
 			members.save(testMember);
@@ -882,6 +955,7 @@ public class CommunityAppApplicationTests {
 			members.save(secondTestMember);
 
 			testEvent.organizer = secondTestMember;
+
 			testEvent.date ="9/9/2017 ~ 15:30";
 			testEvent.name = "Charity Rides for children";
 			testEvent.information= "Two day for children";
@@ -895,14 +969,14 @@ public class CommunityAppApplicationTests {
 			secondTestEvent.location ="Charming Square";
 			events.save(secondTestEvent);
 
-			dbEventsNone= events.findByOrganizer(testMember);
-			assertEquals(0,dbEventsNone.size());
+			dbEventsNone = events.findByOrganizer(testMember);
+			assertEquals(0, dbEventsNone.size());
 
-			dbEvents= events.findByOrganizer(secondTestMember);
+			dbEvents = events.findByOrganizer(secondTestMember);
 			assertEquals(2, dbEvents.size());
 
 
-		}finally {
+		} finally {
 
 			events.delete(testEvent);
 			events.delete(secondTestEvent);
@@ -944,35 +1018,35 @@ public class CommunityAppApplicationTests {
 			organizationmembers.save(orgMember);
 
 			testEvent.organizer = secondTestMember;
-			testEvent.date ="9/9/2017 ~ 15:30";
+			testEvent.date = "9/9/2017 ~ 15:30";
 			testEvent.name = "Charity Ride";
-			testEvent.information= "Two day for children";
-			testEvent.location ="Dragon Tail";
+			testEvent.information = "Two day for children";
+			testEvent.location = "Dragon Tail";
 			events.save(testEvent);
 
 			secondTestEvent.organizer = secondTestMember;
-			secondTestEvent.date ="5/24/2017 ~ 13:00";
+			secondTestEvent.date = "5/24/2017 ~ 13:00";
 			secondTestEvent.name = "County Fair";
-			secondTestEvent.information= "Fun for the whole family";
-			secondTestEvent.location ="Charming Square";
+			secondTestEvent.information = "Fun for the whole family";
+			secondTestEvent.location = "Charming Square";
 			events.save(secondTestEvent);
 
 			notOrgEvent.organizer = testMember;
-			notOrgEvent.date ="6/3/2017 ~ 10:00";
+			notOrgEvent.date = "6/3/2017 ~ 10:00";
 			notOrgEvent.name = "BBQ";
-			notOrgEvent.information= "Come and get it! ";
-			notOrgEvent.location ="Cookout on Moreland";
+			notOrgEvent.information = "Come and get it! ";
+			notOrgEvent.location = "Cookout on Moreland";
 			events.save(notOrgEvent);
 
 			Iterable<OrganizationMember> allOrgMembers = organizationmembers.findMembersByOrganization(testOrg);
 			List<Event> orgMemberEventList = new ArrayList<>();
-			for (OrganizationMember thisOrgMember: allOrgMembers){
+			for (OrganizationMember thisOrgMember : allOrgMembers) {
 				orgMemberEventList.addAll(events.findByOrganizer(thisOrgMember.getMember()));
 			}
 			assertEquals(2, orgMemberEventList.size());
 
 
-		}finally {
+		} finally {
 			organizationmembers.delete(orgMember);
 			organizations.delete(testOrg);
 			events.delete(testEvent);
@@ -995,19 +1069,19 @@ public class CommunityAppApplicationTests {
 		Post threePost = new Post();
 
 		try{
-			testOrg.name="Lost";
+			testOrg.name="Wah wah";
 			organizations.save(testOrg);
 
 			testMember.firstName = "Hirum";
 			testMember.lastName = "Wilcox";
 			testMember.streetAddress = "539 Fells Creek Rd ..";
-			testMember.email= "roadd@ymail.com";
+			testMember.email= "roadd@smail.com";
 			testMember.password = "newroad";
 			members.save(testMember);
 
 			onePost.title = "Famous Songs";
 			onePost.date = "3/4/16 12:00";
-			onePost.body ="Come sail away with me";
+			onePost.body = "Come sail away with me";
 			onePost.author = testMember;
 			onePost.organization = testOrg;
 
@@ -1016,20 +1090,20 @@ public class CommunityAppApplicationTests {
 			secondTestMember.firstName = "Gemma";
 			secondTestMember.lastName = "Teller";
 			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
-			secondTestMember.email= "gellerrosa@soa.com";
+			secondTestMember.email= "gellerrosa@toasty.com";
 			secondTestMember.password = "redwoodorginal";
 			members.save(secondTestMember);
 
 			twoPost.author = secondTestMember;
 			twoPost.date = "2/20/2018 16:00";
-			twoPost.title = "Defensive Driving";
+			twoPost.title = "Defensive Drivin for AAA";
 			twoPost.body="Car accidents hurt";
 			twoPost.organization = testOrg;
 			posts.save(twoPost);
 
 			threePost.author = secondTestMember;
 			threePost.date = "4/5/2018 16:00";
-			threePost.title = "Names";
+			threePost.title = "SOS";
 			threePost.body="Naming conventions are sometimes hard";
 			threePost.organization = testOrg;
 			posts.save(threePost);
@@ -1046,7 +1120,7 @@ public class CommunityAppApplicationTests {
 			List<Post> orgMemberPostListTwo = posts.findByOrganization(testOrg);
 			assertEquals(3, orgMemberPostListTwo.size());
 
-		}finally {
+		} finally {
 			organizationmembers.delete(orgMember);
 			posts.delete(onePost);
 			posts.delete(twoPost);
@@ -1057,6 +1131,213 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testPostsByAllMembersOrgs() {
+		Organization testOrg = new Organization();
+		Organization secondOrg = new Organization();
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+		Post onePost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
+		Post fourPost = new Post();
+
+		try{
+			testOrg.name="Rider";
+			organizations.save(testOrg);
+
+			secondOrg.name= "Under the Sea";
+			organizations.save(secondOrg);
+
+			testMember.firstName = "Hirums";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "roads@yahoo.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			onePost.title = "Famous Songs by Miya";
+			onePost.date = "3/4/16 12:00";
+			onePost.body ="Come sail away with me";
+			onePost.author = testMember;
+			onePost.organization = testOrg;
+			posts.save(onePost);
+
+			secondTestMember.firstName = "Jax";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "jaxa@yahoo.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			twoPost.author = testMember;
+			twoPost.date = "2/20/2018 16:00";
+			twoPost.title = "Defensive Drive You";
+			twoPost.body="Car accidents hurt";
+			twoPost.organization = testOrg;
+			posts.save(twoPost);
+
+			threePost.author = secondTestMember;
+			threePost.date = "4/5/2018 16:00";
+			threePost.title = "Guess the code";
+			threePost.body="Naming conventions are sometimes hard";
+			threePost.organization = secondOrg;
+			posts.save(threePost);
+
+			fourPost.author = secondTestMember;
+			fourPost.date = "4/5/2018 16:00";
+			fourPost.title = "Why not cleaning with dawn";
+			fourPost.body="it's clean";
+			fourPost.organization = secondOrg;
+			posts.save(fourPost);
+
+			orgMember = new OrganizationMember(testOrg, secondTestMember);
+			organizationmembers.save(orgMember);
+
+			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+			organizationmembers.save(secondOrgMemberTest);
+
+
+			List <Post> orgMemberPostList = new ArrayList<>();
+			ArrayList<OrganizationMember> memberOrgs = organizationmembers.findByMemberId(secondTestMember.getId());
+			int sizeOfAL = memberOrgs.size();
+			if (sizeOfAL == 1){
+				orgMemberPostList = posts.findByOrganization(testOrg);
+			} else {
+				for (OrganizationMember currentOrgMember: memberOrgs){
+					Organization currentOrg =  currentOrgMember.getOrganization();
+					orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
+				}
+			}
+
+			assertEquals(4, orgMemberPostList.size());
+
+		}finally {
+			posts.delete(onePost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			posts.delete(fourPost);
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(secondOrgMemberTest);
+			organizations.delete(testOrg);
+			organizations.delete(secondOrg);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
+
+	@Test
+	public void testEventsByAllMembersOrgs() {
+		Organization testOrg = new Organization();
+		Organization secondOrg = new Organization();
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+		Event oneEvent = new Event();
+		Event twoEvent = new Event();
+		Event threeEvent = new Event();
+		Event fourEvent = new Event();
+
+		try{
+			testOrg.name="Dog Talking with Rebecca";
+			organizations.save(testOrg);
+
+			secondOrg.name= "Herp Fight Club";
+			organizations.save(secondOrg);
+
+			testMember.firstName = "Hirums";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "this@ymail.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			oneEvent.date = "3/14/16 12:00";
+			oneEvent.name = "Pie Day Forevers";
+			oneEvent.location = "TIY";
+			oneEvent.information = "Bring a pie";
+			oneEvent.organizer= testMember;
+			oneEvent.organization = testOrg;
+			events.save(oneEvent);
+
+			secondTestMember.firstName = "Jax";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "thejs@soas.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			twoEvent.organizer = testMember;
+			twoEvent.date = "2/20/2018 16:00";
+			twoEvent.name = "Wands";
+			twoEvent.information="Great deals on the locations of your dreams";
+			twoEvent.organization = testOrg;
+			twoEvent.location = "5 Points";
+			events.save(twoEvent);
+
+			threeEvent.organizer = secondTestMember;
+			threeEvent.date = "4/5/2018 16:00";
+			threeEvent.name = "April Heyday";
+			threeEvent.information="Past fools day oh well";
+			threeEvent.location= "TBDs";
+			threeEvent.organization = secondOrg;
+			events.save(threeEvent);
+
+			fourEvent.organizer = secondTestMember;
+			fourEvent.date = "6/9/2018 16:00";
+			fourEvent.name = "Summer Run";
+			fourEvent.information="Run";
+			fourEvent.location = "Kennesaw Mountain";
+			fourEvent.organization = secondOrg;
+			events.save(fourEvent);
+
+			orgMember = new OrganizationMember(testOrg, secondTestMember);
+			organizationmembers.save(orgMember);
+
+			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+			organizationmembers.save(secondOrgMemberTest);
+
+
+			List <Event> orgMemberEventList = new ArrayList<>();
+			ArrayList<OrganizationMember> memberOrgs = organizationmembers.findByMemberId(secondTestMember.getId());
+			int sizeOfAL = memberOrgs.size();
+			if (sizeOfAL == 1){
+				orgMemberEventList = events.findByOrganization(testOrg);
+			} else {
+				for (OrganizationMember currentOrgMember: memberOrgs){
+					Organization currentOrg =  currentOrgMember.getOrganization();
+					orgMemberEventList.addAll(events.findByOrganization(currentOrg));
+				}
+			}
+
+			assertEquals(4, orgMemberEventList.size());
+
+		}finally {
+			events.delete(oneEvent);
+			events.delete(twoEvent);
+			events.delete(threeEvent);
+			events.delete(fourEvent);
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(secondOrgMemberTest);
+			organizations.delete(testOrg);
+			organizations.delete(secondOrg);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
 
 
 }

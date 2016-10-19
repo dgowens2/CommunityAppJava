@@ -32,6 +32,14 @@ public class Post {
     public Post() {
     }
 
+    public Member getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Member author) {
+        this.author = author;
+    }
+
     public Post(String date, String title, String body, Member author, Organization organization) {
         this.date = date;
         this.title = title;
@@ -84,5 +92,13 @@ public class Post {
 
     public void setMember(Member author) {
         this.author = author;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

@@ -38,6 +38,43 @@ public class CommunityJsonController {
     @Autowired
     InvitationRepository invitations;
 
+    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.POST)
+    public void adminUser(HttpSession session) throws Exception {
+        Member demoMember = new Member();
+
+        demoMember.firstName = "Carlton";
+        demoMember.lastName = "Banks";
+        demoMember.email = "belair@gmail.com";
+        demoMember.password = "mypassword";
+        demoMember.streetAddress = "382 Penn Ave ";
+        members.save(demoMember);
+
+        Organization demoOrg = new Organization();
+        demoOrg.name= "Debate Team";
+        organizations.save(demoOrg);
+
+        OrganizationMember newOrgMember = new OrganizationMember(demoOrg, demoMember);
+        organizationMembers.save(newOrgMember);
+
+        Post carltonPost = new Post();
+        carltonPost.title = "How to debate";
+        carltonPost.organization = demoOrg;
+        carltonPost.date = "10/28/2016 ~ 17:00";
+        carltonPost.body = "1. Research your subject 2. Create arguments for and against ...";
+        carltonPost.author = demoMember;
+
+        Event carltonEvent = new Event();
+        carltonEvent.name = "Dance Lessons";
+        carltonEvent.location = "The W";
+        carltonEvent.organizer = demoMember;
+        carltonEvent.date = "11/10/2016 ~ 13:00";
+        carltonEvent.organization = demoOrg;
+        carltonEvent.information = "Ever wondered how I dance as well as I do? Well come to the W and learn!";
+        events.save(carltonEvent);
+
+    }
+
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -68,23 +105,35 @@ public class CommunityJsonController {
         System.out.println(member.email + " is about to be created");
         try {
             if (newMember == null) {
-                member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress);
-                members.save(member);
-                myResponse.responseMember = member;
-                session.setAttribute("member", member);
-                //later they would create an org
+                ArrayList<Invitation> listInvites = invitations.findByInvitedEmail(member.getEmail());
+                int size = listInvites.size();
+                if (size>=1) {
+                    ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
+                    for (Invitation currentInvite : allInvites) {
+                        Organization organization = currentInvite.getOrganization();
+                        member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photo_URL);
+                        members.save(member);
+                        OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
+                        organizationMemberAssociation.setOrganization(organization);
+                        organizationMembers.save(organizationMemberAssociation);
+                        myResponse.responseMember = member;
+                    }
+                } else {
+                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress, member.photo_URL);
+                    members.save(member);
+                    myResponse.responseMember = member;
+                    session.setAttribute("member", member);
+                    //later they would create an org
+                }
             } else {
-                myResponse.setErrorMessage("User already exists");
+                    myResponse.setErrorMessage("User already exists");
             }
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             myResponse.setErrorMessage("An exception occurred while registering");
             ex.printStackTrace();
         }
         return myResponse;
     }
-
-
-
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
@@ -198,7 +247,7 @@ public class CommunityJsonController {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
-                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer);
+                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer, thisEvent.organization);
                 thisEvent.setOrganizer(member);
                 events.save(thisEvent);
 
@@ -456,23 +505,52 @@ public class CommunityJsonController {
 
 
     @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
-    public List<Post> getAllPosts(HttpSession session, @RequestBody Organization organization){
-//        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Post> orgMemberPostList = posts.findByOrganization(organization);
-//        for (OrganizationMember thisOrgMember: allOrgMembers){
-//           orgMemberPostList.addAll(posts.findByAuthor(thisOrgMember.getMember()));
-//        }
-        return orgMemberPostList;
+    public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
+        PostContainer myResponse = new PostContainer();
+        try {
+            Member member = (Member) session.getAttribute("member");
+            List<Post> orgMemberPostList = new ArrayList<>();
+            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+            int sizeOfAL = memberOrgs.size();
+            if (sizeOfAL == 1) {
+                orgMemberPostList = posts.findByOrganization(organization);
+            } else {
+                for (OrganizationMember currentOrgMember : memberOrgs) {
+                    Organization currentOrg = currentOrgMember.getOrganization();
+                    orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
+                    myResponse.setPostList(orgMemberPostList);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting posts by organization");
+            ex.printStackTrace();
+        }
+        return myResponse;
     }
 
     @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
-    public List<Event> getAllEvents(HttpSession session, @RequestBody Organization organization){
-        Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-        List <Event> orgMemberEventList = new ArrayList<>();
-        for (OrganizationMember thisOrgMember: allOrgMembers){
-            orgMemberEventList.addAll(events.findByOrganizer(thisOrgMember.getMember()));
+    public EventContainer getAllEvents(HttpSession session, @RequestBody Organization organization){
+        EventContainer myResponse = new EventContainer();
+        try {
+            Member member = (Member) session.getAttribute("member");
+            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
+            List<Event> orgMemberEventList = new ArrayList<>();
+            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
+            int sizeOfAL = memberOrgs.size();
+            if (sizeOfAL == 1) {
+                orgMemberEventList = events.findByOrganization(organization);
+            } else {
+                for (OrganizationMember currentOrgMember : memberOrgs) {
+                    Organization currentOrg = currentOrgMember.getOrganization();
+                    orgMemberEventList.addAll(events.findByOrganization(currentOrg));
+                    myResponse.setEventList(orgMemberEventList);
+                }
+            }
+        } catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting events by organization");
+            ex.printStackTrace();
         }
-        return orgMemberEventList;
+        return myResponse;
     }
 
 }

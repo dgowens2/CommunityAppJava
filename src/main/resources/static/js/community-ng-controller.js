@@ -9,7 +9,7 @@ angular.module('CommunityApp', [])
     $scope.allEvents = {};
     $scope.listOfEvents = {};
 
-        $scope.register = function(firstName, lastName, email, password, streetAddress) {
+        $scope.register = function(firstName, lastName, email, password, streetAddress, photo_URL) {
             console.log("In register function in ng controller");
 
             //Make a container
@@ -18,10 +18,11 @@ angular.module('CommunityApp', [])
                 lastName: lastName,
                 email: email,
                 password: password,
-                streetAddress: streetAddress
+                streetAddress: streetAddress,
+                photo_URL: photo_URL
             }
 
-            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress);
+            console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress + " " + newMember.photoURL);
 
             $http.post("/register.json", newMember)
                 .then(
@@ -35,6 +36,22 @@ angular.module('CommunityApp', [])
                         console.log("Unable to get data...");
                     });
         };
+
+//    $scope.uploadPhoto = function(photoURL) {
+//        console.log("In upload photo function")
+//
+//        $http.post("https://api.imgur.com/3/upload", photoURL)
+//            .then(
+//                function successCallback(response) {
+//                    console.log(response.data);
+//                    console.log("Adding Data to scope");
+//                    $scope.photoContainer = response.data;
+//                },
+//                function errorCallback(response) {
+//                    console.log("unable to get data...");
+//                });
+//    };
+
 
     console.log("before login");
 
@@ -58,6 +75,7 @@ angular.module('CommunityApp', [])
                         console.log("Data added after logincontainer user")
                         $scope.currentUser = response.data; //
                         console.log("Data added after current user")
+                        $scope.listTheOrganizations();
 //                        $scope.returningUser = {};
                     },
                     function errorCallback(response) {
@@ -98,61 +116,81 @@ angular.module('CommunityApp', [])
 
     console.log("before createOrganization")
 
-                $scope.createOrganization = function (newOrganizationName) {
-                     console.log("In createOrganization function in ng controller");
+            $scope.createOrganization = function (newOrganizationName) {
+                 console.log("In createOrganization function in ng controller");
 
-                     //Make a container
-                     var organizationContainer = {
-                          name: newOrganizationName,
-                          }
+                 //Make a container
+                 var organizationContainer = {
+                      name: newOrganizationName,
+                      }
 
-                     console.log("Container we're about to send: " + organizationContainer.name);
+                 console.log("Container we're about to send: " + organizationContainer.name);
 
-                      $http.post("/createOrganization.json", organizationContainer)
+                  $http.post("/createOrganization.json", organizationContainer)
 
-                          .then(
-                             function successCallback(response) {
-                                 console.log(response.data);
-                                 console.log("Adding data to scope");
-                                 // Returns container with error or user
-                                 $scope.allOrganizations = response.data;
-                             },
-                             function errorCallback(response) {
-                                 console.log("Unable to get data...");
-                             });
-                };
+                      .then(
+                         function successCallback(response) {
+                             console.log(response.data);
+                             console.log("Adding data to scope");
+                             // Returns container with error or user
+                             $scope.allOrganizations = response.data;
+                             console.log(response.data)
+                         },
+                         function errorCallback(response) {
+                             console.log("Unable to get data...");
+                         });
+            };
 
+$scope.listTheOrganizations = function() {
+        console.log("Getting list of orgs");
+        $http.get("/organizationsList.json")
+        .then(
+            function successCallBack(response) {
+                console.log(response.data);
+                console.log("retrieving organizations...");
+                $scope.allOrganizations = response.data;
+//                $scope.listOfOrganizations = $scope.allOrganizations.orgList;
+                console.log($scope.allOrganizations);
 
+            },
+            function errorCallBack(response) {
+                console.log("Unable to retrieve events");
+            });
+         console.log("Done with the callback");
+    };
+
+//end list events
 
     console.log("before createNewEvent");
 
-        $scope.createNewEvent = function(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer) {
-             console.log("In createNewEvent function in ng controller");
+            $scope.createNewEvent = function(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer, newEventOrganization) {
+                 console.log("In createNewEvent function in ng controller");
 
-             //Make a container
-             var newEvent = {
-                 name: newEventName,
-                 date: newEventDate,
-                 location: newEventLocation,
-                 information: newEventInformation,
-                 organizer: newEventOrganizer
-             }
+                 //Make a container
+                 var newEvent = {
+                     name: newEventName,
+                     date: newEventDate,
+                     location: newEventLocation,
+                     information: newEventInformation,
+                     organizer: newEventOrganizer,
+                     organization: newEventOrganization
+                 }
 
-             console.log("Container we're about to send: " + newEvent.newEventName + " " + newEvent.newEventDate + " " + newEvent.newEventLocation + " " + newEvent.newEventInformation + " " + newEvent.newEventOrganizer);
+                 console.log("Container we're about to send: " + newEvent.name + " " + newEvent.date + " " + newEvent.location + " " + newEvent.information + " " + newEvent.organizer + " " + newEvent.organization);
 
-             $http.post("/createEvent.json", newEvent)
-                 .then(
-                     function successCallback(response) {
-                         console.log(response.data);
-                         console.log("Adding data to scope");
-                         $scope.newEventContainer = response.data;
-                         $scope.allEvents = response.data;
-                         $scope.allEvents = $scope.listEvents;
-                     },
-                     function errorCallback(response) {
-                         console.log("Unable to get data...");
-                     });
-         };
+                 $http.post("/createEvent.json", newEvent)
+                     .then(
+                         function successCallback(response) {
+                             console.log(response.data);
+                             console.log("Adding data to scope");
+                             $scope.newEventContainer = response.data;
+                             $scope.allEvents = response.data;
+                             $scope.allEvents = $scope.listEvents;
+                         },
+                         function errorCallback(response) {
+                             console.log("Unable to get data...");
+                         });
+             };
 
     console.log("before joinEvent");
 
@@ -179,9 +217,6 @@ angular.module('CommunityApp', [])
          console.log("Done with the callback");
     };
 
-
-
-
 //end list events
 
 //        not listed in our endpoints
@@ -205,29 +240,60 @@ angular.module('CommunityApp', [])
 
     console.log("before joinOrganization")
 
-                    $scope.joinOrganization = function (organizationIWantToJoinId) {
-                         console.log("In createOrganization function in ng controller");
+        $scope.joinOrganization = function (organizationIWantToJoinId) {
+             console.log("In createOrganization function in ng controller");
 
-                         //Make a container
-                         var organizationMemberContainer = {
-                              organizationId: organizationIWantToJoinId
-                              }
+             //Make a container
+             var organizationMemberContainer = {
+                  organizationId: organizationIWantToJoinId
+                  }
 
-                         console.log("Container we're about to send: " + organizationMemberContainer.organizationId);
+             console.log("Container we're about to send: " + organizationMemberContainer.organizationId);
 
-                          $http.post("/joinOrganization.json", organizationIWantToJoinId)
+              $http.post("/joinOrganization.json", organizationIWantToJoinId)
 
-                              .then(
-                                 function successCallback(response) {
-                                     console.log(response.data);
-                                     console.log("Adding data to scope");
-                                     // Returns container with error or user
-                                     $scope.allOrganizations = response.data;
-                                 },
-                                 function errorCallback(response) {
-                                     console.log("Unable to get data...");
-                                 });
-                    };
+                  .then(
+                     function successCallback(response) {
+                         console.log(response.data);
+                         console.log("Adding data to scope");
+                         // Returns container with error or user
+                         $scope.allOrganizations = response.data;
+                     },
+                     function errorCallback(response) {
+                         console.log("Unable to get data...");
+                     });
+        };
+
+    console.log("before sendInvitation")
+
+            $scope.sendInvitation = function (inviteeEmail, orgToJoin) {
+                 console.log("In createOrganization function in ng controller");
+
+                 //Make a container
+                 var InvitationContainer = {
+                      inviteeEmail: inviteeEmail,
+                      Organization: orgToJoin
+                     }
+
+                 console.log("Container we're about to invite: " + InvitationContainer.inviteeEmail + " " + InvitationContainer.Organization);
+
+                  $http.post("/sendInvitation.json", InvitationContainer    )
+
+                      .then(
+                         function successCallback(response) {
+                             console.log(response.data);
+                             console.log("Adding data to scope");
+                             // Returns container with error or user
+                             $scope.allOrganizations = response.data;
+
+                         },
+                         function errorCallback(response) {
+                             console.log("Unable to get data...");
+                         });
+            };
+
+
+        $scope.allOrganizations = {};
 
     console.log("Page loaded!");
 
