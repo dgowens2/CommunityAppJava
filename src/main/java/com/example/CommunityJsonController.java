@@ -229,7 +229,7 @@ public class CommunityJsonController {
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
 //        author = (Member) session.getAttribute("member");
         author = members.findFirstByEmail(author.getEmail());
-        System.out.println("Author is: " + author.firstName + " " + author.getFirstName());
+        System.out.println("Author is: " + " " + author.getFirstName());
         PostContainer postContainer = new PostContainer();
         Iterable<Post> allPosts = posts.findByAuthor(author);
         System.out.println("Iterable created");
@@ -255,30 +255,30 @@ public class CommunityJsonController {
         return postContainer;
     }
 
-    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
-    public PostContainer getAllPostsByAuthorWithEndpointGet(HttpSession session, Member author) {
-        author = (Member) session.getAttribute("member");
-        PostContainer postContainer = new PostContainer();
-        Iterable<Post> allPosts = posts.findByAuthor(author);
-        List<Post> postList = new ArrayList<>();
-        for (Post currentPost : allPosts) {
-            postList.add(currentPost);
-            try {
-                if (postList == null) {
-                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-
-                } else {
-                    postContainer.setPostList(postList);
-                    System.out.println("post id = " + postList.indexOf(currentPost));
-                }
-            } catch (Exception ex){
-                postContainer.setErrorMessage("An exception occurred creating a post list");
-                ex.printStackTrace();
-            }
-        }
-        System.out.println("after iterable");
-        return postContainer;
-    }
+//    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
+//    public PostContainer getAllPostsByAuthorWithEndpointGet(HttpSession session, Member author) {
+//        author = (Member) session.getAttribute("member");
+//        PostContainer postContainer = new PostContainer();
+//        Iterable<Post> allPosts = posts.findByAuthor(author);
+//        List<Post> postList = new ArrayList<>();
+//        for (Post currentPost : allPosts) {
+//            postList.add(currentPost);
+//            try {
+//                if (postList == null) {
+//                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+//
+//                } else {
+//                    postContainer.setPostList(postList);
+//                    System.out.println("post id = " + postList.indexOf(currentPost));
+//                }
+//            } catch (Exception ex){
+//                postContainer.setErrorMessage("An exception occurred creating a post list");
+//                ex.printStackTrace();
+//            }
+//        }
+//        System.out.println("after iterable");
+//        return postContainer;
+//    }
 
     @RequestMapping(path = "/postsList.json", method = RequestMethod.GET)
     public List<Post> getAllPosts() {
