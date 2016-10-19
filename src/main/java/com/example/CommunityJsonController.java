@@ -227,28 +227,26 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
-//        author = (Member) session.getAttribute("member");
-        author = members.findFirstByEmail(author.getEmail());
-        System.out.println("Author is: " + " " + author.firstName);
         PostContainer postContainer = new PostContainer();
-        Iterable<Post> allPosts = posts.findByAuthor(author);
-        System.out.println("Iterable created");
-        List<Post> postList = new ArrayList<>();
-        System.out.println("ArrayList created");
-        for (Post currentPost : allPosts) {
-            System.out.println("inside of for loop");
-            postList.add(currentPost);
-            try {
-                if (postList == null) {
-                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-
-                } else {
-                    postContainer.setPostList(postList);
-                    System.out.println("post id = " + postList.indexOf(currentPost));
+        Iterable<Member> allMembers = members.findAll();
+        for (Member currentMember: allMembers) {
+            if (currentMember.getEmail().equals(author.email)) {
+                Iterable<Post> allPosts = posts.findByAuthor(currentMember);
+                List<Post> postList = new ArrayList<>();
+                for (Post currentPost : allPosts) {
+                    postList.add(currentPost);
+                    try {
+                        if (postList == null) {
+                            postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+                        } else {
+                            postContainer.setPostList(postList);
+                            System.out.println("post id = " + postList.indexOf(currentPost));
+                        }
+                    } catch (Exception ex) {
+                        postContainer.setErrorMessage("An exception occurred creating a post list");
+                        ex.printStackTrace();
+                    }
                 }
-            } catch (Exception ex){
-                postContainer.setErrorMessage("An exception occurred creating a post list");
-                ex.printStackTrace();
             }
         }
         System.out.println("after iterable");
@@ -417,29 +415,32 @@ public class CommunityJsonController {
         return eventList;
     }
 
-    @RequestMapping(path = "/eventsListByMember.json", method = RequestMethod.GET)
-    public PostContainer getAllEventsByAuthorWithEndpointGet(HttpSession session, Member author) {
-        author = (Member) session.getAttribute("member");
-        PostContainer postContainer = new PostContainer();
-        Iterable<Post> allPosts = posts.findByAuthor(author);
-        List<Post> postList = new ArrayList<>();
-        for (Post currentPost : allPosts) {
-            postList.add(currentPost);
-            try {
-                if (postList == null) {
-                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-
-                } else {
-                    postContainer.setPostList(postList);
-                    System.out.println("post id = " + postList.indexOf(currentPost));
+    @RequestMapping(path = "/eventsListByMember.json", method = RequestMethod.POST)
+    public EventContainer getAllEventsByOrganizerWithEndpoint(@RequestBody Member organizer) {
+        EventContainer eventContainer = new EventContainer();
+        try {
+            Iterable<Member> allMembers = members.findAll();
+            for (Member currentMember: allMembers) {
+                if (currentMember.getEmail().equals(organizer.email)) {
+                    Iterable<Event> allEvents = events.findByOrganizer(currentMember);
+                    List<Event> eventList = new ArrayList<>();
+                    for (Event currentEvent : allEvents) {
+                        eventList.add(currentEvent);
+                            if (eventList != null) {
+                                eventContainer.setEventList(eventList);
+                                System.out.println("event id = " + eventList.indexOf(currentEvent));
+                            } else {
+                                eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
+                            }
+                        }
                 }
-            } catch (Exception ex){
-                postContainer.setErrorMessage("An exception occurred creating a post list");
-                ex.printStackTrace();
             }
+        } catch (Exception ex) {
+            eventContainer.setErrorMessage("An exception occurred creating an event list");
+            ex.printStackTrace();
         }
         System.out.println("after iterable");
-        return postContainer;
+        return eventContainer;
     }
 
     @RequestMapping(path = "/event.json", method = RequestMethod.GET)
