@@ -32,13 +32,13 @@ public class Post {
     public Post() {
     }
 
-    public Member getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Member author) {
-        this.author = author;
-    }
+//    public Member getAuthor() {
+//        return author;
+//    }
+//
+//    public void setAuthor(Member author) {
+//        this.author = author;
+//    }
 
     public Organization getOrganization() {
         return organization;
