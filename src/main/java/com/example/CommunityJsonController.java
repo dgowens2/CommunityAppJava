@@ -535,27 +535,12 @@ public class CommunityJsonController {
     public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
         PostContainer myResponse = new PostContainer();
         try {
-//            Member author = (Member) session.getAttribute("author");
-            List<Post> orgMemberPostList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findMembersByOrganization(organization);
-            int sizeOfAL = memberOrgs.size();
-            if (sizeOfAL == 1) {
-                orgMemberPostList = posts.findByOrganization(organization);
-                if(orgMemberPostList == null){
-                    myResponse.setErrorMessage("This organization has no posts");
-                } else {
-                    myResponse.setPostList(orgMemberPostList);
-                }
+            ArrayList<Post> postsByOrg = new ArrayList<>();
+            postsByOrg= posts.findByOrganization(organization);
+            if (postsByOrg == null){
+                myResponse.setErrorMessage("This organization has no posts");
             } else {
-                for (OrganizationMember currentOrgMember : memberOrgs) {
-                    Organization currentOrg = currentOrgMember.getOrganization();
-                    orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
-                    if(orgMemberPostList == null) {
-                        myResponse.setErrorMessage("This organization has no posts");
-                    } else {
-                        myResponse.setPostList(orgMemberPostList);
-                    }
-                }
+                myResponse.setPostList(postsByOrg);
             }
         }catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting posts by organization");
@@ -568,28 +553,12 @@ public class CommunityJsonController {
     public EventContainer getAllEvents(HttpSession session, @RequestBody Organization organization){
         EventContainer myResponse = new EventContainer();
         try {
-            Member member = (Member) session.getAttribute("member");
-//            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-            List<Event> orgMemberEventList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findMembersByOrganization(organization);
-            int sizeOfAL = memberOrgs.size();
-            if (sizeOfAL == 1) {
-                orgMemberEventList = events.findByOrganization(organization);
-                if(orgMemberEventList == null){
-                    myResponse.setErrorMessage("This organization has no events");
-                } else {
-                    myResponse.setEventList(orgMemberEventList);
-                }
+            ArrayList<Event> eventsByOrg = new ArrayList<>();
+            eventsByOrg = events.findByOrganization(organization);
+            if (eventsByOrg == null){
+                myResponse.setErrorMessage("This organization has no events");
             } else {
-                for (OrganizationMember currentOrgMember : memberOrgs) {
-                    Organization currentOrg = currentOrgMember.getOrganization();
-                    orgMemberEventList.addAll(events.findByOrganization(currentOrg));
-                    if (orgMemberEventList == null) {
-                    myResponse.setErrorMessage("This organization has no events");
-                    } else {
-                        myResponse.setEventList(orgMemberEventList);
-                    }
-                }
+                myResponse.setEventList(eventsByOrg);
             }
         } catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting events by organization");
@@ -597,5 +566,4 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
-
 }
