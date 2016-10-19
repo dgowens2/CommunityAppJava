@@ -40,14 +40,6 @@ public class Post {
 //        this.author = author;
 //    }
 
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
-
     public Post(String date, String title, String body, Member author, Organization organization) {
         this.date = date;
         this.title = title;
@@ -100,5 +92,13 @@ public class Post {
 
     public void setMember(Member author) {
         this.author = author;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

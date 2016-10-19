@@ -25,9 +25,9 @@ Last name: <input type="text" ng-model="lastName"/> <br/>
 Email: <input type="email" ng-model="email"/> <br/>
 Password: <input type="password" ng-model="password"/> <br/>
 Street Address: <input type="text" ng-model="streetAddress"/> <br/>
-<input type="button" ng-click="register(firstName, lastName, email, password, streetAddress)" value="Register"/>
-
-    <br/>
+Upload your photo: <input type="text" ng-model="photo_URL"/> <br/>
+<input type="button" ng-click="register(firstName, lastName, email, password, streetAddress, photo_URL)" value="Register"/>
+<br/><br/>
 {{loginContainer}}
 
 <!--login-->
@@ -54,20 +54,17 @@ Password: <input type="password" ng-model="loginPassword"/> <br/>
 <!--add event-->
 To view events in JSON format, view /eventsList.json (all events), /event.json (single event)
 Add an event:<br/>
+    <span ng-repeat="currentOrganization in allOrganizations"></span>
 Event name: <input type="text" ng-model="newEventName"/> <br/>
 Date: <input type="date" ng-model="newEventDate"/> <br/>
 Location: <input type="text" ng-model="newEventLocation"/> <br/>
 Information: <input type="text" ng-model="newEventInformation"/> <br/>
 <!--Organization: <input type="text" ng-model="newEventOrganization"/> <br/>-->
-Organization 2: <select name="listOfOrganizations" ng-options="currentOrganization in listOfOrganizations" ng-model="newEventOrganization">
-        <option value="currentOrganization">{{currentOrganization.name}}</option>
-    </select>
-<br/>
-<input type="button" ng-click="createNewEvent(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer, newEventOrganization)" value="Create"/> <br/>
+<label>Organization : <select ng-options="currentOrganization.name for currentOrganization in allOrganizations" ng-model="newEventOrganization" ></select>
+</label>
 
-    <span ng-repeat="currentOrganization in listOfOrganizations">
-{{currentOrganization.name}}<br/>
-</span>
+    <br/>
+<input type="button" ng-click="createNewEvent(newEventName, newEventDate, newEventLocation, newEventInformation, newEventOrganizer, newEventOrganization)" value="Create"/> <br/>
 
 <br/>
 
@@ -110,9 +107,10 @@ Create an organization: <br/>
 Organization name: <input type="text" ng-model="newOrganizationName"/><br/>
 <input type="button" ng-click="createOrganization(newOrganizationName)" value="Submit"><br/>
 
-<input type="button" ng-click="listTheOrganizations()" value="Get All Organizations"/>
+<br/><br/>
 All Organizations: <br/>
-<span ng-repeat="currentOrganization in listOfOrganizations">
+<input type="button" ng-click="listTheOrganizations()" value="Get All Organizations"/>
+<span ng-repeat="currentOrganization in allOrganizations">
 {{currentOrganization.name}}<br/>
 </span>
 
@@ -123,9 +121,11 @@ Organization id: <input type="number" ng-model="organizationIWantToJoinId"/>
 
 <br/>
 
+Send invitation to: <input type="text" ng-model="inviteeEmail"/>
+<label>Organization to join: <select ng-options="currentOrganization.name for currentOrganization in allOrganizations" ng-model="orgToJoin" ></select>
+</label>
 </div>
 
 
-<div ng-if="currentUser">Logged in</div>
 </body>
 </html>
