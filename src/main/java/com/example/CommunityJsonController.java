@@ -95,7 +95,6 @@ public class CommunityJsonController {
         wsMember.email= "thefreshprince@gmail.com";
         wsMember.password= "basketball";
         members.save(wsMember);
-        //join bb to ws
 
         OrganizationMember wsToSports = new OrganizationMember(sportsOrg, wsMember);
         organizationMembers.save(wsToSports);
@@ -107,6 +106,8 @@ public class CommunityJsonController {
         bbGame.organization = sportsOrg;
         bbGame.organizer = wsMember;
         events.save(bbGame);
+
+        
     }
 
 
