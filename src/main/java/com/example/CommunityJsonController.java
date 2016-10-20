@@ -1,6 +1,5 @@
 package com.example;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -408,27 +407,17 @@ public class CommunityJsonController {
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
         PostContainer postContainer = new PostContainer();
         try {
-            Iterable<Member> allMembers = members.findAll();
-            for (Member currentMember : allMembers) {
-                if (currentMember.getEmail().equals(author.email)) {
-                    Iterable<Post> allPosts = posts.findByAuthor(currentMember);
-                    List<Post> postList = new ArrayList<>();
-                    for (Post currentPost : allPosts) {
-                        postList.add(currentPost);
-                        try {
-                            if (postList == null) {
-                                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-                            } else {
-                                postContainer.setPostList(postList);
-                                System.out.println("post id = " + postList.indexOf(currentPost));
-                            }
-                        } catch (Exception ex) {
-                            postContainer.setErrorMessage("An exception occurred creating a post list");
-                            ex.printStackTrace();
-                        }
-                    }
-                } else {
-                    postContainer.setErrorMessage("No members posts to display");
+            author = members.findFirstByEmail(author.email);
+            Iterable<Post> allPosts = posts.findByAuthor(author);
+            Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
+            if (allPostsSize == 0) {
+                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+            } else {
+                List<Post> postList = new ArrayList<>();
+                for (Post currentPost : allPosts) {
+                    postList.add(currentPost);
+                    postContainer.setPostList(postList);
+                    System.out.println("post id = " + postList.indexOf(currentPost));
                 }
             }
             System.out.println("after iterable");
@@ -602,32 +591,27 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/eventsListByMember.json", method = RequestMethod.POST)
-    public EventContainer getAllEventsByOrganizerWithEndpoint(@RequestBody Member organizer) {
+    public EventContainer getAllEventsByAuthorWithEndpoint(@RequestBody Member organizer) {
         EventContainer eventContainer = new EventContainer();
         try {
-            Iterable<Member> allMembers = members.findAll();
-            for (Member currentMember: allMembers) {
-                if (currentMember.getEmail().equals(organizer.email)) {
-                    Iterable<Event> allEvents = events.findByOrganizer(currentMember);
-                    List<Event> eventList = new ArrayList<>();
-                    for (Event currentEvent : allEvents) {
-                        eventList.add(currentEvent);
-                            if (eventList != null) {
-                                eventContainer.setEventList(eventList);
-                                System.out.println("event id = " + eventList.indexOf(currentEvent));
-                            } else {
-                                eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
-                            }
-                        }
-                } else {
-                    eventContainer.setErrorMessage("No members events to display");
+            organizer = members.findFirstByEmail(organizer.email);
+            Iterable<Event> allEvents = events.findByOrganizer(organizer);
+            Long allEventsSize = allEvents.spliterator().getExactSizeIfKnown();
+            if (allEventsSize == 0) {
+                eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
+            } else {
+                List<Event> eventList = new ArrayList<>();
+                for (Event currentEvent : allEvents) {
+                    eventList.add(currentEvent);
+                    eventContainer.setEventList(eventList);
+                    System.out.println("event id = " + eventList.indexOf(currentEvent));
                 }
             }
+            System.out.println("after iterable");
         } catch (Exception ex) {
-            eventContainer.setErrorMessage("An exception occurred creating an event list");
+            eventContainer.setErrorMessage("An exception occurred creating a event list");
             ex.printStackTrace();
         }
-        System.out.println("after iterable");
         return eventContainer;
     }
 
