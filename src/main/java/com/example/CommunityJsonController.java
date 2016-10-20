@@ -273,19 +273,11 @@ public class CommunityJsonController {
         Post qThreePost = new Post();
         qThreePost.title= "Found Dog";
         qThreePost.body= "I found a dog outside the church this morning. She looks like a pit mix with brown and white markings. No collar, but I will be checking at a vet to check for a microchip.";
-        qThreePost.date= "10/27/2016 ~ ";
+        qThreePost.date= "10/27/2016 ~ 15:00";
         qThreePost.author= demoMemberHP;
         qThreePost.organization= quakersOrg;
         posts.save(qThreePost);
-
-        Post qFourPost = new Post();
-        qFourPost.title= "";
-        qFourPost.body= "";
-        qFourPost.date= "";
-        qFourPost.author= demoMemberHP;
-        qFourPost.organization= quakersOrg;
-        posts.save(qFourPost);
-
+        
     }
 
 
