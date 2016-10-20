@@ -757,20 +757,24 @@ public class CommunityJsonController {
     }
 
     @RequestMapping (path= "/membersByOrg.json", method = RequestMethod.GET)
-    public MemberOrganizationContainer theMembers(HttpSession session, @RequestBody Organization organization){
+    public MemberOrganizationContainer theMembers(HttpSession session, @RequestBody Organization organization) throws Exception {
         MemberOrganizationContainer myResponse = new MemberOrganizationContainer();
-        ArrayList<Member> organizationMembersArrayList = new ArrayList<>();
-        ArrayList<OrganizationMember> allOrganizationMembers = organizationMembers.findMembersByOrganization(organization);
+        try {
+            ArrayList<Member> organizationMembersArrayList = new ArrayList<>();
+            ArrayList<OrganizationMember> allOrganizationMembers = organizationMembers.findMembersByOrganization(organization);
 
-        for (OrganizationMember orgMem : allOrganizationMembers) {
-            organizationMembersArrayList.add(orgMem.getMember());
-            int aomSize = allOrganizationMembers.size();
+            for (OrganizationMember orgMem : allOrganizationMembers) {
+                organizationMembersArrayList.add(orgMem.getMember());
+                int aomSize = allOrganizationMembers.size();
 
-            if(organizationMembersArrayList == null || aomSize == 0){
-                myResponse.setErrorMessage("List of members was null");
-            } else {
-                myResponse.setResponseMemberList(organizationMembersArrayList);
+                if (organizationMembersArrayList == null || aomSize == 0) {
+                    myResponse.setErrorMessage("List of members was null");
+                } else {
+                    myResponse.setResponseMemberList(organizationMembersArrayList);
+                }
             }
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("An exception has occurred while trying to obtain members.");
         }
         return myResponse;
     }

@@ -1340,6 +1340,13 @@ public class CommunityAppApplicationTests {
 	}
 
 	@Test
+	public void testMembersByOrg(){
+
+	}
+
+
+
+	@Test
 	public void testPostsByAllMembersOrgsOrdered() {
 		Organization secondOrg = new Organization();
 		Member testMember = new Member();
@@ -1434,6 +1441,9 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
+
+
+
 
 }
 
