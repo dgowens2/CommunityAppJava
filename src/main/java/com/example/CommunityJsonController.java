@@ -756,16 +756,27 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+    @RequestMapping (path= "/membersByOrg.json", method = RequestMethod.GET)
+    public MemberOrganizationContainer theMembers(HttpSession session, @RequestBody Organization organization) throws Exception {
+        MemberOrganizationContainer myResponse = new MemberOrganizationContainer();
+        try {
+            ArrayList<Member> organizationMembersArrayList = new ArrayList<>();
+            ArrayList<OrganizationMember> allOrganizationMembers = organizationMembers.findMembersByOrganization(organization);
 
-    public ArrayList<OrganizationMember> refreshOrganizationMemberList() {
-        ArrayList<OrganizationMember> organizationMembersArrayList = new ArrayList<>();
-        Iterable<OrganizationMember> allOrganizationMembers = organizationMembers.findAll();
+            for (OrganizationMember orgMem : allOrganizationMembers) {
+                organizationMembersArrayList.add(orgMem.getMember());
+                int aomSize = allOrganizationMembers.size();
 
-        for (OrganizationMember orgMem : allOrganizationMembers) {
-            organizationMembersArrayList.add(orgMem);
-
+                if (organizationMembersArrayList == null || aomSize == 0) {
+                    myResponse.setErrorMessage("List of members was null");
+                } else {
+                    myResponse.setResponseMemberList(organizationMembersArrayList);
+                }
+            }
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("An exception has occurred while trying to obtain members.");
         }
-        return organizationMembersArrayList;
+        return myResponse;
     }
 
     @RequestMapping (path= "/memberProfile.json", method = RequestMethod.GET)

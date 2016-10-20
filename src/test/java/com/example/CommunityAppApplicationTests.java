@@ -1428,5 +1428,106 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
+	
+	public void testMembersByOrg(){
+
+	}
+
+	@Test
+	public void testPostsByAllMembersOrgsOrdered() {
+		Organization secondOrg = new Organization();
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+		Post onePost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
+		Post sameDateDifferentTime = new Post();
+		Post sameMonthDifferentDate = new Post();
+
+		try{
+			secondOrg.name= "Jamrock";
+			organizations.save(secondOrg);
+
+			testMember.firstName = "Jessica";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "roads@yahoo.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			onePost.title = "Live Code Session";
+			onePost.date = "12/07/2016";
+			onePost.body ="Come sail away with me";
+			onePost.author = testMember;
+			onePost.organization = secondOrg;
+			posts.save(onePost);
+
+			secondTestMember.firstName = "Cherry";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "jaxa@yahoo.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			twoPost.author = testMember;
+			twoPost.date = "02/20/2018";
+			twoPost.title = "Brice's Adventure";
+			twoPost.body="Car accidents hurt";
+			twoPost.organization = secondOrg;
+			posts.save(twoPost);
+
+			threePost.author = secondTestMember;
+			threePost.date = "04/05/2018";
+			threePost.title = "Solve the puzzle";
+			threePost.body="Naming conventions are sometimes hard";
+			threePost.organization = secondOrg;
+			posts.save(threePost);
+
+			sameDateDifferentTime.title = "Same date dif time";
+			sameDateDifferentTime.author= testMember;
+			sameDateDifferentTime.organization= secondOrg;
+			sameDateDifferentTime.body= "so we meet again";
+			sameDateDifferentTime.date= "04/05/2018";
+			posts.save(sameDateDifferentTime);
+
+			sameMonthDifferentDate.title= "Fizz";
+			sameMonthDifferentDate.body= "Buzz";
+			sameMonthDifferentDate.organization= secondOrg;
+			sameMonthDifferentDate.author= testMember;
+			sameMonthDifferentDate.date= "02/01/1990";
+			posts.save(sameMonthDifferentDate);
+
+
+			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+			organizationmembers.save(secondOrgMemberTest);
+
+
+			ArrayList<Post> orgPosts= posts.findByOrganizationOrderByDateAsc(secondOrg);
+//no assert here b/c i wanted to test myself first - for this to work we need to move to iso....on java side
+			for (Post currentPost: orgPosts) {
+				System.out.println(currentPost.getDate());
+			}
+
+		}finally {
+			posts.delete(onePost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			posts.delete(sameDateDifferentTime);
+			posts.delete(sameMonthDifferentDate);
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(secondOrgMemberTest);
+			organizations.delete(secondOrg);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
+
 }
 
