@@ -39,11 +39,12 @@ public class CommunityJsonController {
     @Autowired
     InvitationRepository invitations;
 
-    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.POST)
-    public void adminUser(HttpSession session) throws Exception {
+    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
+    public void demoData(HttpSession session) throws Exception {
+
 //  main demo orgs
         Organization techOrg = new Organization();
-        techOrg.name= "Atlanta All Things Tech";
+        techOrg.name= "All Things Tech";
         organizations.save(techOrg);
 
         Organization quakersOrg = new Organization();
@@ -93,13 +94,13 @@ public class CommunityJsonController {
         organizationMembers.save(qThreeMember);
 
         Member demoMemberDE = new Member();
-        demoMemberDG.firstName = "Dan";
-        demoMemberDG.lastName = "Esrey";
-        demoMemberDG.streetAddress = "485 Penn Ave";
-        demoMemberDG.email= "desrey@gmail.com";
-        demoMemberDG.password= "97thpercentile";
+        demoMemberDE.firstName = "Dan";
+        demoMemberDE.lastName = "Esrey";
+        demoMemberDE.streetAddress = "485 Penn Ave";
+        demoMemberDE.email= "desrey@gmail.com";
+        demoMemberDE.password= "97thpercentile";
         demoMemberDE.photo_URL= " ";
-        members.save(demoMemberDG);
+        members.save(demoMemberDE);
 
         OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
         organizationMembers.save(thirdOrgMember);
@@ -161,7 +162,7 @@ public class CommunityJsonController {
         liveToLead.name = "Live2Lead";
         liveToLead.location = "Atlanta Tech Village 3423 Piedmont Rd. NE Atlanta, Georgia 30305";
         liveToLead.date= "11/5/2016 ~ 9:00";
-        liveToLead.information = "Live2Lead is a half-day leader development experience designed to equip you with new perspectives, practical tools and key takeaways. Learn from these world-class leadership experts, be prepared to implement a new action plan, and start leading when you get back to the office with renewed passion and commitment.";
+        liveToLead.information = "Live2Lead is a half-day leader development experience designed to equip you with new perspectives, practical tools and key takeaways. ";
         liveToLead.organizer = demoMemberTH;
         liveToLead.organization = techOrg;
         events.save(liveToLead);
@@ -171,7 +172,7 @@ public class CommunityJsonController {
         ironPints.name= "The Iron Yard Atlanta";
         ironPints.location = "115 M.L.K. Jr Dr SW #400, Atlanta, GA 30303";
         ironPints.date= "11/18/2016 ~ 16:00";
-        ironPints.information= "Community Iron Pints is the 3rd Friday of every month when we open up our campus to the public for a relaxed social gathering. Our students step away from their computers and decompress from their weekly grind. We mingle, play games, share the latest in craft beers and simply relax over good conversation.";
+        ironPints.information= "Community Iron Pints is the 3rd Friday of every month when we open up our campus to the public for a relaxed social gathering.";
         ironPints.organization = techOrg;
         ironPints.organizer = demoMemberDE;
         events.save(ironPints);
@@ -189,7 +190,7 @@ public class CommunityJsonController {
         garnishEvent.name = "HBS: Women’s SIG Wine and Food Tasting";
         garnishEvent.date = "11/6/2016 ~ 16:00";
         garnishEvent.location = "925 Garrett Street, Atlanta, GA 30316 United States";
-        garnishEvent.information = "Emily Golub, the founder of Garnish & Gather, will be hosting us for a food and wine tasting at Joseph & Co.  Emily founded Garnish & Gather in 2012 to bring wholesome dinner kits prepared with locally sourced ingredients into Atlanta homes.  We’ll get to sample some of their new offerings and enjoy a chance to relax and chat with HBS women. This event is hosted by the Women’s SIG but all are welcome.";
+        garnishEvent.information = "Emily Golub, the founder of Garnish & Gather, will be hosting us for a food and wine tasting at Joseph & Co.  ";
         garnishEvent.organizer = demoMemberRBT;
         garnishEvent.organization = techOrg;
         events.save(garnishEvent);
@@ -198,7 +199,7 @@ public class CommunityJsonController {
         devFest.name = "Google Developer DevFest";
         devFest.date = "11/12/2016 ~ 10:00";
         devFest.location = "675 Ponce de Leon Avenue NE, 2nd Floor, Atlanta, GA 30308 United States";
-        devFest.information= "Our Atlanta Google Developer DevFest has been uniquely tailored to the needs of our growing startup community. Our one day event will focus on Cloud-based development products, web components, and foundational design principles. Programming DevFest offers talks and code labs that are accessible to both new and seasoned developers.";
+        devFest.information= "Programming DevFest offers talks and code labs that are accessible to both new and seasoned developers.";
         devFest.organizer= demoMemberWS;
         devFest.organization= techOrg;
         events.save(devFest);
@@ -226,7 +227,8 @@ public class CommunityJsonController {
         slackChannel.author= demoMemberRBT;
         slackChannel.organization = techOrg;
         posts.save(slackChannel);
-
+//  posts/events for tech above
+        
     }
 
 
