@@ -9,7 +9,7 @@ angular.module('CommunityApp', [])
     $scope.allEvents = {};
     $scope.listOfEvents = {};
 
-        $scope.register = function(firstName, lastName, email, password, streetAddress, photo_URL) {
+        $scope.register = function(firstName, lastName, email, password, streetAddress, photoURL) {
             console.log("In register function in ng controller");
 
             //Make a container
@@ -19,7 +19,7 @@ angular.module('CommunityApp', [])
                 email: email,
                 password: password,
                 streetAddress: streetAddress,
-                photo_URL: photo_URL
+                photoURL: photoURL
             }
 
             console.log("Container we're about to send: " + newMember.firstName + " " + newMember.lastName + " " + newMember.email + " " + newMember.password + " " + newMember.streetAddress + " " + newMember.photoURL);
@@ -294,6 +294,68 @@ $scope.listTheOrganizations = function() {
 
 
         $scope.allOrganizations = {};
+
+        console.log("before postListByMember")
+
+                $scope.postsListByMember = function (firstName, lastName, email, password, streetAddress, photoURL) {
+                     console.log("In createOrganization function in ng controller");
+
+                     //Make a container
+                                 var userThatIWantToView = {
+                                     firstName: firstName,
+                                     lastName: lastName,
+                                     email: email,
+                                     password: password,
+                                     streetAddress: streetAddress,
+                                     photoURL: photoURL
+                                 }
+
+                      console.log("We're about to see " + userThatIWantToView);
+
+                      $http.post("/postsListByMember.json", userThatIWantToView)
+
+                          .then(
+                             function successCallback(response) {
+                                 console.log(response.data);
+                                 console.log("Adding data to scope");
+                                 // Returns container with error or user
+                                 $scope.userPosts = response.data;
+                             },
+                             function errorCallback(response) {
+                                 console.log("Unable to get data...");
+                             });
+                };
+
+    console.log("before eventsListByMember")
+
+            $scope.eventsListByMember = function (firstName, lastName, email, password, streetAddress, photoURL) {
+                 console.log("In createOrganization function in ng controller");
+
+                 //Make a container
+                             var userThatIWantToView = {
+                                 firstName: firstName,
+                                 lastName: lastName,
+                                 email: email,
+                                 password: password,
+                                 streetAddress: streetAddress,
+                                 photoURL: photoURL
+                             }
+
+                  console.log("We're about to see " + userThatIWantToView);
+
+                  $http.post("/eventsListByMember.json", userThatIWantToView)
+
+                      .then(
+                         function successCallback(response) {
+                             console.log(response.data);
+                             console.log("Adding data to scope");
+                             // Returns container with error or user
+                             $scope.userEvents = response.data;
+                         },
+                         function errorCallback(response) {
+                             console.log("Unable to get data...");
+                         });
+            };
 
     console.log("Page loaded!");
 

@@ -31,7 +31,7 @@ public class Member {
     String streetAddress;
 
     @Column
-    String photo_URL;
+    String photoURL;
 
     public int getId() {
         return id;
@@ -94,20 +94,20 @@ public class Member {
 
     }
 
-    public Member(String firstName, String lastName, String email, String password, String streetAddress, String photo_URL) {
+    public Member(String firstName, String lastName, String email, String password, String streetAddress, String photoURL) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.streetAddress = streetAddress;
-        this.photo_URL = photo_URL;
+        this.photoURL = photoURL;
     }
 
-    public String getPhoto_URL() {
-        return photo_URL;
+    public String getPhotoURL() {
+        return photoURL;
     }
 
-    public void setPhoto_URL(String photo_URL) {
-        this.photo_URL = photo_URL;
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 }
