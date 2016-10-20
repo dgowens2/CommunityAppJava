@@ -256,10 +256,36 @@ public class CommunityJsonController {
         events.save(qThreeEvent);
 
         Post qOnePost = new Post();
-        Post qTwoPost = new Post();
-        Post qThreePost = new Post();
-        Post qFourPost = new Post();
+        qOnePost.title= "Campfire";
+        qOnePost.body= "I had a nice campfire this evening and silent reflection. I highly recommend it. ";
+        qOnePost.date= "10/27/2016 ~ 21:00";
+        qOnePost.author= demoMemberHP;
+        qOnePost.organization= quakersOrg;
+        posts.save(qOnePost);
 
+        Post qTwoPost = new Post();
+        qTwoPost.title= "Programs";
+        qTwoPost.body= "Anyone have any thoughts about more outreach opportunities?";
+        qTwoPost.date= "10/25/2016 ~ 10:00";
+        qTwoPost.author= demoMemberHP;
+        qTwoPost.organization= quakersOrg;
+        posts.save(qTwoPost);
+
+        Post qThreePost = new Post();
+        qThreePost.title= "Found Dog";
+        qThreePost.body= "I found a dog outside the church this morning. She looks like a pit mix with brown and white markings. No collar, but I will be checking at a vet to check for a microchip.";
+        qThreePost.date= "10/27/2016 ~ ";
+        qThreePost.author= demoMemberHP;
+        qThreePost.organization= quakersOrg;
+        posts.save(qThreePost);
+
+        Post qFourPost = new Post();
+        qFourPost.title= "";
+        qFourPost.body= "";
+        qFourPost.date= "";
+        qFourPost.author= demoMemberHP;
+        qFourPost.organization= quakersOrg;
+        posts.save(qFourPost);
 
     }
 
