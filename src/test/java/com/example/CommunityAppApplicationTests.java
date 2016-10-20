@@ -1340,11 +1340,98 @@ public class CommunityAppApplicationTests {
 	}
 
 	@Test
+	public void testViewPostsAcrossOrgs() {
+		Organization firstTestOrg = new Organization();
+		Organization secondTestOrg = new Organization();
+		Member firstTestMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember firstorgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		Post onePost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
+		Post fourPost = new Post();
+
+		try {
+			firstTestMember.firstName = "Romeo";
+			firstTestMember.lastName = "Montague";
+			firstTestMember.email = "rm@play.com";
+			firstTestMember.password = "password";
+			firstTestMember.streetAddress = "Fair Verona";
+			firstTestMember.photoURL = "what is internet?";
+			members.save(firstTestMember);
+
+			secondTestMember.firstName = "Juliet";
+			secondTestMember.lastName = "Capulet";
+			secondTestMember.email = "jc@play.com";
+			secondTestMember.password = "password";
+			secondTestMember.streetAddress = "Fair Verona";
+			secondTestMember.photoURL = "yes, what is internet?";
+			members.save(secondTestMember);
+
+			firstTestOrg.name = "The Montagues";
+			organizations.save(firstTestOrg);
+
+			secondTestOrg.name = "The Capulets";
+			organizations.save(secondTestOrg);
+
+			firstorgMember = new OrganizationMember(firstTestOrg, firstTestMember);
+			organizationmembers.save(firstorgMember);
+
+			secondOrgMember = new OrganizationMember(secondTestOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			onePost.date = "today";
+			onePost.title = "Title 1";
+			onePost.body = "This is my body";
+			onePost.author = firstTestMember;
+			onePost.organization = firstTestOrg;
+			posts.save(onePost);
+
+			twoPost.date = "today";
+			twoPost.title = "Title 2";
+			twoPost.body = "This is my second body";
+			twoPost.author = firstTestMember;
+			twoPost.organization = firstTestOrg;
+			posts.save(twoPost);
+
+			threePost.date = "today";
+			threePost.title = "Title 3";
+			threePost.body = "This is my third body";
+			threePost.author = secondTestMember;
+			threePost.organization = secondTestOrg;
+			posts.save(threePost);
+
+			fourPost.date = "today";
+			fourPost.title = "Title 4";
+			fourPost.body = "This is my fourth body";
+			fourPost.author = secondTestMember;
+			fourPost.organization = secondTestOrg;
+			posts.save(fourPost);
+
+			Iterable<Post> postsAcrossOrgs = posts.findAll();
+
+			Long something = postsAcrossOrgs.spliterator().getExactSizeIfKnown();
+
+			assertTrue(something == 12);
+
+		} finally {
+			posts.delete(onePost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			posts.delete(fourPost);
+			organizationmembers.delete(firstorgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizations.delete(firstTestOrg);
+			organizations.delete(secondTestOrg);
+			members.delete(firstTestMember);
+			members.delete(secondTestMember);
+		}
+	}
+	
 	public void testMembersByOrg(){
 
 	}
-
-
 
 	@Test
 	public void testPostsByAllMembersOrgsOrdered() {
@@ -1441,9 +1528,6 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
-
-
-
 
 }
 
