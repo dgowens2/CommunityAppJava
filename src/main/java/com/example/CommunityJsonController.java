@@ -228,7 +228,10 @@ public class CommunityJsonController {
         slackChannel.organization = techOrg;
         posts.save(slackChannel);
 //  posts/events for tech above
-        
+
+        Event qOneEvent = new Event();
+//        qOneEvent.name
+
     }
 
 
@@ -370,7 +373,7 @@ public class CommunityJsonController {
                         }
                     }
                 } else {
-                    postContainer.setErrorMessage("No Members to display");
+                    postContainer.setErrorMessage("No members posts to display");
                 }
             }
             System.out.println("after iterable");
