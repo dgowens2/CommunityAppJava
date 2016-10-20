@@ -396,11 +396,13 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
-    public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
+    public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member member) {
         PostContainer postContainer = new PostContainer();
+        System.out.println("Looking for posts from: " + member.firstName + " " + member.lastName);
+
         try {
-            author = members.findFirstByEmail(author.email);
-            Iterable<Post> allPosts = posts.findByAuthor(author);
+            member = members.findFirstByEmail(member.email);
+            Iterable<Post> allPosts = posts.findByAuthor(member);
             Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
             if (allPostsSize == 0) {
                 postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
@@ -583,11 +585,12 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/eventsListByMember.json", method = RequestMethod.POST)
-    public EventContainer getAllEventsByAuthorWithEndpoint(@RequestBody Member organizer) {
+    public EventContainer getAllEventsByAuthorWithEndpoint(@RequestBody Member member) {
         EventContainer eventContainer = new EventContainer();
+        System.out.println("Looking for events from: " + member.firstName + " " + member.lastName);
         try {
-            organizer = members.findFirstByEmail(organizer.email);
-            Iterable<Event> allEvents = events.findByOrganizer(organizer);
+            member = members.findFirstByEmail(member.email);
+            Iterable<Event> allEvents = events.findByOrganizer(member);
             Long allEventsSize = allEvents.spliterator().getExactSizeIfKnown();
             if (allEventsSize == 0) {
                 eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
