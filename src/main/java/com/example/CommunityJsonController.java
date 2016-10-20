@@ -1,5 +1,6 @@
 package com.example;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,75 +39,195 @@ public class CommunityJsonController {
     @Autowired
     InvitationRepository invitations;
 
-    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.POST)
-    public void adminUser(HttpSession session) throws Exception {
-        Member demoMember = new Member();
+    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
+    public void demoData(HttpSession session) throws Exception {
 
-        demoMember.firstName = "Carlton";
-        demoMember.lastName = "Banks";
-        demoMember.email = "belair@gmail.com";
-        demoMember.password = "mypassword";
-        demoMember.streetAddress = "382 Penn Ave ";
-        members.save(demoMember);
+//  main demo orgs
+        Organization techOrg = new Organization();
+        techOrg.name= "All Things Tech";
+        organizations.save(techOrg);
 
-        Organization demoOrg = new Organization();
-        demoOrg.name= "Debate Team";
-        organizations.save(demoOrg);
+        Organization quakersOrg = new Organization();
+        quakersOrg.name ="Atlanta Friends Meeting";
+        organizations.save(quakersOrg);
+//  additional orgs for demo
+        Organization swimmerOrg = new Organization();
+        swimmerOrg.name= "Atlanta Swim Team";
+        organizations.save(swimmerOrg);
 
-        OrganizationMember newOrgMember = new OrganizationMember(demoOrg, demoMember);
+        Organization bookOrg = new Organization();
+        bookOrg.name= "Decatur Book Club";
+        organizations.save(bookOrg);
+
+        Organization chessOrg = new Organization();
+        chessOrg.name= "Chess Club";
+        organizations.save(chessOrg);
+//  core members aka us
+        Member demoMemberRBT = new Member();
+        demoMemberRBT.firstName = "Rebecca";
+        demoMemberRBT.lastName = "Bearden-Tellez";
+        demoMemberRBT.email = "rebecca.m.bearden@gmail.com";
+        demoMemberRBT.password = "password";
+        demoMemberRBT.streetAddress = "1600 Penn Ave";
+        demoMemberRBT.photoURL = "";
+        members.save(demoMemberRBT);
+
+        OrganizationMember newOrgMember = new OrganizationMember(techOrg, demoMemberRBT);
         organizationMembers.save(newOrgMember);
 
-        Post carltonPost = new Post();
-        carltonPost.title = "How to debate";
-        carltonPost.organization = demoOrg;
-        carltonPost.date = "10/28/2016 ~ 17:00";
-        carltonPost.body = "1. Research your subject 2. Create arguments for and against ...";
-        carltonPost.author = demoMember;
+        OrganizationMember qOneMember = new OrganizationMember(quakersOrg, demoMemberRBT);
+        organizationMembers.save(qOneMember);
 
-        Event carltonEvent = new Event();
-        carltonEvent.name = "Dance Lessons";
-        carltonEvent.location = "The W";
-        carltonEvent.organizer = demoMember;
-        carltonEvent.date = "11/10/2016 ~ 13:00";
-        carltonEvent.organization = demoOrg;
-        carltonEvent.information = "Ever wondered how I dance as well as I do? Well come to the W and learn!";
-        events.save(carltonEvent);
+        Member demoMemberDG = new Member();
+        demoMemberDG.firstName = "Donald";
+        demoMemberDG.lastName = "Gowens";
+        demoMemberDG.streetAddress = "382 Penn Ave";
+        demoMemberDG.email= "dgowens@gmail.com";
+        demoMemberDG.password= "candycorn";
+        demoMemberDG.photoURL= " ";
+        members.save(demoMemberDG);
 
-        Organization girlScoutOrg = new Organization();
-        girlScoutOrg.name ="Girl Scout Troop 14565";
-        organizations.save(girlScoutOrg);
+        OrganizationMember secondOrgMember = new OrganizationMember(techOrg, demoMemberDG);
+        organizationMembers.save(secondOrgMember);
 
-        Organization puzzleOrg = new Organization();
-        puzzleOrg.name = "Puzzle Group";
-        organizations.save(puzzleOrg);
+        OrganizationMember qThreeMember = new OrganizationMember(quakersOrg, demoMemberDG);
+        organizationMembers.save(qThreeMember);
 
-        Organization sportsOrg = new Organization();
-        sportsOrg.name= "Basketball Team";
-        organizations.save(sportsOrg);
+        Member demoMemberDE = new Member();
+        demoMemberDE.firstName = "Dan";
+        demoMemberDE.lastName = "Esrey";
+        demoMemberDE.streetAddress = "485 Penn Ave";
+        demoMemberDE.email= "desrey@gmail.com";
+        demoMemberDE.password= "97thpercentile";
+        demoMemberDE.photoURL= " ";
+        members.save(demoMemberDE);
 
-        Organization jugOrg = new Organization();
-        jugOrg.name = "Java Users Group Atlanta";
-        organizations.save(jugOrg);
+        OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
+        organizationMembers.save(thirdOrgMember);
 
-        Member wsMember = new Member();
-        wsMember.firstName = "Will";
-        wsMember.lastName = "Smith";
-        wsMember.streetAddress = "382 Penn Ave";
-        wsMember.email= "thefreshprince@gmail.com";
-        wsMember.password= "basketball";
-        members.save(wsMember);
+        OrganizationMember qTwoMember = new OrganizationMember(quakersOrg, demoMemberDE);
+        organizationMembers.save(qTwoMember);
 
-        OrganizationMember wsToSports = new OrganizationMember(sportsOrg, wsMember);
-        organizationMembers.save(wsToSports);
+// additional demo members
 
-        Event bbGame = new Event();
-        bbGame.name = "WildCats vs Panthers";
-        bbGame.date = "11/2/2016 ~ 19:00";
-        bbGame.location = "GSU";
-        bbGame.organization = sportsOrg;
-        bbGame.organizer = wsMember;
-        events.save(bbGame);
+        Member demoMemberHP = new Member();
+        demoMemberHP.firstName = "Harry";
+        demoMemberHP.lastName = "Potter";
+        demoMemberHP.streetAddress = "485 Hwy 12";
+        demoMemberHP.email= "hp@gmail.com";
+        demoMemberHP.password= "mischiefManaged";
+        demoMemberHP.photoURL= "http://vignette1.wikia.nocookie.net/harrypotter/images/b/b2/2001-Harry-Potter-and-the-Sorcerer-s-Stone-Promotional-Shoot-HQ-harry-potter-11097228-1600-1960.jpg/revision/latest/scale-to-width-down/163?cb=20141122213655";
+        members.save(demoMemberHP);
 
+        OrganizationMember hpTechMember = new OrganizationMember(techOrg, demoMemberHP);
+        organizationMembers.save(hpTechMember);
+
+        OrganizationMember qHpMember = new OrganizationMember(quakersOrg, demoMemberHP);
+        organizationMembers.save(qHpMember);
+
+        OrganizationMember swimmerHpMember = new OrganizationMember(swimmerOrg, demoMemberHP);
+        organizationMembers.save(swimmerHpMember);
+
+        Member demoMemberWS = new Member();
+        demoMemberWS.firstName = "Will";
+        demoMemberWS.lastName = "Smith";
+        demoMemberWS.streetAddress = "900 West Philborn Lane";
+        demoMemberWS.email= "wildwildwest@gmail.com";
+        demoMemberWS.password= "freshprince";
+        demoMemberWS.photoURL= "https://s-media-cache-ak0.pinimg.com/originals/c6/e8/f1/c6e8f16711706e5506e1a39c121e61ed.jpg";
+        members.save(demoMemberWS);
+
+        OrganizationMember wsTechMember = new OrganizationMember(techOrg, demoMemberWS);
+        organizationMembers.save(wsTechMember);
+
+        OrganizationMember wsBookMember = new OrganizationMember(bookOrg, demoMemberWS);
+        organizationMembers.save(wsBookMember);
+
+        Member demoMemberTH = new Member();
+        demoMemberTH.firstName = "Taraji P";
+        demoMemberTH.lastName = "Henson";
+        demoMemberTH.streetAddress = "900 West Philborn Lane";
+        demoMemberTH.email= "tph@gmail.com";
+        demoMemberTH.password= "cookie";
+        demoMemberTH.photoURL= "http://www.indiewire.com/wp-content/uploads/2015/06/taraji-p-henson-as-cookie-in-foxs-empire.-Henson-as-Cookie-Lyon-1.jpg";
+        members.save(demoMemberTH);
+
+        OrganizationMember tpTechMember = new OrganizationMember(techOrg, demoMemberTH);
+        organizationMembers.save(tpTechMember);
+
+        OrganizationMember tpChessMember = new OrganizationMember(chessOrg, demoMemberTH);
+        organizationMembers.save(tpChessMember);
+
+        Event liveToLead = new Event();
+        liveToLead.name = "Live2Lead";
+        liveToLead.location = "Atlanta Tech Village 3423 Piedmont Rd. NE Atlanta, Georgia 30305";
+        liveToLead.date= "11/5/2016 ~ 9:00";
+        liveToLead.information = "Live2Lead is a half-day leader development experience designed to equip you with new perspectives, practical tools and key takeaways. ";
+        liveToLead.organizer = demoMemberTH;
+        liveToLead.organization = techOrg;
+        events.save(liveToLead);
+
+
+        Event ironPints = new Event();
+        ironPints.name= "The Iron Yard Atlanta";
+        ironPints.location = "115 M.L.K. Jr Dr SW #400, Atlanta, GA 30303";
+        ironPints.date= "11/18/2016 ~ 16:00";
+        ironPints.information= "Community Iron Pints is the 3rd Friday of every month when we open up our campus to the public for a relaxed social gathering.";
+        ironPints.organization = techOrg;
+        ironPints.organizer = demoMemberDE;
+        events.save(ironPints);
+
+        Event tagEvent = new Event();
+        tagEvent.name= "Technology Association of Georgia: Moving and Modernizing Legacy Applications and Data to the Cloud";
+        tagEvent.date = "11/3/2016 ~ 18:00";
+        tagEvent.location = "1175 Peachtree Street NE, Suite 1400, Atlanta, GA 30309";
+        tagEvent.information= "Join TAG Cloud as we Dive into ways of Modernizing and Moving Legacy Applications to the Cloud.";
+        tagEvent.organization = techOrg;
+        tagEvent.organizer = demoMemberHP;
+        events.save(tagEvent);
+
+        Event garnishEvent = new Event();
+        garnishEvent.name = "HBS: Women’s SIG Wine and Food Tasting";
+        garnishEvent.date = "11/6/2016 ~ 16:00";
+        garnishEvent.location = "925 Garrett Street, Atlanta, GA 30316 United States";
+        garnishEvent.information = "Emily Golub, the founder of Garnish & Gather, will be hosting us for a food and wine tasting at Joseph & Co.  ";
+        garnishEvent.organizer = demoMemberRBT;
+        garnishEvent.organization = techOrg;
+        events.save(garnishEvent);
+
+        Event devFest = new Event();
+        devFest.name = "Google Developer DevFest";
+        devFest.date = "11/12/2016 ~ 10:00";
+        devFest.location = "675 Ponce de Leon Avenue NE, 2nd Floor, Atlanta, GA 30308 United States";
+        devFest.information= "Programming DevFest offers talks and code labs that are accessible to both new and seasoned developers.";
+        devFest.organizer= demoMemberWS;
+        devFest.organization= techOrg;
+        events.save(devFest);
+
+        Post networkingPost = new Post();
+        networkingPost.title = "Networking Tips";
+        networkingPost.date = "10/27/2016 ~ 13:00";
+        networkingPost.body= "1. Have an Intro\n 2. Research attendees\n 3. Strategically Place Yourself\n 4. Follow Up";
+        networkingPost.author = demoMemberDG;
+        networkingPost.organization= techOrg;
+        posts.save(networkingPost);
+
+        Post hackathonIdeas = new Post();
+        hackathonIdeas.title = "Hackathon Ideas?";
+        hackathonIdeas.date= "10/28/2016 ~ 15:45";
+        hackathonIdeas.body= "I am currently planning for a Hackathon, but am out of ideas for the event. Please email me at dev@gmail.com if you would like to throw some ideas out. Any input is appreciated!";
+        hackathonIdeas.author = demoMemberDE;
+        hackathonIdeas.organization = techOrg;
+        posts.save(hackathonIdeas);
+
+        Post slackChannel = new Post();
+        slackChannel.title = "New Slack Channel";
+        slackChannel.date= "10/28/2016 ~ 10:00";
+        slackChannel.body= "TechOrg is our new slack channel!";
+        slackChannel.author= demoMemberRBT;
+        slackChannel.organization = techOrg;
+        posts.save(slackChannel);
+//  posts/events for tech above
         
     }
 
@@ -228,28 +349,35 @@ public class CommunityJsonController {
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
         PostContainer postContainer = new PostContainer();
-        Iterable<Member> allMembers = members.findAll();
-        for (Member currentMember: allMembers) {
-            if (currentMember.getEmail().equals(author.email)) {
-                Iterable<Post> allPosts = posts.findByAuthor(currentMember);
-                List<Post> postList = new ArrayList<>();
-                for (Post currentPost : allPosts) {
-                    postList.add(currentPost);
-                    try {
-                        if (postList == null) {
-                            postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-                        } else {
-                            postContainer.setPostList(postList);
-                            System.out.println("post id = " + postList.indexOf(currentPost));
+        try {
+            Iterable<Member> allMembers = members.findAll();
+            for (Member currentMember : allMembers) {
+                if (currentMember.getEmail().equals(author.email)) {
+                    Iterable<Post> allPosts = posts.findByAuthor(currentMember);
+                    List<Post> postList = new ArrayList<>();
+                    for (Post currentPost : allPosts) {
+                        postList.add(currentPost);
+                        try {
+                            if (postList == null) {
+                                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+                            } else {
+                                postContainer.setPostList(postList);
+                                System.out.println("post id = " + postList.indexOf(currentPost));
+                            }
+                        } catch (Exception ex) {
+                            postContainer.setErrorMessage("An exception occurred creating a post list");
+                            ex.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        postContainer.setErrorMessage("An exception occurred creating a post list");
-                        ex.printStackTrace();
                     }
+                } else {
+                    postContainer.setErrorMessage("No Members to display");
                 }
             }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            postContainer.setErrorMessage("An exception occurred creating a post list");
+            ex.printStackTrace();
         }
-        System.out.println("after iterable");
         return postContainer;
     }
 
@@ -433,6 +561,8 @@ public class CommunityJsonController {
                                 eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
                             }
                         }
+                } else {
+                    eventContainer.setErrorMessage("No members events to display");
                 }
             }
         } catch (Exception ex) {
