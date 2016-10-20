@@ -263,7 +263,7 @@ public class CommunityJsonController {
         posts.save(qOnePost);
 
         Post qTwoPost = new Post();
-        qTwoPost.title= "Programs";
+        qTwoPost.title= "Programs?";
         qTwoPost.body= "Anyone have any thoughts about more outreach opportunities?";
         qTwoPost.date= "10/25/2016 ~ 10:00";
         qTwoPost.author= demoMemberHP;
@@ -277,7 +277,7 @@ public class CommunityJsonController {
         qThreePost.author= demoMemberHP;
         qThreePost.organization= quakersOrg;
         posts.save(qThreePost);
-        
+
     }
 
 
@@ -829,4 +829,7 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
+
+
+
 }
