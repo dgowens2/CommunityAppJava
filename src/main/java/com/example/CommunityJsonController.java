@@ -833,6 +833,47 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+    @RequestMapping (path= "/postsByAllMembersOrgs.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsForMemebersOrgs(HttpSession session){
+        PostContainer myResponse = new PostContainer();
+        Member member = (Member) session.getAttribute("member");
+        try {
+            ArrayList<Post> postsByOrgForAllMembers = new ArrayList<>();
+            ArrayList<OrganizationMember> orgMembers = organizationMembers.findByMemberId(member.getId());
+            if (orgMembers == null){
+                myResponse.setErrorMessage("This member has no organizations");
+            } else {
+                for (OrganizationMember currentOrgMember: orgMembers){
+                    postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization);
+                    myResponse.setPostList(postsByOrgForAllMembers);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting posts in all member's organizations");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
 
-
+    @RequestMapping (path= "/eventsByAllMembersOrgs.json", method = RequestMethod.POST)
+    public EventContainer getAllEventsForMemebersOrgs(HttpSession session){
+        EventContainer myResponse = new EventContainer();
+        Member member = (Member) session.getAttribute("member");
+        try {
+            ArrayList<Event> eventsByOrgForAllMembers = new ArrayList<>();
+            ArrayList<OrganizationMember> orgMembers = organizationMembers.findByMemberId(member.getId());
+            if (orgMembers == null){
+                myResponse.setErrorMessage("This member has no organizations.");
+            } else {
+                for (OrganizationMember currentOrgMember: orgMembers){
+                    eventsByOrgForAllMembers=  events.findByOrganization(currentOrgMember.organization);
+                    myResponse.setEventList(eventsByOrgForAllMembers);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting events in all member's organizations");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
 }
