@@ -229,7 +229,54 @@ public class CommunityJsonController {
 //  posts/events for tech above
 
         Event qOneEvent = new Event();
-//        qOneEvent.name
+        qOneEvent.name= "Free Breakfast";
+        qOneEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qOneEvent.information= "Free breakfast to the public";
+        qOneEvent.date = "11/6/2016 ~ 9:00";
+        qOneEvent.organization= quakersOrg;
+        qOneEvent.organizer= demoMemberHP;
+        events.save(qOneEvent);
+
+        Event qTwoEvent = new Event();
+        qTwoEvent.name= "Morning Worship";
+        qTwoEvent.date= "11/2/2016 ~ 8:30";
+        qTwoEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qTwoEvent.information= "Silent worship";
+        qTwoEvent.organizer= demoMemberHP;
+        qTwoEvent.organization= quakersOrg;
+        events.save(qTwoEvent);
+
+        Event qThreeEvent = new Event();
+        qThreeEvent.name= "Potluck";
+        qThreeEvent.date= "11/6/2016 ~ 11:30";
+        qThreeEvent.information= "Bring your favorite dish to our monthly potluck!";
+        qThreeEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qThreeEvent.organizer= demoMemberHP;
+        events.save(qThreeEvent);
+
+        Post qOnePost = new Post();
+        qOnePost.title= "Campfire";
+        qOnePost.body= "I had a nice campfire this evening and silent reflection. I highly recommend it. ";
+        qOnePost.date= "10/27/2016 ~ 21:00";
+        qOnePost.author= demoMemberHP;
+        qOnePost.organization= quakersOrg;
+        posts.save(qOnePost);
+
+        Post qTwoPost = new Post();
+        qTwoPost.title= "Programs?";
+        qTwoPost.body= "Anyone have any thoughts about more outreach opportunities?";
+        qTwoPost.date= "10/25/2016 ~ 10:00";
+        qTwoPost.author= demoMemberHP;
+        qTwoPost.organization= quakersOrg;
+        posts.save(qTwoPost);
+
+        Post qThreePost = new Post();
+        qThreePost.title= "Found Dog";
+        qThreePost.body= "I found a dog outside the church this morning. She looks like a pit mix with brown and white markings. No collar, but I will be checking at a vet to check for a microchip.";
+        qThreePost.date= "10/27/2016 ~ 15:00";
+        qThreePost.author= demoMemberHP;
+        qThreePost.organization= quakersOrg;
+        posts.save(qThreePost);
 
     }
 
@@ -781,6 +828,50 @@ public class CommunityJsonController {
             }
         } catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting events by organization");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    @RequestMapping (path= "/postsByAllMembersOrgs.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsForMemebersOrgs(HttpSession session){
+        PostContainer myResponse = new PostContainer();
+        Member member = (Member) session.getAttribute("member");
+        try {
+            ArrayList<Post> postsByOrgForAllMembers = new ArrayList<>();
+            ArrayList<OrganizationMember> orgMembers = organizationMembers.findByMemberId(member.getId());
+            if (orgMembers == null){
+                myResponse.setErrorMessage("This member has no organizations");
+            } else {
+                for (OrganizationMember currentOrgMember: orgMembers){
+                    postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization);
+                    myResponse.setPostList(postsByOrgForAllMembers);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting posts in all member's organizations");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    @RequestMapping (path= "/eventsByAllMembersOrgs.json", method = RequestMethod.POST)
+    public EventContainer getAllEventsForMemebersOrgs(HttpSession session){
+        EventContainer myResponse = new EventContainer();
+        Member member = (Member) session.getAttribute("member");
+        try {
+            ArrayList<Event> eventsByOrgForAllMembers = new ArrayList<>();
+            ArrayList<OrganizationMember> orgMembers = organizationMembers.findByMemberId(member.getId());
+            if (orgMembers == null){
+                myResponse.setErrorMessage("This member has no organizations.");
+            } else {
+                for (OrganizationMember currentOrgMember: orgMembers){
+                    eventsByOrgForAllMembers=  events.findByOrganization(currentOrgMember.organization);
+                    myResponse.setEventList(eventsByOrgForAllMembers);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting events in all member's organizations");
             ex.printStackTrace();
         }
         return myResponse;
