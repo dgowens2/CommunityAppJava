@@ -351,6 +351,8 @@ public class CommunityJsonController {
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
         PostContainer postContainer = new PostContainer();
+        System.out.println("Looking for posts from: " + author.firstName + " " + author.lastName);
+
         try {
             author = members.findFirstByEmail(author.email);
             Iterable<Post> allPosts = posts.findByAuthor(author);
@@ -538,6 +540,7 @@ public class CommunityJsonController {
     @RequestMapping(path = "/eventsListByMember.json", method = RequestMethod.POST)
     public EventContainer getAllEventsByAuthorWithEndpoint(@RequestBody Member organizer) {
         EventContainer eventContainer = new EventContainer();
+        System.out.println("Looking for events from: " + organizer.firstName + " " + organizer.lastName);
         try {
             organizer = members.findFirstByEmail(organizer.email);
             Iterable<Event> allEvents = events.findByOrganizer(organizer);
