@@ -756,16 +756,23 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
-    public ArrayList<OrganizationMember> refreshOrganizationMemberList() {
-        ArrayList<OrganizationMember> organizationMembersArrayList = new ArrayList<>();
-        Iterable<OrganizationMember> allOrganizationMembers = organizationMembers.findAll();
+    @RequestMapping (path= "/membersByOrg.json", method = RequestMethod.GET)
+    public MemberOrganizationContainer theMembers(HttpSession session, @RequestBody Organization organization){
+        MemberOrganizationContainer myResponse = new MemberOrganizationContainer();
+        ArrayList<Member> organizationMembersArrayList = new ArrayList<>();
+        ArrayList<OrganizationMember> allOrganizationMembers = organizationMembers.findMembersByOrganization(organization);
 
         for (OrganizationMember orgMem : allOrganizationMembers) {
-            organizationMembersArrayList.add(orgMem);
+            organizationMembersArrayList.add(orgMem.getMember());
+            int aomSize = allOrganizationMembers.size();
 
+            if(organizationMembersArrayList == null || aomSize == 0){
+                myResponse.setErrorMessage("List of members was null");
+            } else {
+                myResponse.setResponseMemberList(organizationMembersArrayList);
+            }
         }
-        return organizationMembersArrayList;
+        return myResponse;
     }
 
     @RequestMapping (path= "/memberProfile.json", method = RequestMethod.GET)
