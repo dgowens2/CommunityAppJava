@@ -69,7 +69,7 @@ public class CommunityJsonController {
         demoMemberRBT.email = "rebecca.m.bearden@gmail.com";
         demoMemberRBT.password = "password";
         demoMemberRBT.streetAddress = "1600 Penn Ave";
-        demoMemberRBT.photo_URL = "";
+        demoMemberRBT.photoURL = "";
         members.save(demoMemberRBT);
 
         OrganizationMember newOrgMember = new OrganizationMember(techOrg, demoMemberRBT);
@@ -84,7 +84,7 @@ public class CommunityJsonController {
         demoMemberDG.streetAddress = "382 Penn Ave";
         demoMemberDG.email= "dgowens@gmail.com";
         demoMemberDG.password= "candycorn";
-        demoMemberDG.photo_URL= " ";
+        demoMemberDG.photoURL= " ";
         members.save(demoMemberDG);
 
         OrganizationMember secondOrgMember = new OrganizationMember(techOrg, demoMemberDG);
@@ -99,7 +99,7 @@ public class CommunityJsonController {
         demoMemberDE.streetAddress = "485 Penn Ave";
         demoMemberDE.email= "desrey@gmail.com";
         demoMemberDE.password= "97thpercentile";
-        demoMemberDE.photo_URL= " ";
+        demoMemberDE.photoURL= " ";
         members.save(demoMemberDE);
 
         OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
@@ -116,7 +116,7 @@ public class CommunityJsonController {
         demoMemberHP.streetAddress = "485 Hwy 12";
         demoMemberHP.email= "hp@gmail.com";
         demoMemberHP.password= "mischiefManaged";
-        demoMemberHP.photo_URL= "http://vignette1.wikia.nocookie.net/harrypotter/images/b/b2/2001-Harry-Potter-and-the-Sorcerer-s-Stone-Promotional-Shoot-HQ-harry-potter-11097228-1600-1960.jpg/revision/latest/scale-to-width-down/163?cb=20141122213655";
+        demoMemberHP.photoURL= "http://vignette1.wikia.nocookie.net/harrypotter/images/b/b2/2001-Harry-Potter-and-the-Sorcerer-s-Stone-Promotional-Shoot-HQ-harry-potter-11097228-1600-1960.jpg/revision/latest/scale-to-width-down/163?cb=20141122213655";
         members.save(demoMemberHP);
 
         OrganizationMember hpTechMember = new OrganizationMember(techOrg, demoMemberHP);
@@ -134,7 +134,7 @@ public class CommunityJsonController {
         demoMemberWS.streetAddress = "900 West Philborn Lane";
         demoMemberWS.email= "wildwildwest@gmail.com";
         demoMemberWS.password= "freshprince";
-        demoMemberWS.photo_URL= "https://s-media-cache-ak0.pinimg.com/originals/c6/e8/f1/c6e8f16711706e5506e1a39c121e61ed.jpg";
+        demoMemberWS.photoURL= "https://s-media-cache-ak0.pinimg.com/originals/c6/e8/f1/c6e8f16711706e5506e1a39c121e61ed.jpg";
         members.save(demoMemberWS);
 
         OrganizationMember wsTechMember = new OrganizationMember(techOrg, demoMemberWS);
@@ -149,7 +149,7 @@ public class CommunityJsonController {
         demoMemberTH.streetAddress = "900 West Philborn Lane";
         demoMemberTH.email= "tph@gmail.com";
         demoMemberTH.password= "cookie";
-        demoMemberTH.photo_URL= "http://www.indiewire.com/wp-content/uploads/2015/06/taraji-p-henson-as-cookie-in-foxs-empire.-Henson-as-Cookie-Lyon-1.jpg";
+        demoMemberTH.photoURL= "http://www.indiewire.com/wp-content/uploads/2015/06/taraji-p-henson-as-cookie-in-foxs-empire.-Henson-as-Cookie-Lyon-1.jpg";
         members.save(demoMemberTH);
 
         OrganizationMember tpTechMember = new OrganizationMember(techOrg, demoMemberTH);
@@ -349,28 +349,35 @@ public class CommunityJsonController {
     @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
     public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member author) {
         PostContainer postContainer = new PostContainer();
-        Iterable<Member> allMembers = members.findAll();
-        for (Member currentMember: allMembers) {
-            if (currentMember.getEmail().equals(author.email)) {
-                Iterable<Post> allPosts = posts.findByAuthor(currentMember);
-                List<Post> postList = new ArrayList<>();
-                for (Post currentPost : allPosts) {
-                    postList.add(currentPost);
-                    try {
-                        if (postList == null) {
-                            postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-                        } else {
-                            postContainer.setPostList(postList);
-                            System.out.println("post id = " + postList.indexOf(currentPost));
+        try {
+            Iterable<Member> allMembers = members.findAll();
+            for (Member currentMember : allMembers) {
+                if (currentMember.getEmail().equals(author.email)) {
+                    Iterable<Post> allPosts = posts.findByAuthor(currentMember);
+                    List<Post> postList = new ArrayList<>();
+                    for (Post currentPost : allPosts) {
+                        postList.add(currentPost);
+                        try {
+                            if (postList == null) {
+                                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+                            } else {
+                                postContainer.setPostList(postList);
+                                System.out.println("post id = " + postList.indexOf(currentPost));
+                            }
+                        } catch (Exception ex) {
+                            postContainer.setErrorMessage("An exception occurred creating a post list");
+                            ex.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        postContainer.setErrorMessage("An exception occurred creating a post list");
-                        ex.printStackTrace();
                     }
+                } else {
+                    postContainer.setErrorMessage("No Members to display");
                 }
             }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            postContainer.setErrorMessage("An exception occurred creating a post list");
+            ex.printStackTrace();
         }
-        System.out.println("after iterable");
         return postContainer;
     }
 
@@ -554,6 +561,8 @@ public class CommunityJsonController {
                                 eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
                             }
                         }
+                } else {
+                    eventContainer.setErrorMessage("No members events to display");
                 }
             }
         } catch (Exception ex) {
