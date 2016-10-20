@@ -230,7 +230,36 @@ public class CommunityJsonController {
 //  posts/events for tech above
 
         Event qOneEvent = new Event();
-//        qOneEvent.name
+        qOneEvent.name= "Free Breakfast";
+        qOneEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qOneEvent.information= "Free breakfast to the public";
+        qOneEvent.date = "11/6/2016 ~ 9:00";
+        qOneEvent.organization= quakersOrg;
+        qOneEvent.organizer= demoMemberHP;
+        events.save(qOneEvent);
+
+        Event qTwoEvent = new Event();
+        qTwoEvent.name= "Morning Worship";
+        qTwoEvent.date= "11/2/2016 ~ 8:30";
+        qTwoEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qTwoEvent.information= "Silent worship";
+        qTwoEvent.organizer= demoMemberHP;
+        qTwoEvent.organization= quakersOrg;
+        events.save(qTwoEvent);
+
+        Event qThreeEvent = new Event();
+        qThreeEvent.name= "Potluck";
+        qThreeEvent.date= "11/6/2016 ~ 11:30";
+        qThreeEvent.information= "Bring your favorite dish to our monthly potluck!";
+        qThreeEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qThreeEvent.organizer= demoMemberHP;
+        events.save(qThreeEvent);
+
+        Post qOnePost = new Post();
+        Post qTwoPost = new Post();
+        Post qThreePost = new Post();
+        Post qFourPost = new Post();
+
 
     }
 
