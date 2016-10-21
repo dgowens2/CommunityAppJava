@@ -1413,7 +1413,7 @@ public class CommunityAppApplicationTests {
 
 			Long something = postsAcrossOrgs.spliterator().getExactSizeIfKnown();
 
-			assertTrue(something == 12);
+			assertTrue(something == 4);
 
 		} finally {
 			posts.delete(onePost);
@@ -1459,7 +1459,7 @@ public class CommunityAppApplicationTests {
 			members.save(testMember);
 
 			onePost.title = "Live Code Session";
-			onePost.date = "12/07/2016";
+			onePost.date = "1994-11-05T08:15:30-05:00";
 			onePost.body ="Come sail away with me";
 			onePost.author = testMember;
 			onePost.organization = secondOrg;
@@ -1473,14 +1473,14 @@ public class CommunityAppApplicationTests {
 			members.save(secondTestMember);
 
 			twoPost.author = testMember;
-			twoPost.date = "02/20/2018";
+			twoPost.date = "2016-11-05T09:25:30-05:00";
 			twoPost.title = "Brice's Adventure";
 			twoPost.body="Car accidents hurt";
 			twoPost.organization = secondOrg;
 			posts.save(twoPost);
 
 			threePost.author = secondTestMember;
-			threePost.date = "04/05/2018";
+			threePost.date = "2018-01-03T09:25:30-05:00";
 			threePost.title = "Solve the puzzle";
 			threePost.body="Naming conventions are sometimes hard";
 			threePost.organization = secondOrg;
@@ -1490,14 +1490,14 @@ public class CommunityAppApplicationTests {
 			sameDateDifferentTime.author= testMember;
 			sameDateDifferentTime.organization= secondOrg;
 			sameDateDifferentTime.body= "so we meet again";
-			sameDateDifferentTime.date= "04/05/2018";
+			sameDateDifferentTime.date= "2018-01-03T06:20:30-03:00";
 			posts.save(sameDateDifferentTime);
 
 			sameMonthDifferentDate.title= "Fizz";
 			sameMonthDifferentDate.body= "Buzz";
 			sameMonthDifferentDate.organization= secondOrg;
 			sameMonthDifferentDate.author= testMember;
-			sameMonthDifferentDate.date= "02/01/1990";
+			sameMonthDifferentDate.date= "2016-03-03T06:20:30-07:00";
 			posts.save(sameMonthDifferentDate);
 
 
@@ -1527,6 +1527,84 @@ public class CommunityAppApplicationTests {
 			members.delete(testMember);
 			members.delete(secondTestMember);
 		}
+	}
+
+
+	@Test
+	public void testFindMembersByOrg(){
+		Member memberOne = new Member();
+		Member memberTwo = new Member();
+		Member memberThree = new Member();
+
+		Organization oneOrg = new Organization();
+		Organization twoOrg = new Organization();
+
+		OrganizationMember orgMemberOne = new OrganizationMember();
+		OrganizationMember orgMemberTwo = new OrganizationMember();
+		OrganizationMember orgMemberThree = new OrganizationMember();
+
+		try{
+
+			memberOne.firstName= "Frank";
+			memberOne.lastName= "Nike";
+			memberOne.streetAddress= "192 Ocean Way....";
+			memberOne.photoURL= "google.com";
+			memberOne.email= "nikes@frank.com";
+			memberOne.password= "rings";
+			members.save(memberOne);
+
+			memberTwo.firstName= "Alfred";
+			memberTwo.lastName= "Enoch";
+			memberTwo.email= "ae@law.com";
+			memberTwo.photoURL= "my photo";
+			memberTwo.streetAddress=" 900 Mur way ";
+			memberTwo.password= "password";
+			members.save(memberTwo);
+
+			memberThree.firstName= "Roman";
+			memberThree.lastName= "Rev";
+			memberThree.photoURL= "this is a photo url";
+			memberThree.streetAddress= " 85 Letty Way ";
+			memberThree.password= "pass";
+			memberThree.email= "romanr@gmail.com";
+			members.save(memberThree);
+
+			oneOrg.name= "NaanStop";
+			organizations.save(oneOrg);
+
+			twoOrg.name= "Greene's";
+			organizations.save(twoOrg);
+
+			orgMemberOne= new OrganizationMember(oneOrg, memberOne);
+			organizationmembers.save(orgMemberOne);
+
+			orgMemberTwo= new OrganizationMember(oneOrg, memberTwo);
+			organizationmembers.save(orgMemberTwo);
+
+			orgMemberThree = new OrganizationMember(oneOrg, memberThree);
+			organizationmembers.save(orgMemberThree);
+
+			ArrayList<OrganizationMember> listOMembers = new ArrayList<>();
+			listOMembers = organizationmembers.findMembersByOrganization(twoOrg);
+			assertEquals (listOMembers.size(), 0);
+
+			ArrayList<OrganizationMember> listOfRealMembers = new ArrayList<>();
+			listOfRealMembers = organizationmembers.findMembersByOrganization(oneOrg);
+			assertNotNull (listOfRealMembers);
+
+
+		} finally {
+			organizationmembers.delete(orgMemberOne);
+			organizationmembers.delete(orgMemberTwo);
+			organizationmembers.delete(orgMemberThree);
+			organizations.delete(oneOrg);
+			organizations.delete(twoOrg);
+			members.delete(memberOne);
+			members.delete(memberTwo);
+			members.delete(memberThree);
+
+		}
+
 	}
 
 }
