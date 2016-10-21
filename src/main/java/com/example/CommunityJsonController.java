@@ -96,7 +96,7 @@ public class CommunityJsonController {
         demoMemberDE.firstName = "Dan";
         demoMemberDE.lastName = "Esrey";
         demoMemberDE.streetAddress = "485 Penn Ave";
-        demoMemberDE.email= "desrey@gmail.com";
+        demoMemberDE.email= "dan.esrey@gmail.com";
         demoMemberDE.password= "97thpercentile";
         demoMemberDE.photoURL= "https://photos.google.com/photo/AF1QipNNSW0zlP3-p2FxM1mM_S6ZI-erpp0s2inMV8KG";
         members.save(demoMemberDE);
