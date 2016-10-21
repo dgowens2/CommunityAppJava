@@ -68,7 +68,7 @@ public class CommunityJsonController {
         demoMemberRBT.email = "rebecca.m.bearden@gmail.com";
         demoMemberRBT.password = "password";
         demoMemberRBT.streetAddress = "1600 Penn Ave";
-        demoMemberRBT.photoURL = "";
+        demoMemberRBT.photoURL = "https://photos.google.com/photo/AF1QipN-SoxgfcQVsTxzUIbJJZDBbpFmY2ESESORBAcM";
         members.save(demoMemberRBT);
 
         OrganizationMember newOrgMember = new OrganizationMember(techOrg, demoMemberRBT);
@@ -83,7 +83,7 @@ public class CommunityJsonController {
         demoMemberDG.streetAddress = "382 Penn Ave";
         demoMemberDG.email= "dgowens@gmail.com";
         demoMemberDG.password= "candycorn";
-        demoMemberDG.photoURL= " ";
+        demoMemberDG.photoURL= "https://photos.google.com/photo/AF1QipNTiTB5YvyJAku702jVIhl_z-7TOPC1-hIb2yxr";
         members.save(demoMemberDG);
 
         OrganizationMember secondOrgMember = new OrganizationMember(techOrg, demoMemberDG);
@@ -98,7 +98,7 @@ public class CommunityJsonController {
         demoMemberDE.streetAddress = "485 Penn Ave";
         demoMemberDE.email= "desrey@gmail.com";
         demoMemberDE.password= "97thpercentile";
-        demoMemberDE.photoURL= " ";
+        demoMemberDE.photoURL= "https://photos.google.com/photo/AF1QipNNSW0zlP3-p2FxM1mM_S6ZI-erpp0s2inMV8KG";
         members.save(demoMemberDE);
 
         OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
@@ -345,6 +345,28 @@ public class CommunityJsonController {
             }
         }catch (Exception ex) {
             myResponse.setErrorMessage("An exception occurred while registering");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
+    @RequestMapping(path = "/editMember.json", method = RequestMethod.POST)
+    public MemberResponseContainer editMember(HttpSession session, @RequestBody Member chosenMember) {
+        Member member = (Member) session.getAttribute("member");
+        MemberResponseContainer myResponse = new MemberResponseContainer();
+        chosenMember = new Member(chosenMember.firstName, chosenMember.lastName, chosenMember.email, chosenMember.password, chosenMember.streetAddress, chosenMember.photoURL);
+        try {
+            if (member.id == (chosenMember.id)) {
+                members.save(chosenMember);
+                System.out.println("Saving edited member");
+                myResponse.responseMember= members.findFirstByEmail(chosenMember.email);
+                System.out.println("Returning updated member");
+            } else {
+                myResponse.errorMessage = "Member can't edit an acount that isn't theirs. ";
+            }
+        } catch (Exception ex){
+            myResponse.errorMessage = "An Error occurred while editing the member";
             ex.printStackTrace();
         }
         return myResponse;
