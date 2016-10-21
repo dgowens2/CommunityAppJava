@@ -1343,14 +1343,21 @@ public class CommunityAppApplicationTests {
 	public void testViewPostsAcrossOrgs() {
 		Organization firstTestOrg = new Organization();
 		Organization secondTestOrg = new Organization();
+		Organization thirdTestOrg = new Organization();
 		Member firstTestMember = new Member();
 		Member secondTestMember = new Member();
-		OrganizationMember firstorgMember = new OrganizationMember();
-		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember firstOrgFirstMember = new OrganizationMember();
+		OrganizationMember secondOrgFirstMember = new OrganizationMember();
+		OrganizationMember secondOrgSecondMember = new OrganizationMember();
+		OrganizationMember thirdOrgSecondMember = new OrganizationMember();
 		Post onePost = new Post();
 		Post twoPost = new Post();
 		Post threePost = new Post();
 		Post fourPost = new Post();
+		Post fivePost = new Post();
+		Post sixPost = new Post();
+		Post sevenPost = new Post();
+		Post eightPost = new Post();
 
 		try {
 			firstTestMember.firstName = "Romeo";
@@ -1375,11 +1382,20 @@ public class CommunityAppApplicationTests {
 			secondTestOrg.name = "The Capulets";
 			organizations.save(secondTestOrg);
 
-			firstorgMember = new OrganizationMember(firstTestOrg, firstTestMember);
-			organizationmembers.save(firstorgMember);
+			thirdTestOrg.name = "The Shakespeares";
+			organizations.save(thirdTestOrg);
 
-			secondOrgMember = new OrganizationMember(secondTestOrg, secondTestMember);
-			organizationmembers.save(secondOrgMember);
+			firstOrgFirstMember = new OrganizationMember(firstTestOrg, firstTestMember);
+			organizationmembers.save(firstOrgFirstMember);
+
+			secondOrgFirstMember = new OrganizationMember(secondTestOrg, firstTestMember);
+			organizationmembers.save(secondOrgFirstMember);
+
+			secondOrgSecondMember = new OrganizationMember(secondTestOrg, secondTestMember);
+			organizationmembers.save(secondOrgSecondMember);
+
+			thirdOrgSecondMember = new OrganizationMember(thirdTestOrg, secondTestMember);
+			organizationmembers.save(thirdOrgSecondMember);
 
 			onePost.date = "today";
 			onePost.title = "Title 1";
@@ -1398,32 +1414,74 @@ public class CommunityAppApplicationTests {
 			threePost.date = "today";
 			threePost.title = "Title 3";
 			threePost.body = "This is my third body";
-			threePost.author = secondTestMember;
+			threePost.author = firstTestMember;
 			threePost.organization = secondTestOrg;
 			posts.save(threePost);
 
 			fourPost.date = "today";
 			fourPost.title = "Title 4";
 			fourPost.body = "This is my fourth body";
-			fourPost.author = secondTestMember;
+			fourPost.author = firstTestMember;
 			fourPost.organization = secondTestOrg;
 			posts.save(fourPost);
 
-			Iterable<Post> postsAcrossOrgs = posts.findAll();
 
-			Long something = postsAcrossOrgs.spliterator().getExactSizeIfKnown();
+			fivePost.date = "today";
+			fivePost.title = "Title 5";
+			fivePost.body = "This is my fifth body";
+			fivePost.author = secondTestMember;
+			fivePost.organization = secondTestOrg;
+			posts.save(fivePost);
 
-			assertTrue(something == 12);
+			sixPost.date = "today";
+			sixPost.title = "Title 6";
+			sixPost.body = "This is my sixth body";
+			sixPost.author = secondTestMember;
+			sixPost.organization = secondTestOrg;
+			posts.save(sixPost);
+
+			sevenPost.date = "today";
+			sevenPost.title = "Title 7";
+			sevenPost.body = "This is my seventh body";
+			sevenPost.author = secondTestMember;
+			sevenPost.organization = thirdTestOrg;
+			posts.save(sevenPost);
+
+			eightPost.date = "today";
+			eightPost.title = "Title 8";
+			eightPost.body = "This is my eighth body";
+			eightPost.author = secondTestMember;
+			eightPost.organization = thirdTestOrg;
+			posts.save(eightPost);
+
+			Iterable<Post> firstMemberPostsAcrossOrgs = posts.findByAuthor(firstTestMember);
+
+			Iterable<Post> secondMemberPostsAcrossOrgs = posts.findByAuthor(secondTestMember);
+
+			Long firstMemberAcrossOrgs = firstMemberPostsAcrossOrgs.spliterator().getExactSizeIfKnown();
+
+			Long secondMemberAcrossOrgs = secondMemberPostsAcrossOrgs.spliterator().getExactSizeIfKnown();
+
+			assertTrue(firstMemberAcrossOrgs == 4);
+
+			assertTrue(secondMemberAcrossOrgs == 4);
 
 		} finally {
 			posts.delete(onePost);
 			posts.delete(twoPost);
 			posts.delete(threePost);
 			posts.delete(fourPost);
-			organizationmembers.delete(firstorgMember);
-			organizationmembers.delete(secondOrgMember);
+			posts.delete(fivePost);
+			posts.delete(sixPost);
+			posts.delete(sevenPost);
+			posts.delete(eightPost);
+			organizationmembers.delete(firstOrgFirstMember);
+			organizationmembers.delete(secondOrgFirstMember);
+			organizationmembers.delete(secondOrgSecondMember);
+			organizationmembers.delete(thirdOrgSecondMember);
 			organizations.delete(firstTestOrg);
 			organizations.delete(secondTestOrg);
+			organizations.delete(thirdTestOrg);
 			members.delete(firstTestMember);
 			members.delete(secondTestMember);
 		}
@@ -1528,6 +1586,8 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
+
+
 
 }
 
