@@ -332,11 +332,18 @@ public class CommunityAppApplicationTests {
 
 	@Test
 	public void testCreatePost() {
+		Organization myOrg = new Organization();
 		Post testPost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
 		ArrayList<Post> dbPosts = new ArrayList<Post>();
+		ArrayList<Post> dbPostsPartTwo = new ArrayList<Post>();
 		Member tester = new Member();
 
 		try {
+			myOrg.name= "Trick or Treat";
+			organizations.save(myOrg);
+
 			tester.firstName = "Tupelo";
 			tester.lastName = "MS";
 			tester.email = "twf@gmail.com";
@@ -344,17 +351,41 @@ public class CommunityAppApplicationTests {
 			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(tester);
 
-			testPost.date = "2/3/14 ~ 2:10 AM";
+			testPost.date = "2014-02-03T02:13:12Z";
 			testPost.title = "Goodies";
 			testPost.body = "Not my goodies";
 			testPost.author = tester;
+			testPost.organization= myOrg;
 			posts.save(testPost);
-			dbPosts = posts.findByAuthor(tester);
 
+			twoPost.date= "2011-05-03T04:23:12Z";
+			twoPost.title= "Dear Diary";
+			twoPost.body= "Today was a long day";
+			twoPost.author= tester;
+			twoPost.organization= myOrg;
+			posts.save(twoPost);
+
+			threePost.date= "2011-05-03T01:23:12Z";
+			threePost.title= "Dear Diary";
+			threePost.body= "Today was a long day";
+			threePost.author= tester;
+			threePost.organization= myOrg;
+			posts.save(threePost);
+
+
+			dbPosts = posts.findByAuthor(tester);
 			assertNotNull(dbPosts);
+
+			dbPostsPartTwo = posts.findByAuthorOrderByDateAsc(tester);
+			for (Post currentPost: dbPostsPartTwo){
+				System.out.println(currentPost.getDate());
+			}
 
 		} finally {
 			posts.delete(testPost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			organizations.delete(myOrg);
 			members.delete(tester);
 
 		}
@@ -938,6 +969,8 @@ public class CommunityAppApplicationTests {
 		Event secondTestEvent = new Event();
 		ArrayList<Event> dbEvents = new ArrayList<>();
 		ArrayList<Event> dbEventsNone = new ArrayList<>();
+		ArrayList<Event> dbEventsOrdered = new ArrayList<>();
+
 
 		try {
 			testMember.firstName = "Hirum";
@@ -957,14 +990,14 @@ public class CommunityAppApplicationTests {
 
 			testEvent.organizer = secondTestMember;
 
-			testEvent.date ="9/9/2017 ~ 15:30";
+			testEvent.date ="2017-09-09T16:15:12Z";
 			testEvent.name = "Charity Rides for children";
 			testEvent.information= "Two day for children";
 			testEvent.location ="Dragon Tail";
 			events.save(testEvent);
 
 			secondTestEvent.organizer = secondTestMember;
-			secondTestEvent.date ="5/24/2017 ~ 13:00";
+			secondTestEvent.date ="2016-05-24T14:13:12Z";
 			secondTestEvent.name = "County Fair at the Square";
 			secondTestEvent.information= "Fun for the whole family";
 			secondTestEvent.location ="Charming Square";
@@ -975,6 +1008,12 @@ public class CommunityAppApplicationTests {
 
 			dbEvents = events.findByOrganizer(secondTestMember);
 			assertEquals(2, dbEvents.size());
+
+			dbEventsOrdered= events.findByOrganizerOrderByDateAsc(secondTestMember);
+			for (Event currentEvent: dbEventsOrdered){
+				System.out.println(currentEvent.getDate());
+			}
+
 
 
 		} finally {
