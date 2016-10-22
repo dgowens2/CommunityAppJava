@@ -812,7 +812,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    postsByOrgForAllMembers = posts.findByOrganizationOrderByDateAsc(currentOrgMember.organization); //changing this to be ordered...
+                    postsByOrgForAllMembers.addAll(posts.findByOrganizationOrderByDateAsc(currentOrgMember.organization)); //changing this to be ordered...
                     myResponse.setPostList(postsByOrgForAllMembers);
                 }
             }
@@ -834,7 +834,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations.");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    eventsByOrgForAllMembers=  events.findByOrganizationOrderByDateAsc(currentOrgMember.organization); //changing this to be ordered...
+                    eventsByOrgForAllMembers.addAll(events.findByOrganizationOrderByDateAsc(currentOrgMember.organization)); //changing this to be ordered...
                     myResponse.setEventList(eventsByOrgForAllMembers);
                 }
             }
