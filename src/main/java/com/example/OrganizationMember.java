@@ -20,7 +20,6 @@ public class OrganizationMember {
     }
 
     public OrganizationMember(Organization organization, Member member) {
-//        this.id = id;
         this.organization = organization;
         this.member = member;
     }

@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -1428,10 +1429,6 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
-	
-	public void testMembersByOrg(){
-
-	}
 
 	@Test
 	public void testPostsByAllMembersOrgsOrdered() {
@@ -1459,7 +1456,7 @@ public class CommunityAppApplicationTests {
 			members.save(testMember);
 
 			onePost.title = "Live Code Session";
-			onePost.date = "1994-11-05T08:15:30-05:00";
+			onePost.date = "1994-10-22T14:23:12Z";
 			onePost.body ="Come sail away with me";
 			onePost.author = testMember;
 			onePost.organization = secondOrg;
@@ -1473,14 +1470,14 @@ public class CommunityAppApplicationTests {
 			members.save(secondTestMember);
 
 			twoPost.author = testMember;
-			twoPost.date = "2016-11-05T09:25:30-05:00";
+			twoPost.date = "2016-10-22T12:23:12Z";
 			twoPost.title = "Brice's Adventure";
 			twoPost.body="Car accidents hurt";
 			twoPost.organization = secondOrg;
 			posts.save(twoPost);
 
 			threePost.author = secondTestMember;
-			threePost.date = "2018-01-03T09:25:30-05:00";
+			threePost.date = "2018-03-01T03:45:12Z";
 			threePost.title = "Solve the puzzle";
 			threePost.body="Naming conventions are sometimes hard";
 			threePost.organization = secondOrg;
@@ -1490,14 +1487,14 @@ public class CommunityAppApplicationTests {
 			sameDateDifferentTime.author= testMember;
 			sameDateDifferentTime.organization= secondOrg;
 			sameDateDifferentTime.body= "so we meet again";
-			sameDateDifferentTime.date= "2018-01-03T06:20:30-03:00";
+			sameDateDifferentTime.date= "2016-05-25T21:55:12Z";
 			posts.save(sameDateDifferentTime);
 
 			sameMonthDifferentDate.title= "Fizz";
 			sameMonthDifferentDate.body= "Buzz";
 			sameMonthDifferentDate.organization= secondOrg;
 			sameMonthDifferentDate.author= testMember;
-			sameMonthDifferentDate.date= "2016-03-03T06:20:30-07:00";
+			sameMonthDifferentDate.date= "2016-01-02T03:45:12Z";
 			posts.save(sameMonthDifferentDate);
 
 
@@ -1509,7 +1506,7 @@ public class CommunityAppApplicationTests {
 
 
 			ArrayList<Post> orgPosts= posts.findByOrganizationOrderByDateAsc(secondOrg);
-//no assert here b/c i wanted to test myself first - for this to work we need to move to iso....on java side
+//no assert here b/c I'm not sure what to assert...
 			for (Post currentPost: orgPosts) {
 				System.out.println(currentPost.getDate());
 			}
@@ -1529,6 +1526,113 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testEventsByAllMembersOrgsOrdered() {
+		Organization secondOrg = new Organization();
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+		Event oneEvent = new Event();
+		Event twoEvent= new Event();
+		Event threeEvent = new Event();
+		Event sameDateDifferentTime = new Event();
+		Event sameMonthDifferentDate = new Event();
+
+		try{
+			secondOrg.name= "Familiar";
+			organizations.save(secondOrg);
+
+			testMember.firstName = "Jessica";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "roads@yahoo.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			secondTestMember.firstName = "Cherry";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "jaxa@yahoo.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			oneEvent.date = "2016-07-13T05:55:12Z";
+			oneEvent.name = "Shop til you drop";
+			oneEvent.location = "Game Show Studio";
+			oneEvent.information = "Play the game!";
+			oneEvent.organizer= testMember;
+			oneEvent.organization = secondOrg;
+			events.save(oneEvent);
+
+
+//			oneEvent.name= "Shop til you drop";
+//			oneEvent.date= "2016-07-13T05:55:12Z";
+//			oneEvent.location= "Game Show Studio";
+//			oneEvent.information= "Play the game! ";
+//			oneEvent.organizer= testMember;
+//			oneEvent.organization= secondOrg;
+//			events.save(oneEvent);
+
+			twoEvent.name= "Wheel of Fortune";
+			twoEvent.date= "1990-01-25T09:08:12Z";
+			twoEvent.location= "A different Studio";
+			twoEvent.information= "Spin the wheel and guess the names";
+			twoEvent.organizer= testMember;
+			twoEvent.organization= secondOrg;
+			events.save(twoEvent);
+
+			threeEvent.name= "Press your Luck";
+			threeEvent.date= "2017-01-25T21:55:12Z";
+			threeEvent.location= "Studio B";
+			threeEvent.information= "Big Money no whammies!";
+			threeEvent.organizer= testMember;
+			threeEvent.organization= secondOrg;
+			events.save(threeEvent);
+
+			sameDateDifferentTime.name= "NewlyWed Game";
+			sameDateDifferentTime.date= "2017-01-25T10:30:12Z";
+			sameDateDifferentTime.location= "Studio H";
+			sameDateDifferentTime.information= "See how well you know your spouse";
+			sameDateDifferentTime.organizer= testMember;
+			sameDateDifferentTime.organization= secondOrg;
+			events.save(sameDateDifferentTime);
+
+			sameMonthDifferentDate.name= "Family Feud";
+			sameMonthDifferentDate.date= "2017-01-01T12:55:12Z";
+			sameMonthDifferentDate.location= "Studio ATL";
+			sameMonthDifferentDate.information= "Guess things in categories with your family";
+			sameMonthDifferentDate.organizer= secondTestMember;
+			sameMonthDifferentDate.organization= secondOrg;
+			events.save(sameMonthDifferentDate);
+
+			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+			organizationmembers.save(secondOrgMemberTest);
+
+			ArrayList<Event> orgEvents= events.findByOrganizationOrderByDateAsc(secondOrg);
+//no assert here b/c I'm not sure what to assert...
+			for (Event currentEvent: orgEvents) {
+				System.out.println(currentEvent.getDate());
+			}
+
+		}finally {
+			events.delete(oneEvent);
+			events.delete(twoEvent);
+			events.delete(threeEvent);
+			events.delete(sameDateDifferentTime);
+			events.delete(sameMonthDifferentDate);
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(secondOrgMemberTest);
+			organizations.delete(secondOrg);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
 
 	@Test
 	public void testFindMembersByOrg(){
@@ -1592,7 +1696,6 @@ public class CommunityAppApplicationTests {
 			listOfRealMembers = organizationmembers.findMembersByOrganization(oneOrg);
 			assertNotNull (listOfRealMembers);
 
-
 		} finally {
 			organizationmembers.delete(orgMemberOne);
 			organizationmembers.delete(orgMemberTwo);
@@ -1607,5 +1710,39 @@ public class CommunityAppApplicationTests {
 
 	}
 
+	@Test
+	public void testEditMemberProfile(){
+		Member thisMember = new Member();
+		Member dbMember = new Member();
+		Member anotherDbMember = new Member();
+
+		try{
+			thisMember.firstName= "Morty";
+			thisMember.lastName= "Miguel";
+			thisMember.streetAddress= "";
+			thisMember.email= "mort@gmail.com";
+			thisMember.password= "mortality";
+			thisMember.photoURL= " default";
+			members.save(thisMember);
+
+
+			dbMember= members.findFirstByEmail(thisMember.getEmail());
+			assertEquals(dbMember.firstName, "Morty");
+
+			dbMember.password= "ichangeditwoooo";
+			members.save(dbMember);
+
+			anotherDbMember= members.findFirstByEmail("mort@gmail.com");
+
+			assertEquals(anotherDbMember.id, dbMember.id, thisMember.id);
+
+		} finally {
+			members.delete(thisMember);
+
+		}
+
+
+
+	}
 }
 
