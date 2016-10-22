@@ -38,39 +38,245 @@ public class CommunityJsonController {
     @Autowired
     InvitationRepository invitations;
 
-    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.POST)
-    public void adminUser(HttpSession session) throws Exception {
-        Member demoMember = new Member();
+    @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
+    public void demoData(HttpSession session) throws Exception {
 
-        demoMember.firstName = "Carlton";
-        demoMember.lastName = "Banks";
-        demoMember.email = "belair@gmail.com";
-        demoMember.password = "mypassword";
-        demoMember.streetAddress = "382 Penn Ave ";
-        members.save(demoMember);
+//  main demo orgs
+        Organization techOrg = new Organization();
+        techOrg.name= "All Things Tech";
+        organizations.save(techOrg);
 
-        Organization demoOrg = new Organization();
-        demoOrg.name= "Debate Team";
-        organizations.save(demoOrg);
+        Organization quakersOrg = new Organization();
+        quakersOrg.name ="Atlanta Friends Meeting";
+        organizations.save(quakersOrg);
+//  additional orgs for demo
+        Organization swimmerOrg = new Organization();
+        swimmerOrg.name= "Atlanta Swim Team";
+        organizations.save(swimmerOrg);
 
-        OrganizationMember newOrgMember = new OrganizationMember(demoOrg, demoMember);
+        Organization bookOrg = new Organization();
+        bookOrg.name= "Decatur Book Club";
+        organizations.save(bookOrg);
+
+        Organization chessOrg = new Organization();
+        chessOrg.name= "Chess Club";
+        organizations.save(chessOrg);
+//  core members aka us
+        Member demoMemberRBT = new Member();
+        demoMemberRBT.firstName = "Rebecca";
+        demoMemberRBT.lastName = "Bearden-Tellez";
+        demoMemberRBT.email = "rebecca.m.bearden@gmail.com";
+        demoMemberRBT.password = "password";
+        demoMemberRBT.streetAddress = "1600 Penn Ave";
+        demoMemberRBT.photoURL = "";
+        members.save(demoMemberRBT);
+
+        OrganizationMember newOrgMember = new OrganizationMember(techOrg, demoMemberRBT);
         organizationMembers.save(newOrgMember);
 
-        Post carltonPost = new Post();
-        carltonPost.title = "How to debate";
-        carltonPost.organization = demoOrg;
-        carltonPost.date = "10/28/2016 ~ 17:00";
-        carltonPost.body = "1. Research your subject 2. Create arguments for and against ...";
-        carltonPost.author = demoMember;
+        OrganizationMember qOneMember = new OrganizationMember(quakersOrg, demoMemberRBT);
+        organizationMembers.save(qOneMember);
 
-        Event carltonEvent = new Event();
-        carltonEvent.name = "Dance Lessons";
-        carltonEvent.location = "The W";
-        carltonEvent.organizer = demoMember;
-        carltonEvent.date = "11/10/2016 ~ 13:00";
-        carltonEvent.organization = demoOrg;
-        carltonEvent.information = "Ever wondered how I dance as well as I do? Well come to the W and learn!";
-        events.save(carltonEvent);
+        Member demoMemberDG = new Member();
+        demoMemberDG.firstName = "Donald";
+        demoMemberDG.lastName = "Gowens";
+        demoMemberDG.streetAddress = "382 Penn Ave";
+        demoMemberDG.email= "dgowens@gmail.com";
+        demoMemberDG.password= "candycorn";
+        demoMemberDG.photoURL= " ";
+        members.save(demoMemberDG);
+
+        OrganizationMember secondOrgMember = new OrganizationMember(techOrg, demoMemberDG);
+        organizationMembers.save(secondOrgMember);
+
+        OrganizationMember qThreeMember = new OrganizationMember(quakersOrg, demoMemberDG);
+        organizationMembers.save(qThreeMember);
+
+        Member demoMemberDE = new Member();
+        demoMemberDE.firstName = "Dan";
+        demoMemberDE.lastName = "Esrey";
+        demoMemberDE.streetAddress = "485 Penn Ave";
+        demoMemberDE.email= "desrey@gmail.com";
+        demoMemberDE.password= "97thpercentile";
+        demoMemberDE.photoURL= " ";
+        members.save(demoMemberDE);
+
+        OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
+        organizationMembers.save(thirdOrgMember);
+
+        OrganizationMember qTwoMember = new OrganizationMember(quakersOrg, demoMemberDE);
+        organizationMembers.save(qTwoMember);
+
+// additional demo members
+
+        Member demoMemberHP = new Member();
+        demoMemberHP.firstName = "Harry";
+        demoMemberHP.lastName = "Potter";
+        demoMemberHP.streetAddress = "485 Hwy 12";
+        demoMemberHP.email= "hp@gmail.com";
+        demoMemberHP.password= "mischiefManaged";
+        demoMemberHP.photoURL= "http://vignette1.wikia.nocookie.net/harrypotter/images/b/b2/2001-Harry-Potter-and-the-Sorcerer-s-Stone-Promotional-Shoot-HQ-harry-potter-11097228-1600-1960.jpg/revision/latest/scale-to-width-down/163?cb=20141122213655";
+        members.save(demoMemberHP);
+
+        OrganizationMember hpTechMember = new OrganizationMember(techOrg, demoMemberHP);
+        organizationMembers.save(hpTechMember);
+
+        OrganizationMember qHpMember = new OrganizationMember(quakersOrg, demoMemberHP);
+        organizationMembers.save(qHpMember);
+
+        OrganizationMember swimmerHpMember = new OrganizationMember(swimmerOrg, demoMemberHP);
+        organizationMembers.save(swimmerHpMember);
+
+        Member demoMemberWS = new Member();
+        demoMemberWS.firstName = "Will";
+        demoMemberWS.lastName = "Smith";
+        demoMemberWS.streetAddress = "900 West Philborn Lane";
+        demoMemberWS.email= "wildwildwest@gmail.com";
+        demoMemberWS.password= "freshprince";
+        demoMemberWS.photoURL= "https://s-media-cache-ak0.pinimg.com/originals/c6/e8/f1/c6e8f16711706e5506e1a39c121e61ed.jpg";
+        members.save(demoMemberWS);
+
+        OrganizationMember wsTechMember = new OrganizationMember(techOrg, demoMemberWS);
+        organizationMembers.save(wsTechMember);
+
+        OrganizationMember wsBookMember = new OrganizationMember(bookOrg, demoMemberWS);
+        organizationMembers.save(wsBookMember);
+
+        Member demoMemberTH = new Member();
+        demoMemberTH.firstName = "Taraji P";
+        demoMemberTH.lastName = "Henson";
+        demoMemberTH.streetAddress = "900 West Philborn Lane";
+        demoMemberTH.email= "tph@gmail.com";
+        demoMemberTH.password= "cookie";
+        demoMemberTH.photoURL= "http://www.indiewire.com/wp-content/uploads/2015/06/taraji-p-henson-as-cookie-in-foxs-empire.-Henson-as-Cookie-Lyon-1.jpg";
+        members.save(demoMemberTH);
+
+        OrganizationMember tpTechMember = new OrganizationMember(techOrg, demoMemberTH);
+        organizationMembers.save(tpTechMember);
+
+        OrganizationMember tpChessMember = new OrganizationMember(chessOrg, demoMemberTH);
+        organizationMembers.save(tpChessMember);
+
+        Event liveToLead = new Event();
+        liveToLead.name = "Live2Lead";
+        liveToLead.location = "Atlanta Tech Village 3423 Piedmont Rd. NE Atlanta, Georgia 30305";
+        liveToLead.date= "11/5/2016 ~ 9:00";
+        liveToLead.information = "Live2Lead is a half-day leader development experience designed to equip you with new perspectives, practical tools and key takeaways. ";
+        liveToLead.organizer = demoMemberTH;
+        liveToLead.organization = techOrg;
+        events.save(liveToLead);
+
+
+        Event ironPints = new Event();
+        ironPints.name= "The Iron Yard Atlanta";
+        ironPints.location = "115 M.L.K. Jr Dr SW #400, Atlanta, GA 30303";
+        ironPints.date= "11/18/2016 ~ 16:00";
+        ironPints.information= "Community Iron Pints is the 3rd Friday of every month when we open up our campus to the public for a relaxed social gathering.";
+        ironPints.organization = techOrg;
+        ironPints.organizer = demoMemberDE;
+        events.save(ironPints);
+
+        Event tagEvent = new Event();
+        tagEvent.name= "Technology Association of Georgia: Moving and Modernizing Legacy Applications and Data to the Cloud";
+        tagEvent.date = "11/3/2016 ~ 18:00";
+        tagEvent.location = "1175 Peachtree Street NE, Suite 1400, Atlanta, GA 30309";
+        tagEvent.information= "Join TAG Cloud as we Dive into ways of Modernizing and Moving Legacy Applications to the Cloud.";
+        tagEvent.organization = techOrg;
+        tagEvent.organizer = demoMemberHP;
+        events.save(tagEvent);
+
+        Event garnishEvent = new Event();
+        garnishEvent.name = "HBS: Women’s SIG Wine and Food Tasting";
+        garnishEvent.date = "11/6/2016 ~ 16:00";
+        garnishEvent.location = "925 Garrett Street, Atlanta, GA 30316 United States";
+        garnishEvent.information = "Emily Golub, the founder of Garnish & Gather, will be hosting us for a food and wine tasting at Joseph & Co.  ";
+        garnishEvent.organizer = demoMemberRBT;
+        garnishEvent.organization = techOrg;
+        events.save(garnishEvent);
+
+        Event devFest = new Event();
+        devFest.name = "Google Developer DevFest";
+        devFest.date = "11/12/2016 ~ 10:00";
+        devFest.location = "675 Ponce de Leon Avenue NE, 2nd Floor, Atlanta, GA 30308 United States";
+        devFest.information= "Programming DevFest offers talks and code labs that are accessible to both new and seasoned developers.";
+        devFest.organizer= demoMemberWS;
+        devFest.organization= techOrg;
+        events.save(devFest);
+
+        Post networkingPost = new Post();
+        networkingPost.title = "Networking Tips";
+        networkingPost.date = "10/27/2016 ~ 13:00";
+        networkingPost.body= "1. Have an Intro\n 2. Research attendees\n 3. Strategically Place Yourself\n 4. Follow Up";
+        networkingPost.author = demoMemberDG;
+        networkingPost.organization= techOrg;
+        posts.save(networkingPost);
+
+        Post hackathonIdeas = new Post();
+        hackathonIdeas.title = "Hackathon Ideas?";
+        hackathonIdeas.date= "10/28/2016 ~ 15:45";
+        hackathonIdeas.body= "I am currently planning for a Hackathon, but am out of ideas for the event. Please email me at dev@gmail.com if you would like to throw some ideas out. Any input is appreciated!";
+        hackathonIdeas.author = demoMemberDE;
+        hackathonIdeas.organization = techOrg;
+        posts.save(hackathonIdeas);
+
+        Post slackChannel = new Post();
+        slackChannel.title = "New Slack Channel";
+        slackChannel.date= "10/28/2016 ~ 10:00";
+        slackChannel.body= "TechOrg is our new slack channel!";
+        slackChannel.author= demoMemberRBT;
+        slackChannel.organization = techOrg;
+        posts.save(slackChannel);
+//  posts/events for tech above
+
+        Event qOneEvent = new Event();
+        qOneEvent.name= "Free Breakfast";
+        qOneEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qOneEvent.information= "Free breakfast to the public";
+        qOneEvent.date = "11/6/2016 ~ 9:00";
+        qOneEvent.organization= quakersOrg;
+        qOneEvent.organizer= demoMemberHP;
+        events.save(qOneEvent);
+
+        Event qTwoEvent = new Event();
+        qTwoEvent.name= "Morning Worship";
+        qTwoEvent.date= "11/2/2016 ~ 8:30";
+        qTwoEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qTwoEvent.information= "Silent worship";
+        qTwoEvent.organizer= demoMemberHP;
+        qTwoEvent.organization= quakersOrg;
+        events.save(qTwoEvent);
+
+        Event qThreeEvent = new Event();
+        qThreeEvent.name= "Potluck";
+        qThreeEvent.date= "11/6/2016 ~ 11:30";
+        qThreeEvent.information= "Bring your favorite dish to our monthly potluck!";
+        qThreeEvent.location= "701 W Howard Ave, Decatur, GA 30030";
+        qThreeEvent.organizer= demoMemberHP;
+        events.save(qThreeEvent);
+
+        Post qOnePost = new Post();
+        qOnePost.title= "Campfire";
+        qOnePost.body= "I had a nice campfire this evening and silent reflection. I highly recommend it. ";
+        qOnePost.date= "10/27/2016 ~ 21:00";
+        qOnePost.author= demoMemberHP;
+        qOnePost.organization= quakersOrg;
+        posts.save(qOnePost);
+
+        Post qTwoPost = new Post();
+        qTwoPost.title= "Programs?";
+        qTwoPost.body= "Anyone have any thoughts about more outreach opportunities?";
+        qTwoPost.date= "10/25/2016 ~ 10:00";
+        qTwoPost.author= demoMemberHP;
+        qTwoPost.organization= quakersOrg;
+        posts.save(qTwoPost);
+
+        Post qThreePost = new Post();
+        qThreePost.title= "Found Dog";
+        qThreePost.body= "I found a dog outside the church this morning. She looks like a pit mix with brown and white markings. No collar, but I will be checking at a vet to check for a microchip.";
+        qThreePost.date= "10/27/2016 ~ 15:00";
+        qThreePost.author= demoMemberHP;
+        qThreePost.organization= quakersOrg;
+        posts.save(qThreePost);
 
     }
 
@@ -88,6 +294,9 @@ public class CommunityJsonController {
                 System.out.println("Password attempt failed. Incorrect password");
             } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
                 System.out.println(newMember.firstName + " " + newMember.lastName + " is logging in");
+                if (newMember.photoURL == null) {
+                    newMember.setPhotoURL("dummy photo URL");
+                }
                 session.setAttribute("member", newMember);
                 myResponse.responseMember = newMember;
             }
@@ -111,7 +320,10 @@ public class CommunityJsonController {
                     ArrayList<Invitation> allInvites = invitations.findByInvitedEmail(member.getEmail());
                     for (Invitation currentInvite : allInvites) {
                         Organization organization = currentInvite.getOrganization();
-                        member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photo_URL);
+                        member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
+                        if (member.photoURL == null) {
+                            member.setPhotoURL("dummy photo URL");
+                        }
                         members.save(member);
                         OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
                         organizationMemberAssociation.setOrganization(organization);
@@ -119,7 +331,10 @@ public class CommunityJsonController {
                         myResponse.responseMember = member;
                     }
                 } else {
-                    member = new Member(member.email, member.firstName, member.lastName, member.password, member.streetAddress, member.photo_URL);
+                    member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
+                    if (member.photoURL == null) {
+                        member.setPhotoURL("dummy photo URL");
+                    }
                     members.save(member);
                     myResponse.responseMember = member;
                     session.setAttribute("member", member);
@@ -169,16 +384,68 @@ public class CommunityJsonController {
         return memberList;
     }
 
-    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
     public List<Post> getAllPostsByAuthor(Member author) {
         Iterable<Post> allPosts = posts.findByAuthor(author);
         List<Post> postList = new ArrayList<>();
         for (Post currentPost : allPosts) {
             postList.add(currentPost);
+
         }
         System.out.println("after iterable");
         return postList;
     }
+
+    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsByAuthorWithEndpoint(@RequestBody Member member) {
+        PostContainer postContainer = new PostContainer();
+        System.out.println("Looking for posts from: " + member.firstName + " " + member.lastName);
+
+        try {
+            member = members.findFirstByEmail(member.email);
+            Iterable<Post> allPosts = posts.findByAuthor(member);
+            Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
+            if (allPostsSize == 0) {
+                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+            } else {
+                List<Post> postList = new ArrayList<>();
+                for (Post currentPost : allPosts) {
+                    postList.add(currentPost);
+                    postContainer.setPostList(postList);
+                    System.out.println("post id = " + postList.indexOf(currentPost));
+                }
+            }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            postContainer.setErrorMessage("An exception occurred creating a post list");
+            ex.printStackTrace();
+        }
+        return postContainer;
+    }
+
+//    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
+//    public PostContainer getAllPostsByAuthorWithEndpointGet(HttpSession session, Member author) {
+//        author = (Member) session.getAttribute("member");
+//        PostContainer postContainer = new PostContainer();
+//        Iterable<Post> allPosts = posts.findByAuthor(author);
+//        List<Post> postList = new ArrayList<>();
+//        for (Post currentPost : allPosts) {
+//            postList.add(currentPost);
+//            try {
+//                if (postList == null) {
+//                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+//
+//                } else {
+//                    postContainer.setPostList(postList);
+//                    System.out.println("post id = " + postList.indexOf(currentPost));
+//                }
+//            } catch (Exception ex){
+//                postContainer.setErrorMessage("An exception occurred creating a post list");
+//                ex.printStackTrace();
+//            }
+//        }
+//        System.out.println("after iterable");
+//        return postContainer;
+//    }
 
     @RequestMapping(path = "/postsList.json", method = RequestMethod.GET)
     public List<Post> getAllPosts() {
@@ -315,6 +582,32 @@ public class CommunityJsonController {
 
         }
         return eventList;
+    }
+
+    @RequestMapping(path = "/eventsListByMember.json", method = RequestMethod.POST)
+    public EventContainer getAllEventsByAuthorWithEndpoint(@RequestBody Member member) {
+        EventContainer eventContainer = new EventContainer();
+        System.out.println("Looking for events from: " + member.firstName + " " + member.lastName);
+        try {
+            member = members.findFirstByEmail(member.email);
+            Iterable<Event> allEvents = events.findByOrganizer(member);
+            Long allEventsSize = allEvents.spliterator().getExactSizeIfKnown();
+            if (allEventsSize == 0) {
+                eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
+            } else {
+                List<Event> eventList = new ArrayList<>();
+                for (Event currentEvent : allEvents) {
+                    eventList.add(currentEvent);
+                    eventContainer.setEventList(eventList);
+                    System.out.println("event id = " + eventList.indexOf(currentEvent));
+                }
+            }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            eventContainer.setErrorMessage("An exception occurred creating a event list");
+            ex.printStackTrace();
+        }
+        return eventContainer;
     }
 
     @RequestMapping(path = "/event.json", method = RequestMethod.GET)
@@ -463,16 +756,27 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+    @RequestMapping (path= "/membersByOrg.json", method = RequestMethod.GET)
+    public MemberOrganizationContainer theMembers(HttpSession session, @RequestBody Organization organization) throws Exception {
+        MemberOrganizationContainer myResponse = new MemberOrganizationContainer();
+        try {
+            ArrayList<Member> organizationMembersArrayList = new ArrayList<>();
+            ArrayList<OrganizationMember> allOrganizationMembers = organizationMembers.findMembersByOrganization(organization);
 
-    public ArrayList<OrganizationMember> refreshOrganizationMemberList() {
-        ArrayList<OrganizationMember> organizationMembersArrayList = new ArrayList<>();
-        Iterable<OrganizationMember> allOrganizationMembers = organizationMembers.findAll();
+            for (OrganizationMember orgMem : allOrganizationMembers) {
+                organizationMembersArrayList.add(orgMem.getMember());
+                int aomSize = allOrganizationMembers.size();
 
-        for (OrganizationMember orgMem : allOrganizationMembers) {
-            organizationMembersArrayList.add(orgMem);
-
+                if (organizationMembersArrayList == null || aomSize == 0) {
+                    myResponse.setErrorMessage("List of members was null");
+                } else {
+                    myResponse.setResponseMemberList(organizationMembersArrayList);
+                }
+            }
+        } catch (Exception ex) {
+            myResponse.setErrorMessage("An exception has occurred while trying to obtain members.");
         }
-        return organizationMembersArrayList;
+        return myResponse;
     }
 
     @RequestMapping (path= "/memberProfile.json", method = RequestMethod.GET)
@@ -504,22 +808,16 @@ public class CommunityJsonController {
     }
 
 
-    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.GET)
+    @RequestMapping (path= "/postsByOrg.json", method = RequestMethod.POST)
     public PostContainer getAllPosts(HttpSession session, @RequestBody Organization organization){
         PostContainer myResponse = new PostContainer();
         try {
-            Member member = (Member) session.getAttribute("member");
-            List<Post> orgMemberPostList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
-            int sizeOfAL = memberOrgs.size();
-            if (sizeOfAL == 1) {
-                orgMemberPostList = posts.findByOrganization(organization);
+            ArrayList<Post> postsByOrg = new ArrayList<>();
+            postsByOrg= posts.findByOrganization(organization);
+            if (postsByOrg == null){
+                myResponse.setErrorMessage("This organization has no posts");
             } else {
-                for (OrganizationMember currentOrgMember : memberOrgs) {
-                    Organization currentOrg = currentOrgMember.getOrganization();
-                    orgMemberPostList.addAll(posts.findByOrganization(currentOrg));
-                    myResponse.setPostList(orgMemberPostList);
-                }
+                myResponse.setPostList(postsByOrg);
             }
         }catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting posts by organization");
@@ -528,23 +826,16 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.GET)
+    @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.POST)
     public EventContainer getAllEvents(HttpSession session, @RequestBody Organization organization){
         EventContainer myResponse = new EventContainer();
         try {
-            Member member = (Member) session.getAttribute("member");
-            Iterable<OrganizationMember> allOrgMembers = organizationMembers.findMembersByOrganization(organization);
-            List<Event> orgMemberEventList = new ArrayList<>();
-            ArrayList<OrganizationMember> memberOrgs = organizationMembers.findByMemberId(member.getId());
-            int sizeOfAL = memberOrgs.size();
-            if (sizeOfAL == 1) {
-                orgMemberEventList = events.findByOrganization(organization);
+            ArrayList<Event> eventsByOrg = new ArrayList<>();
+            eventsByOrg = events.findByOrganization(organization);
+            if (eventsByOrg == null){
+                myResponse.setErrorMessage("This organization has no events");
             } else {
-                for (OrganizationMember currentOrgMember : memberOrgs) {
-                    Organization currentOrg = currentOrgMember.getOrganization();
-                    orgMemberEventList.addAll(events.findByOrganization(currentOrg));
-                    myResponse.setEventList(orgMemberEventList);
-                }
+                myResponse.setEventList(eventsByOrg);
             }
         } catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting events by organization");
@@ -553,4 +844,47 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+    @RequestMapping (path= "/postsByAllMembersOrgs.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsForMemebersOrgs(HttpSession session){
+        PostContainer myResponse = new PostContainer();
+        Member member = (Member) session.getAttribute("member");
+        try {
+            ArrayList<Post> postsByOrgForAllMembers = new ArrayList<>();
+            ArrayList<OrganizationMember> orgMembers = organizationMembers.findByMemberId(member.getId());
+            if (orgMembers == null){
+                myResponse.setErrorMessage("This member has no organizations");
+            } else {
+                for (OrganizationMember currentOrgMember: orgMembers){
+                    postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization);
+                    myResponse.setPostList(postsByOrgForAllMembers);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting posts in all member's organizations");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+    @RequestMapping (path= "/eventsByAllMembersOrgs.json", method = RequestMethod.POST)
+    public EventContainer getAllEventsForMemebersOrgs(HttpSession session){
+        EventContainer myResponse = new EventContainer();
+        Member member = (Member) session.getAttribute("member");
+        try {
+            ArrayList<Event> eventsByOrgForAllMembers = new ArrayList<>();
+            ArrayList<OrganizationMember> orgMembers = organizationMembers.findByMemberId(member.getId());
+            if (orgMembers == null){
+                myResponse.setErrorMessage("This member has no organizations.");
+            } else {
+                for (OrganizationMember currentOrgMember: orgMembers){
+                    eventsByOrgForAllMembers=  events.findByOrganization(currentOrgMember.organization);
+                    myResponse.setEventList(eventsByOrgForAllMembers);
+                }
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting events in all member's organizations");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
 }

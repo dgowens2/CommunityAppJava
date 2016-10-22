@@ -10,4 +10,5 @@ public interface PostRepository extends CrudRepository<Post, Integer> {
     ArrayList<Post> findByAuthor(Member author);
     Post findById (Integer id);
     ArrayList<Post> findByOrganization(Organization organization);
+    ArrayList<Post> findByOrganizationOrderByDateAsc(Organization organization);
 }
