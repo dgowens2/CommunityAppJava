@@ -41,7 +41,6 @@ public class CommunityJsonController {
     @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
     public void demoData(HttpSession session) throws Exception {
 
-//  main demo orgs
         Organization techOrg = new Organization();
         techOrg.name= "All Things Tech";
         organizations.save(techOrg);
@@ -49,7 +48,7 @@ public class CommunityJsonController {
         Organization quakersOrg = new Organization();
         quakersOrg.name ="Atlanta Friends Meeting";
         organizations.save(quakersOrg);
-//  additional orgs for demo
+
         Organization swimmerOrg = new Organization();
         swimmerOrg.name= "Atlanta Swim Team";
         organizations.save(swimmerOrg);
@@ -61,7 +60,7 @@ public class CommunityJsonController {
         Organization chessOrg = new Organization();
         chessOrg.name= "Chess Club";
         organizations.save(chessOrg);
-//  core members aka us
+
         Member demoMemberRBT = new Member();
         demoMemberRBT.firstName = "Rebecca";
         demoMemberRBT.lastName = "Bearden-Tellez";
@@ -106,8 +105,6 @@ public class CommunityJsonController {
 
         OrganizationMember qTwoMember = new OrganizationMember(quakersOrg, demoMemberDE);
         organizationMembers.save(qTwoMember);
-
-// additional demo members
 
         Member demoMemberHP = new Member();
         demoMemberHP.firstName = "Harry";
@@ -165,7 +162,6 @@ public class CommunityJsonController {
         liveToLead.organizer = demoMemberTH;
         liveToLead.organization = techOrg;
         events.save(liveToLead);
-
 
         Event ironPints = new Event();
         ironPints.name= "The Iron Yard Atlanta";
@@ -226,7 +222,6 @@ public class CommunityJsonController {
         slackChannel.author= demoMemberRBT;
         slackChannel.organization = techOrg;
         posts.save(slackChannel);
-//  posts/events for tech above
 
         Event qOneEvent = new Event();
         qOneEvent.name= "Free Breakfast";
@@ -277,10 +272,8 @@ public class CommunityJsonController {
         qThreePost.author= demoMemberHP;
         qThreePost.organization= quakersOrg;
         posts.save(qThreePost);
-
     }
-
-
+    
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
@@ -349,7 +342,6 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
-
 
     @RequestMapping(path = "/editMember.json", method = RequestMethod.POST)
     public MemberResponseContainer editMember(HttpSession session, @RequestBody Member chosenMember) {
@@ -444,31 +436,6 @@ public class CommunityJsonController {
         return postContainer;
     }
 
-//    @RequestMapping(path = "/postsListByMember.json", method = RequestMethod.GET)
-//    public PostContainer getAllPostsByAuthorWithEndpointGet(HttpSession session, Member author) {
-//        author = (Member) session.getAttribute("member");
-//        PostContainer postContainer = new PostContainer();
-//        Iterable<Post> allPosts = posts.findByAuthor(author);
-//        List<Post> postList = new ArrayList<>();
-//        for (Post currentPost : allPosts) {
-//            postList.add(currentPost);
-//            try {
-//                if (postList == null) {
-//                    postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
-//
-//                } else {
-//                    postContainer.setPostList(postList);
-//                    System.out.println("post id = " + postList.indexOf(currentPost));
-//                }
-//            } catch (Exception ex){
-//                postContainer.setErrorMessage("An exception occurred creating a post list");
-//                ex.printStackTrace();
-//            }
-//        }
-//        System.out.println("after iterable");
-//        return postContainer;
-//    }
-
     @RequestMapping(path = "/postsList.json", method = RequestMethod.GET)
     public List<Post> getAllPosts() {
         Iterable<Post> allPosts = posts.findAll();
@@ -478,8 +445,6 @@ public class CommunityJsonController {
         }
         return postList;
     }
-
-    //test with angular
 
     @RequestMapping(path = "/editPost.json", method = RequestMethod.POST)
     public PostContainer editPost(HttpSession session, @RequestBody Post thispost) {
@@ -524,7 +489,6 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
     @RequestMapping(path = "/createEvent.json", method = RequestMethod.POST)
     public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
         Member member = (Member) session.getAttribute("member");
@@ -551,7 +515,6 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
     @RequestMapping(path = "/editEvent.json", method = RequestMethod.POST)
     public EventContainer editEvent(HttpSession session, @RequestBody Event thisEvent) {
         Member member = (Member) session.getAttribute("member");
@@ -575,7 +538,6 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-
     @RequestMapping(path = "/eventsList.json", method = RequestMethod.GET)
     public EventContainer eventThings(HttpSession session) {
         EventContainer myResponse = new EventContainer();
@@ -587,10 +549,6 @@ public class CommunityJsonController {
 
         } else {
             myResponse.setEventList(myEvents);
-//            for (Event myEvent : myEvents) {
-//                myResponse.eventList.add(myEvent);
-//                System.out.println("returning list of events");
-//            }
         }
         return myResponse;
     }
@@ -728,29 +686,6 @@ public class CommunityJsonController {
         }
         return myResponse;
     }
-
-//    @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
-//    public OrganizationMemberContainer joinOrganization(HttpSession session, @RequestBody Integer organizationId) throws Exception {
-//        OrganizationMemberContainer myResponse = new OrganizationMemberContainer();
-//        Member member = (Member) session.getAttribute("member");
-//        Organization organization = organizations.findOne(organizationId);
-//
-//        try {
-//            if(member.email.equals(invitations.findByInvitedEmail(member.getEmail()))) {
-//                OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
-//                organizationMemberAssociation.setOrganization(organization);
-//                organizationMembers.save(organizationMemberAssociation);
-//                myResponse.setOrganizationMemberList(organizationMembers.findMembersByOrganization(organization));
-//                System.out.println("organization set");
-//            } else {
-//                myResponse.setErrorMessage("User was not invited to join this organization");
-//            }
-//        } catch (Exception ex) {
-//            myResponse.setErrorMessage("A problem occurred while trying to join an organization");
-//            ex.printStackTrace();
-//        }
-//        return myResponse;
-//    }
 
     @RequestMapping (path= "/joinOrganization.json", method = RequestMethod.POST)
     public OrganizationMemberContainer joinOrganization(HttpSession session) throws Exception {
