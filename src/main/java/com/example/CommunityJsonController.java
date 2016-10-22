@@ -770,7 +770,7 @@ public class CommunityJsonController {
         PostContainer myResponse = new PostContainer();
         try {
             ArrayList<Post> postsByOrg = new ArrayList<>();
-            postsByOrg= posts.findByOrganization(organization);
+            postsByOrg= posts.findByOrganizationOrderByDateAsc(organization); //changing this to be ordered...
             if (postsByOrg == null){
                 myResponse.setErrorMessage("This organization has no posts");
             } else {
@@ -788,7 +788,7 @@ public class CommunityJsonController {
         EventContainer myResponse = new EventContainer();
         try {
             ArrayList<Event> eventsByOrg = new ArrayList<>();
-            eventsByOrg = events.findByOrganization(organization);
+            eventsByOrg = events.findByOrganizationOrderByDateAsc(organization); //changing this to be ordered...
             if (eventsByOrg == null){
                 myResponse.setErrorMessage("This organization has no events");
             } else {
@@ -812,7 +812,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization);
+                    postsByOrgForAllMembers = posts.findByOrganizationOrderByDateAsc(currentOrgMember.organization); //changing this to be ordered...
                     myResponse.setPostList(postsByOrgForAllMembers);
                 }
             }
@@ -834,7 +834,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations.");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    eventsByOrgForAllMembers=  events.findByOrganization(currentOrgMember.organization);
+                    eventsByOrgForAllMembers=  events.findByOrganizationOrderByDateAsc(currentOrgMember.organization); //changing this to be ordered...
                     myResponse.setEventList(eventsByOrgForAllMembers);
                 }
             }
