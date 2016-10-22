@@ -1428,10 +1428,6 @@ public class CommunityAppApplicationTests {
 			members.delete(secondTestMember);
 		}
 	}
-	
-	public void testMembersByOrg(){
-
-	}
 
 	@Test
 	public void testPostsByAllMembersOrgsOrdered() {
@@ -1592,7 +1588,6 @@ public class CommunityAppApplicationTests {
 			listOfRealMembers = organizationmembers.findMembersByOrganization(oneOrg);
 			assertNotNull (listOfRealMembers);
 
-
 		} finally {
 			organizationmembers.delete(orgMemberOne);
 			organizationmembers.delete(orgMemberTwo);
@@ -1607,5 +1602,39 @@ public class CommunityAppApplicationTests {
 
 	}
 
+	@Test
+	public void testEditMemberProfile(){
+		Member thisMember = new Member();
+		Member dbMember = new Member();
+		Member anotherDbMember = new Member();
+
+		try{
+			thisMember.firstName= "Morty";
+			thisMember.lastName= "Miguel";
+			thisMember.streetAddress= "";
+			thisMember.email= "mort@gmail.com";
+			thisMember.password= "mortality";
+			thisMember.photoURL= " default";
+			members.save(thisMember);
+
+
+			dbMember= members.findFirstByEmail(thisMember.getEmail());
+			assertEquals(dbMember.firstName, "Morty");
+
+			dbMember.password= "ichangeditwoooo";
+			members.save(dbMember);
+
+			anotherDbMember= members.findFirstByEmail("mort@gmail.com");
+
+			assertEquals(anotherDbMember.id, dbMember.id, thisMember.id);
+
+		} finally {
+			members.delete(thisMember);
+
+		}
+
+
+
+	}
 }
 

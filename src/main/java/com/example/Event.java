@@ -49,7 +49,6 @@ public class Event {
         this.date = date; //user will enter date~time
         this.location = location;
         this.information = information;
-//        this.organizer = organizer;
     }
 
     public int getId() {
