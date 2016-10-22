@@ -1454,16 +1454,45 @@ public class CommunityAppApplicationTests {
 			eightPost.organization = thirdTestOrg;
 			posts.save(eightPost);
 
-			Iterable<Post> firstTestMemberPosts = posts.findByAuthor(firstTestMember);
+//			Iterable<Organization> allOrgs = organizations.findAll();
 
-			Iterable<Post> secondTestMemberPosts = posts.findByAuthor(secondTestMember);
+			ArrayList<Post> postsByOrgForAllMembers = new ArrayList<>();
+			ArrayList<Organization> organizationArrayList = new ArrayList();
+			Iterable<OrganizationMember> orgMembers = organizationmembers.findAll();
+			Iterable<Organization> allOrgs = organizations.findAll();
+			List<OrganizationMember> firstMemberOrg = organizationmembers.findByMemberId(firstTestMember.getId());
 
-			Long firstTestMemberPostsLong = firstTestMemberPosts.spliterator().getExactSizeIfKnown();
+			for (OrganizationMember currentOrgMember : firstMemberOrg) {
+				Iterable<Organization> orgs = organizations.findById()
+			}
+//			for (Organization currentOrg : allOrgs) {
+//				if (OrganizationMember myOrgMember = OrganizationMember(currentOrg, firstTestMemberr))
+//			}
+//			if (orgMembers == null){
+//				System.out.println("This member has no organizations");
+//			} else {
+//				for (OrganizationMember currentOrgMember : orgMembers){
+//					ArrayList<OrganizationMember> firstTestOrgMembers = organizationmembers.findByMemberId(firstTestMember.getId());
+//					for (Organization thisOrg : allOrgs)
+//					postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization);
+//					System.out.println("Post List Size: " + firstTestOrgMembers.size());
+//				}
+//			}
 
-			Long secondTestMemberPostsLong = secondTestMemberPosts.spliterator().getExactSizeIfKnown();
+//			assertTrue(postsByOrgForAllMembers.size() == 4);
 
-			assertTrue(firstTestMemberPostsLong == 4);
-			assertTrue(secondTestMemberPostsLong == 4);
+
+			for (Organization thisOrg : allOrgs) {
+				if (thisOrg = organizationmembers.findByOrganizationId(firstOrgFirstMember.getId())) {
+					System.out.println("Test member relationship exists " + thisOrg.name);
+
+				} else {
+					System.out.println("No Test member relationship exists");
+
+//					Iterable<Post> firstTestMemberOrgPost = posts.findByOrganization(thisOrg);
+//					System.out.println("Post: " + firstTestMemberOrgPost.hashCode());
+				}
+			}
 
 		} finally {
 			posts.delete(onePost);
