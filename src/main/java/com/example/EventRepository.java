@@ -11,4 +11,5 @@ public interface EventRepository extends CrudRepository<Event, Integer> {
     Event findById(Integer id);
     ArrayList<Event> findByOrganizer(Member organizer);
     ArrayList<Event> findByOrganization(Organization organization);
+    ArrayList<Event> findByOrganizationOrderByDateAsc(Organization organization);
 }
