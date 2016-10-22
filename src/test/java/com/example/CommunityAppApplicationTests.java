@@ -1455,7 +1455,7 @@ public class CommunityAppApplicationTests {
 			members.save(testMember);
 
 			onePost.title = "Live Code Session";
-			onePost.date = "1994-11-05T08:15:30-05:00";
+			onePost.date = "1994-10-22T14:23:12Z";
 			onePost.body ="Come sail away with me";
 			onePost.author = testMember;
 			onePost.organization = secondOrg;
@@ -1469,14 +1469,14 @@ public class CommunityAppApplicationTests {
 			members.save(secondTestMember);
 
 			twoPost.author = testMember;
-			twoPost.date = "2016-11-05T09:25:30-05:00";
+			twoPost.date = "2016-10-22T12:23:12Z";
 			twoPost.title = "Brice's Adventure";
 			twoPost.body="Car accidents hurt";
 			twoPost.organization = secondOrg;
 			posts.save(twoPost);
 
 			threePost.author = secondTestMember;
-			threePost.date = "2018-01-03T09:25:30-05:00";
+			threePost.date = "2018-03-01T03:45:12Z";
 			threePost.title = "Solve the puzzle";
 			threePost.body="Naming conventions are sometimes hard";
 			threePost.organization = secondOrg;
@@ -1486,14 +1486,14 @@ public class CommunityAppApplicationTests {
 			sameDateDifferentTime.author= testMember;
 			sameDateDifferentTime.organization= secondOrg;
 			sameDateDifferentTime.body= "so we meet again";
-			sameDateDifferentTime.date= "2018-01-03T06:20:30-03:00";
+			sameDateDifferentTime.date= "2016-05-25T21:55:12Z";
 			posts.save(sameDateDifferentTime);
 
 			sameMonthDifferentDate.title= "Fizz";
 			sameMonthDifferentDate.body= "Buzz";
 			sameMonthDifferentDate.organization= secondOrg;
 			sameMonthDifferentDate.author= testMember;
-			sameMonthDifferentDate.date= "2016-03-03T06:20:30-07:00";
+			sameMonthDifferentDate.date= "2016-01-02T03:45:12Z";
 			posts.save(sameMonthDifferentDate);
 
 
