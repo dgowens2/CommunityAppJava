@@ -273,7 +273,7 @@ public class CommunityJsonController {
         qThreePost.organization= quakersOrg;
         posts.save(qThreePost);
     }
-    
+
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
     public MemberResponseContainer login(HttpSession session, @RequestBody Member member) throws Exception {
         MemberResponseContainer myResponse = new MemberResponseContainer();
