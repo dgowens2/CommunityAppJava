@@ -1813,9 +1813,75 @@ public class CommunityAppApplicationTests {
 			members.delete(thisMember);
 
 		}
+	}
 
+	@Test
+	public void testMembersOrgs() {
+		Member theMember = new Member();
+		Organization firstOrg = new Organization();
+		Organization secondOrg = new Organization();
+		Organization thirdOrg = new Organization();
+		OrganizationMember firstOM = new OrganizationMember();
+		OrganizationMember secondOM = new OrganizationMember();
+		OrganizationMember thirdOM = new OrganizationMember();
+
+		try {
+			theMember.firstName = "Tara";
+			theMember.lastName = "McLatey";
+			theMember.email= "tm@gmail.com";
+			theMember.password= "mypass13";
+			theMember.streetAddress= "115 MLK";
+			members.save(theMember);
+
+			firstOrg.name= "Toyko Joe's";
+			organizations.save(firstOrg);
+
+			secondOrg.name= "Coyote's";
+			organizations.save(secondOrg);
+
+			thirdOrg.name= "Cat Cafe";
+			organizations.save(thirdOrg);
+
+			firstOM= new OrganizationMember(firstOrg, theMember);
+			organizationmembers.save(firstOM);
+
+			secondOM = new OrganizationMember(secondOrg, theMember);
+			organizationmembers.save(secondOM);
+
+			thirdOM= new OrganizationMember(thirdOrg, theMember);
+			organizationmembers.save(thirdOM);
+
+
+			ArrayList<OrganizationMember> membersByOrg = new ArrayList<>();
+			membersByOrg = organizationmembers.findByMemberEmail(theMember.getEmail());
+			ArrayList<Organization> alOfMembersToReturn = new ArrayList<>();
+			for (OrganizationMember currentOrgMember : membersByOrg) {
+				alOfMembersToReturn.add(currentOrgMember.getOrganization());
+			}
+
+			int sizeOfAL = alOfMembersToReturn.size();
+
+			assertEquals(sizeOfAL, 3);
+
+		} finally {
+			organizationmembers.delete(firstOM);
+			organizationmembers.delete(secondOM);
+			organizationmembers.delete(thirdOM);
+			members.delete(theMember);
+			organizations.delete(firstOrg);
+			organizations.delete(secondOrg);
+			organizations.delete(thirdOrg);
+		}
 
 
 	}
+
+
+
+
+
+
+
+
 }
 
