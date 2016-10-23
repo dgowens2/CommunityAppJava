@@ -247,6 +247,7 @@ public class CommunityJsonController {
         qThreeEvent.information= "Bring your favorite dish to our monthly potluck!";
         qThreeEvent.location= "701 W Howard Ave, Decatur, GA 30030";
         qThreeEvent.organizer= demoMemberHP;
+        qThreeEvent.organization= quakersOrg;
         events.save(qThreeEvent);
 
         Post qOnePost = new Post();
@@ -775,6 +776,29 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This organization has no posts");
             } else {
                 myResponse.setPostList(postsByOrg);
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in getting posts by organization");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
+    @RequestMapping (path= "/membersOrgs.json", method = RequestMethod.POST)
+    public AnotherOrganizationContainer getAllPosts(HttpSession session, @RequestBody Member member){
+        AnotherOrganizationContainer myResponse = new AnotherOrganizationContainer();
+        try {
+            ArrayList<OrganizationMember> membersByOrg = new ArrayList<>();
+            membersByOrg= organizationMembers.findByMemberEmail(member.getEmail());
+            ArrayList<Organization> alOfMembersToReturn = new ArrayList<>();
+            if (membersByOrg == null){
+                myResponse.setErrorMessage("This member has no organizations");
+            } else {
+                for(OrganizationMember currentOrgMember: membersByOrg){
+                    alOfMembersToReturn.add(currentOrgMember.getOrganization());
+                }
+                    myResponse.setResponseOrganization(alOfMembersToReturn);
             }
         }catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting posts by organization");
