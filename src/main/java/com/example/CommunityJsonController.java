@@ -801,7 +801,7 @@ public class CommunityJsonController {
                     myResponse.setResponseOrganization(alOfMembersToReturn);
             }
         }catch (Exception ex){
-            myResponse.setErrorMessage("An exception occurred in getting posts by organization");
+            myResponse.setErrorMessage("An exception occurred in organizations by member.");
             ex.printStackTrace();
         }
         return myResponse;
