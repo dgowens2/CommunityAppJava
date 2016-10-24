@@ -366,25 +366,27 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(HttpSession session, @RequestBody Post post) {
+    public PostContainer createPost(HttpSession session, @RequestBody Post incomingPost) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
-        System.out.println("Organization in post = " + post.organization);
-        Organization organization = new Organization();
+        System.out.println("Organization in post = " + incomingPost.organization);
+//        Organization organization = new Organization();
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body);
+//        post = new Post(post.date, post.title, post.body);
         try {
-            if (post == null) {
+            if (incomingPost == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author, post.organization);
-                post.setMember(author);
-                post.setOrganization(organization);
+                Post newPost = new Post(incomingPost.date, incomingPost.title,
+                                        incomingPost.body, incomingPost.author, incomingPost.organization);
+                System.out.println("Organization in newly created post = " + newPost.getOrganization());
+                newPost.setMember(author);
+//                post.setOrganization(organization);
 //                System.out.println("Organization: " + organization.name);
-                posts.save(post);
+                posts.save(newPost);
                 postContainer.setPostList(getAllPostsByAuthor(author));
-                System.out.println("post id = " + post.id);
+                System.out.println("post id = " + newPost.id);
             }
         } catch (Exception ex){
             postContainer.setErrorMessage("An exception occurred creating a post");
