@@ -369,6 +369,7 @@ public class CommunityJsonController {
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
+        System.out.println("Organization in post = " + post.organization);
         Organization organization = new Organization();
         PostContainer postContainer = new PostContainer();
         post = new Post(post.date, post.title, post.body);
