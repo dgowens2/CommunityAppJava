@@ -366,26 +366,26 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(HttpSession session, @RequestBody RetrievalPostContainer myContainer) {
+    public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
         System.out.println(author.firstName);
-//        Organization organization = (Organization) session.getAttribute("organization");
+        Organization organization = (Organization) session.getAttribute("organization");
 //        System.out.println("Organization: " + organization.name);
         PostContainer postContainer = new PostContainer();
-        Post newPost = new Post(myContainer.retPost.date, myContainer.retPost.title, myContainer.retPost.body);
+        post = new Post(post.date, post.title, post.body);
         try {
-            if (newPost == null) {
+            if (post == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                newPost = new Post(myContainer.retPost.date, myContainer.retPost.title, myContainer.retPost.body);
-                myContainer.retPost.setMember(author);
-                myContainer.retPost.setOrganization(myContainer.thisOrganization);
+                post = new Post(post.date, post.title, post.body);
+                post.setMember(author);
+                post.setOrganization(organization);
 //                System.out.println("Organization: " + organization.name);
-                posts.save(newPost);
+                posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
-                System.out.println("post id = " + newPost.id);
+                System.out.println("post id = " + post.id);
             }
         } catch (Exception ex){
             postContainer.setErrorMessage("An exception occurred creating a post");
