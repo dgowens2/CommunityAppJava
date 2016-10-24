@@ -366,26 +366,26 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(HttpSession session, @RequestBody Post post) {
+    public PostContainer createPost(HttpSession session, @RequestBody RetrievalPostContainer myContainer) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
         System.out.println(author.firstName);
         Organization organization = (Organization) session.getAttribute("organization");
         System.out.println("Organization: " + organization.name);
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body);
+        Post newPost = new Post(myContainer.retPost.date, myContainer.retPost.title, myContainer.retPost.body);
         try {
-            if (post == null) {
+            if (newPost == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author);
-                post.setMember(author);
-                post.setOrganization(organization);
+                newPost = new Post(myContainer.retPost.date, myContainer.retPost.title, myContainer.retPost.body, myContainer.retPost.author);
+                myContainer.retPost.setMember(author);
+                myContainer.retPost.setOrganization(myContainer.thisOrganization);
                 System.out.println("Organization: " + organization.name);
-                posts.save(post);
+                posts.save(newPost);
                 postContainer.setPostList(getAllPostsByAuthor(author));
-                System.out.println("post id = " + post.id);
+                System.out.println("post id = " + newPost.id);
             }
         } catch (Exception ex){
             postContainer.setErrorMessage("An exception occurred creating a post");
