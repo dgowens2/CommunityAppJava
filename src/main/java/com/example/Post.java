@@ -32,12 +32,12 @@ public class Post {
     public Post() {
     }
 
-    public Post(String date, String title, String body, Member author/*, Organization organization*/) {
+    public Post(String date, String title, String body, Member author, Organization organization) {
         this.date = date;
         this.title = title;
         this.body = body;
         this.author = author;
-//        this.organization = organization;
+        this.organization = organization;
     }
 
     public Post(String date, String title, String body) {
