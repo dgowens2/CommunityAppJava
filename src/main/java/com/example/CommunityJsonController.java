@@ -365,37 +365,30 @@ public class CommunityJsonController {
         return myResponse;
     }
 
-//    @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-//    public PostContainer createPost(HttpSession session, @RequestBody Post  incomingPost) {
-////        Member member = (Member) session.getAttribute("member");
-//        Member author = (Member) session.getAttribute("member");  //changed member to author
-////        System.out.println(author.firstName);
-////        Organization organization = (Organization) session.getAttribute("organization");
-////        System.out.println("Organization: " + organization.name);
-//
-//        PostContainer postContainer = new PostContainer();
-//        Post thisPost = new Post(postContainer.responsePost.date, postContainer.responsePost.title, postContainer.responsePost.body);
-//        try {
-//            if (thisPost == null) {
-//                postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
-//
-//            } else {
-//               thisPost = new Post(postContainerRet.retPost.date, postContainerRet.retPost.title, postContainerRet.retPost.body);
-//                thisPost.setMember(author);
-//                System.out.println(postContainerRet.getThisOrganization().getName());
-//               thisPost.setOrganization(postContainerRet.getThisOrganization());
-////              post.setOrganization(organization);
-////                System.out.println("Organization: " + organization.name);
-//                posts.save(thisPost);
-//                postContainer.setPostList(getAllPostsByAuthor(postContainerRet.getMember()));
-////                System.out.println("post id = " + post.id);
-//            }
-//        } catch (Exception ex){
-//            postContainer.setErrorMessage("An exception occurred creating a post");
-//            ex.printStackTrace();
-//        }
-//        return postContainer;
-//    }
+    @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
+    public PostContainer createPost(HttpSession session, @RequestBody Post incomingPost) {
+        Member author = (Member) session.getAttribute("member");  //changed member to author
+        System.out.println("Organization in post = " + incomingPost.organization);
+        PostContainer postContainer = new PostContainer();
+        try {
+            if (incomingPost == null) {
+                postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
+
+            } else {
+                Post newPost = new Post(incomingPost.date, incomingPost.title,
+                                        incomingPost.body, incomingPost.author, incomingPost.organization);
+                System.out.println("Organization in newly created post = " + newPost.getOrganization());
+                newPost.setMember(author);
+                posts.save(newPost);
+                postContainer.setPostList(getAllPostsByAuthor(author));
+                System.out.println("post id = " + newPost.id);
+            }
+        } catch (Exception ex){
+            postContainer.setErrorMessage("An exception occurred creating a post");
+            ex.printStackTrace();
+        }
+        return postContainer;
+    }
 
     @RequestMapping(path = "/memberList.json", method = RequestMethod.GET)
     public List<Member> getMemberList() {
@@ -499,21 +492,21 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createEvent.json", method = RequestMethod.POST)
-    public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
+    public EventContainer createEvent(HttpSession session, @RequestBody Event incomingEvent) {
         Member member = (Member) session.getAttribute("member");
+        System.out.println("Organization in event = " + incomingEvent.organization);
         EventContainer myResponse = new EventContainer();
-        thisEvent = new Event(thisEvent.name, thisEvent.date, thisEvent.location, thisEvent.information);
-
         try{
-            if(thisEvent == null) {
+            if(incomingEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
-                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer, thisEvent.organization);
-                thisEvent.setOrganizer(member);
-                events.save(thisEvent);
-
+                Event newEvent = new Event(incomingEvent.name,incomingEvent.date, incomingEvent.location, incomingEvent.information, incomingEvent.organizer, incomingEvent.organization);
+                System.out.println("Organization in newly created event = " + newEvent.getOrganization());
+                newEvent.setOrganizer(member);
+                events.save(newEvent);
                 System.out.println("Creating event");
+                System.out.println("event id = " + newEvent.id);
                 myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             }
