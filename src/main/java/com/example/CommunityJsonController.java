@@ -463,6 +463,38 @@ public class CommunityJsonController {
         return postContainer;
     }
 
+    @RequestMapping(path = "/postsListByMemberForOnlyCertainOrgs.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsByAuthorWithForCertainOrgs(HttpSession session, @RequestBody Member member) {
+        PostContainer postContainer = new PostContainer();
+        Organization organization = (Organization) session.getAttribute("organization");
+        System.out.println("Looking for posts from: " + member.firstName + " " + member.lastName);
+
+        try {
+            member = members.findFirstByEmail(member.email);
+            Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(member);
+            Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
+            if (allPostsSize == 0) {
+                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+            } else {
+                List<Post> postList = new ArrayList<>();
+                for (Post currentPost : allPosts) {
+                    if (currentPost.getOrganization()== organization) {
+                        postList.add(currentPost);
+                        postContainer.setPostList(postList);
+                        System.out.println("post id = " + postList.indexOf(currentPost));
+                    } else {
+                        System.out.println("Wrong org not saving to post list.");
+                    }
+                }
+            }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            postContainer.setErrorMessage("An exception occurred creating a post list");
+            ex.printStackTrace();
+        }
+        return postContainer;
+    }
+
     @RequestMapping(path = "/postsList.json", method = RequestMethod.GET)
     public List<Post> getAllPosts() {
         Iterable<Post> allPosts = posts.findAll();
