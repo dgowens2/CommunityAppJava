@@ -331,11 +331,18 @@ public class CommunityAppApplicationTests {
 
 	@Test
 	public void testCreatePost() {
+		Organization myOrg = new Organization();
 		Post testPost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
 		ArrayList<Post> dbPosts = new ArrayList<Post>();
+		ArrayList<Post> dbPostsPartTwo = new ArrayList<Post>();
 		Member tester = new Member();
 
 		try {
+			myOrg.name= "Trick or Treat";
+			organizations.save(myOrg);
+
 			tester.firstName = "Tupelo";
 			tester.lastName = "MS";
 			tester.email = "twf@gmail.com";
@@ -343,17 +350,41 @@ public class CommunityAppApplicationTests {
 			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(tester);
 
-			testPost.date = "2/3/14 ~ 2:10 AM";
+			testPost.date = "2014-02-03T02:13:12Z";
 			testPost.title = "Goodies";
 			testPost.body = "Not my goodies";
 			testPost.author = tester;
+			testPost.organization= myOrg;
 			posts.save(testPost);
-			dbPosts = posts.findByAuthor(tester);
 
+			twoPost.date= "2011-05-03T04:23:12Z";
+			twoPost.title= "Dear Diary";
+			twoPost.body= "Today was a long day";
+			twoPost.author= tester;
+			twoPost.organization= myOrg;
+			posts.save(twoPost);
+
+			threePost.date= "2011-05-03T01:23:12Z";
+			threePost.title= "Dear Diary";
+			threePost.body= "Today was a long day";
+			threePost.author= tester;
+			threePost.organization= myOrg;
+			posts.save(threePost);
+
+
+			dbPosts = posts.findByAuthor(tester);
 			assertNotNull(dbPosts);
+
+			dbPostsPartTwo = posts.findByAuthorOrderByDateAsc(tester);
+			for (Post currentPost: dbPostsPartTwo){
+				System.out.println(currentPost.getDate());
+			}
 
 		} finally {
 			posts.delete(testPost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			organizations.delete(myOrg);
 			members.delete(tester);
 
 		}
@@ -937,6 +968,8 @@ public class CommunityAppApplicationTests {
 		Event secondTestEvent = new Event();
 		ArrayList<Event> dbEvents = new ArrayList<>();
 		ArrayList<Event> dbEventsNone = new ArrayList<>();
+		ArrayList<Event> dbEventsOrdered = new ArrayList<>();
+
 
 		try {
 			testMember.firstName = "Hirum";
@@ -956,14 +989,14 @@ public class CommunityAppApplicationTests {
 
 			testEvent.organizer = secondTestMember;
 
-			testEvent.date ="9/9/2017 ~ 15:30";
+			testEvent.date ="2017-09-09T16:15:12Z";
 			testEvent.name = "Charity Rides for children";
 			testEvent.information= "Two day for children";
 			testEvent.location ="Dragon Tail";
 			events.save(testEvent);
 
 			secondTestEvent.organizer = secondTestMember;
-			secondTestEvent.date ="5/24/2017 ~ 13:00";
+			secondTestEvent.date ="2016-05-24T14:13:12Z";
 			secondTestEvent.name = "County Fair at the Square";
 			secondTestEvent.information= "Fun for the whole family";
 			secondTestEvent.location ="Charming Square";
@@ -974,6 +1007,12 @@ public class CommunityAppApplicationTests {
 
 			dbEvents = events.findByOrganizer(secondTestMember);
 			assertEquals(2, dbEvents.size());
+
+			dbEventsOrdered= events.findByOrganizerOrderByDateAsc(secondTestMember);
+			for (Event currentEvent: dbEventsOrdered){
+				System.out.println(currentEvent.getDate());
+			}
+
 
 
 		} finally {
@@ -1343,21 +1382,23 @@ public class CommunityAppApplicationTests {
 	public void testViewPostsAcrossOrgs() {
 		Organization firstTestOrg = new Organization();
 		Organization secondTestOrg = new Organization();
-		Organization thirdTestOrg = new Organization();
+		Organization bothOrg = new Organization();
+
 		Member firstTestMember = new Member();
 		Member secondTestMember = new Member();
-		OrganizationMember firstOrgFirstMember = new OrganizationMember();
-		OrganizationMember secondOrgFirstMember = new OrganizationMember();
-		OrganizationMember secondOrgSecondMember = new OrganizationMember();
-		OrganizationMember thirdOrgSecondMember = new OrganizationMember();
+		OrganizationMember firstorgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+
+		OrganizationMember bothOrgRomeo = new OrganizationMember();
+		OrganizationMember bothOrgJuliet = new OrganizationMember();
+
 		Post onePost = new Post();
 		Post twoPost = new Post();
 		Post threePost = new Post();
 		Post fourPost = new Post();
-		Post fivePost = new Post();
-		Post sixPost = new Post();
-		Post sevenPost = new Post();
-		Post eightPost = new Post();
+		Post postFive = new Post();
+
+		ArrayList<Post> retPosts = new ArrayList<>();
 
 		try {
 			firstTestMember.firstName = "Romeo";
@@ -1382,20 +1423,16 @@ public class CommunityAppApplicationTests {
 			secondTestOrg.name = "The Capulets";
 			organizations.save(secondTestOrg);
 
-			thirdTestOrg.name = "The Shakespeares";
-			organizations.save(thirdTestOrg);
+			bothOrg.name = "Star Crossed Lovers";
+			organizations.save(bothOrg);
 
-			firstOrgFirstMember = new OrganizationMember(firstTestOrg, firstTestMember);
-			organizationmembers.save(firstOrgFirstMember);
+			bothOrgJuliet= new OrganizationMember(bothOrg, secondTestMember);
+			organizationmembers.save(bothOrgJuliet);
+			bothOrgRomeo = new OrganizationMember(bothOrg, firstTestMember);
+			organizationmembers.save(bothOrgRomeo);
 
-			secondOrgFirstMember = new OrganizationMember(secondTestOrg, firstTestMember);
-			organizationmembers.save(secondOrgFirstMember);
-
-			secondOrgSecondMember = new OrganizationMember(secondTestOrg, secondTestMember);
-			organizationmembers.save(secondOrgSecondMember);
-
-			thirdOrgSecondMember = new OrganizationMember(thirdTestOrg, secondTestMember);
-			organizationmembers.save(thirdOrgSecondMember);
+			firstorgMember = new OrganizationMember(firstTestOrg, firstTestMember);
+			organizationmembers.save(firstorgMember);
 
 			onePost.date = "today";
 			onePost.title = "Title 1";
@@ -1425,77 +1462,36 @@ public class CommunityAppApplicationTests {
 			fourPost.organization = secondTestOrg;
 			posts.save(fourPost);
 
-			fivePost.date = "today";
-			fivePost.title = "Title 5";
-			fivePost.body = "This is my fifth body";
-			fivePost.author = secondTestMember;
-			fivePost.organization = secondTestOrg;
-			posts.save(fivePost);
+			postFive.title= "Deny";
+			postFive.body= "thy father";
+			postFive.author= firstTestMember;
+			postFive.organization= bothOrg;
+			postFive.date= "3/4/2015";
+			posts.save(postFive);
 
-			sixPost.date = "today";
-			sixPost.title = "Title 6";
-			sixPost.body = "This is my sixth body";
-			sixPost.author = secondTestMember;
-			sixPost.organization = secondTestOrg;
-			posts.save(sixPost);
-
-			sevenPost.date = "today";
-			sevenPost.title = "Title 7";
-			sevenPost.body = "This is my seventh body";
-			sevenPost.author = secondTestMember;
-			sevenPost.organization = thirdTestOrg;
-			posts.save(sevenPost);
-
-			eightPost.date = "today";
-			eightPost.title = "Title 8";
-			eightPost.body = "This is my eighth body";
-			eightPost.author = secondTestMember;
-			eightPost.organization = thirdTestOrg;
-			posts.save(eightPost);
-
-			ArrayList<Post> postsByOrgForAllMembers = new ArrayList<>();
-
-//			for (Organization currentOrg : allOrgs) {
-//				if (currentOrg.getId() == firstTestOrg.getId()) {
-//					for (Post currentPost : posts.findByOrganization(currentOrg)) {
-//						postsByOrgForAllMembers.add(posts.findById(currentPost.getId()));
-//						System.out.println("Posts in postList: " + postsByOrgForAllMembers.size());
-//					}
-//				} else if (currentOrg.getId() == secondTestOrg.getId()) {
-//					for (Post currentPost : posts.findByOrganization(currentOrg)) {
-//						postsByOrgForAllMembers.add(posts.findById(currentPost.getId()));
-//						System.out.println("Posts in postList: " + postsByOrgForAllMembers.size());
-//					}
-//
-//				}
-//				System.out.println("Final Posts in postList: " + postsByOrgForAllMembers.size());
-//			}
-
-			ArrayList<OrganizationMember> orgMembers = organizationmembers.findByMemberId(firstTestMember.getId());
-
-				for (OrganizationMember currentOrgMember: orgMembers){
-					postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization); //changing this to be ordered...
-					System.out.println(postsByOrgForAllMembers.size());
-				}
-
-			assertTrue(postsByOrgForAllMembers.size() == 4);
+			int index = 0;
+			ArrayList<OrganizationMember> orgMembers =organizationmembers.findByMemberId(secondTestMember.getId());
+			for (OrganizationMember currentOrgMember: orgMembers) {
+				retPosts.addAll(posts.findByOrganization(currentOrgMember.organization)); //changing this to be ordered...
+				System.out.println(index);
+				index++;
+			}
+			int postListsize = retPosts.size();
+			assertEquals(3, postListsize);
 
 		} finally {
 			posts.delete(onePost);
 			posts.delete(twoPost);
 			posts.delete(threePost);
 			posts.delete(fourPost);
-			posts.delete(fivePost);
-			posts.delete(sixPost);
-			posts.delete(sevenPost);
-			posts.delete(eightPost);
-			organizationmembers.delete(firstOrgFirstMember);
-			organizationmembers.delete(secondOrgFirstMember);
-			organizationmembers.delete(secondOrgSecondMember);
-			organizationmembers.delete(thirdOrgSecondMember);
+			posts.delete(postFive);
+			organizationmembers.delete(firstorgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(bothOrgJuliet);
+			organizationmembers.delete(bothOrgRomeo);
 			organizations.delete(firstTestOrg);
 			organizations.delete(secondTestOrg);
-			organizations.delete(thirdTestOrg);
+			organizations.delete(bothOrg);
 			members.delete(firstTestMember);
 			members.delete(secondTestMember);
 		}
@@ -1812,5 +1808,6 @@ public class CommunityAppApplicationTests {
 
 		}
 	}
+
 }
 

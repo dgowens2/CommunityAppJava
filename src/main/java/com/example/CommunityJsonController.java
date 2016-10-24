@@ -399,7 +399,7 @@ public class CommunityJsonController {
     }
 
     public List<Post> getAllPostsByAuthor(Member author) {
-        Iterable<Post> allPosts = posts.findByAuthor(author);
+        Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(author);
         List<Post> postList = new ArrayList<>();
         for (Post currentPost : allPosts) {
             postList.add(currentPost);
@@ -416,7 +416,7 @@ public class CommunityJsonController {
 
         try {
             member = members.findFirstByEmail(member.email);
-            Iterable<Post> allPosts = posts.findByAuthor(member);
+            Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(member);
             Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
             if (allPostsSize == 0) {
                 postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
@@ -457,7 +457,7 @@ public class CommunityJsonController {
 
                 System.out.println("Saving edited post");
 
-                myResponse.postList = posts.findByAuthor(author);
+                myResponse.postList = posts.findByAuthorOrderByDateAsc(author);
                 System.out.println("Returning list of posts by  author");
             } else {
                 myResponse.errorMessage = "Member did not create post and thus cannot edit it.";
@@ -570,7 +570,7 @@ public class CommunityJsonController {
         System.out.println("Looking for events from: " + member.firstName + " " + member.lastName);
         try {
             member = members.findFirstByEmail(member.email);
-            Iterable<Event> allEvents = events.findByOrganizer(member);
+            Iterable<Event> allEvents = events.findByOrganizerOrderByDateAsc(member);
             Long allEventsSize = allEvents.spliterator().getExactSizeIfKnown();
             if (allEventsSize == 0) {
                 eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
@@ -812,7 +812,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    postsByOrgForAllMembers = posts.findByOrganizationOrderByDateAsc(currentOrgMember.organization); //changing this to be ordered...
+                    postsByOrgForAllMembers.addAll(posts.findByOrganizationOrderByDateAsc(currentOrgMember.organization)); //changing this to be ordered...
                     myResponse.setPostList(postsByOrgForAllMembers);
                 }
             }
@@ -834,7 +834,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations.");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    eventsByOrgForAllMembers=  events.findByOrganizationOrderByDateAsc(currentOrgMember.organization); //changing this to be ordered...
+                    eventsByOrgForAllMembers.addAll(events.findByOrganizationOrderByDateAsc(currentOrgMember.organization)); //changing this to be ordered...
                     myResponse.setEventList(eventsByOrgForAllMembers);
                 }
             }
