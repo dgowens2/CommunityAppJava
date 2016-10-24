@@ -247,6 +247,7 @@ public class CommunityJsonController {
         qThreeEvent.information= "Bring your favorite dish to our monthly potluck!";
         qThreeEvent.location= "701 W Howard Ave, Decatur, GA 30030";
         qThreeEvent.organizer= demoMemberHP;
+        qThreeEvent.organization= quakersOrg;
         events.save(qThreeEvent);
 
         Post qOnePost = new Post();
@@ -365,21 +366,22 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(HttpSession session, @RequestBody Post post) {
-//        Member member = (Member) session.getAttribute("member");
+    public PostContainer createPost(HttpSession session, @RequestBody Post incomingPost) {
         Member author = (Member) session.getAttribute("member");  //changed member to author
+        System.out.println("Organization in post = " + incomingPost.organization);
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body);
         try {
-            if (post == null) {
+            if (incomingPost == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author, post.organization);
-                post.setMember(author);
-                posts.save(post);
+                Post newPost = new Post(incomingPost.date, incomingPost.title,
+                                        incomingPost.body, incomingPost.author, incomingPost.organization);
+                System.out.println("Organization in newly created post = " + newPost.getOrganization());
+                newPost.setMember(author);
+                posts.save(newPost);
                 postContainer.setPostList(getAllPostsByAuthor(author));
-                System.out.println("post id = " + post.id);
+                System.out.println("post id = " + newPost.id);
             }
         } catch (Exception ex){
             postContainer.setErrorMessage("An exception occurred creating a post");
@@ -399,7 +401,7 @@ public class CommunityJsonController {
     }
 
     public List<Post> getAllPostsByAuthor(Member author) {
-        Iterable<Post> allPosts = posts.findByAuthor(author);
+        Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(author);
         List<Post> postList = new ArrayList<>();
         for (Post currentPost : allPosts) {
             postList.add(currentPost);
@@ -416,7 +418,7 @@ public class CommunityJsonController {
 
         try {
             member = members.findFirstByEmail(member.email);
-            Iterable<Post> allPosts = posts.findByAuthor(member);
+            Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(member);
             Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
             if (allPostsSize == 0) {
                 postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
@@ -457,7 +459,7 @@ public class CommunityJsonController {
 
                 System.out.println("Saving edited post");
 
-                myResponse.postList = posts.findByAuthor(author);
+                myResponse.postList = posts.findByAuthorOrderByDateAsc(author);
                 System.out.println("Returning list of posts by  author");
             } else {
                 myResponse.errorMessage = "Member did not create post and thus cannot edit it.";
@@ -490,21 +492,21 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createEvent.json", method = RequestMethod.POST)
-    public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
+    public EventContainer createEvent(HttpSession session, @RequestBody Event incomingEvent) {
         Member member = (Member) session.getAttribute("member");
+        System.out.println("Organization in event = " + incomingEvent.organization);
         EventContainer myResponse = new EventContainer();
-        thisEvent = new Event(thisEvent.name, thisEvent.date, thisEvent.location, thisEvent.information);
-
         try{
-            if(thisEvent == null) {
+            if(incomingEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
-                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer, thisEvent.organization);
-                thisEvent.setOrganizer(member);
-                events.save(thisEvent);
-
+                Event newEvent = new Event(incomingEvent.name,incomingEvent.date, incomingEvent.location, incomingEvent.information, incomingEvent.organizer, incomingEvent.organization);
+                System.out.println("Organization in newly created event = " + newEvent.getOrganization());
+                newEvent.setOrganizer(member);
+                events.save(newEvent);
                 System.out.println("Creating event");
+                System.out.println("event id = " + newEvent.id);
                 myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             }
@@ -570,7 +572,7 @@ public class CommunityJsonController {
         System.out.println("Looking for events from: " + member.firstName + " " + member.lastName);
         try {
             member = members.findFirstByEmail(member.email);
-            Iterable<Event> allEvents = events.findByOrganizer(member);
+            Iterable<Event> allEvents = events.findByOrganizerOrderByDateAsc(member);
             Long allEventsSize = allEvents.spliterator().getExactSizeIfKnown();
             if (allEventsSize == 0) {
                 eventContainer.setErrorMessage("Event list was empty and therefore cannot be saved");
@@ -770,7 +772,7 @@ public class CommunityJsonController {
         PostContainer myResponse = new PostContainer();
         try {
             ArrayList<Post> postsByOrg = new ArrayList<>();
-            postsByOrg= posts.findByOrganization(organization);
+            postsByOrg= posts.findByOrganizationOrderByDateAsc(organization); //changing this to be ordered...
             if (postsByOrg == null){
                 myResponse.setErrorMessage("This organization has no posts");
             } else {
@@ -783,12 +785,35 @@ public class CommunityJsonController {
         return myResponse;
     }
 
+
+    @RequestMapping (path= "/membersOrgs.json", method = RequestMethod.POST)
+    public AnotherOrganizationContainer getAllPosts(HttpSession session, @RequestBody Member member){
+        AnotherOrganizationContainer myResponse = new AnotherOrganizationContainer();
+        try {
+            ArrayList<OrganizationMember> membersByOrg = new ArrayList<>();
+            membersByOrg= organizationMembers.findByMemberEmail(member.getEmail());
+            ArrayList<Organization> alOfMembersToReturn = new ArrayList<>();
+            if (membersByOrg == null){
+                myResponse.setErrorMessage("This member has no organizations");
+            } else {
+                for(OrganizationMember currentOrgMember: membersByOrg){
+                    alOfMembersToReturn.add(currentOrgMember.getOrganization());
+                }
+                    myResponse.setResponseOrganization(alOfMembersToReturn);
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in organizations by member.");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
     @RequestMapping (path= "/eventsByOrg.json", method = RequestMethod.POST)
     public EventContainer getAllEvents(HttpSession session, @RequestBody Organization organization){
         EventContainer myResponse = new EventContainer();
         try {
             ArrayList<Event> eventsByOrg = new ArrayList<>();
-            eventsByOrg = events.findByOrganization(organization);
+            eventsByOrg = events.findByOrganizationOrderByDateAsc(organization); //changing this to be ordered...
             if (eventsByOrg == null){
                 myResponse.setErrorMessage("This organization has no events");
             } else {
@@ -812,7 +837,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    postsByOrgForAllMembers = posts.findByOrganization(currentOrgMember.organization);
+                    postsByOrgForAllMembers.addAll(posts.findByOrganizationOrderByDateAsc(currentOrgMember.organization)); //changing this to be ordered...
                     myResponse.setPostList(postsByOrgForAllMembers);
                 }
             }
@@ -834,7 +859,7 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("This member has no organizations.");
             } else {
                 for (OrganizationMember currentOrgMember: orgMembers){
-                    eventsByOrgForAllMembers=  events.findByOrganization(currentOrgMember.organization);
+                    eventsByOrgForAllMembers.addAll(events.findByOrganizationOrderByDateAsc(currentOrgMember.organization)); //changing this to be ordered...
                     myResponse.setEventList(eventsByOrgForAllMembers);
                 }
             }
