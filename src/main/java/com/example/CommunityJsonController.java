@@ -370,8 +370,8 @@ public class CommunityJsonController {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
         System.out.println(author.firstName);
-        Organization organization = (Organization) session.getAttribute("organization");
-        System.out.println("Organization: " + organization.name);
+//        Organization organization = (Organization) session.getAttribute("organization");
+//        System.out.println("Organization: " + organization.name);
         PostContainer postContainer = new PostContainer();
         Post newPost = new Post(myContainer.retPost.date, myContainer.retPost.title, myContainer.retPost.body);
         try {
@@ -382,7 +382,7 @@ public class CommunityJsonController {
                 newPost = new Post(myContainer.retPost.date, myContainer.retPost.title, myContainer.retPost.body);
                 myContainer.retPost.setMember(author);
                 myContainer.retPost.setOrganization(myContainer.thisOrganization);
-                System.out.println("Organization: " + organization.name);
+//                System.out.println("Organization: " + organization.name);
                 posts.save(newPost);
                 postContainer.setPostList(getAllPostsByAuthor(author));
                 System.out.println("post id = " + newPost.id);
