@@ -247,6 +247,7 @@ public class CommunityJsonController {
         qThreeEvent.information= "Bring your favorite dish to our monthly potluck!";
         qThreeEvent.location= "701 W Howard Ave, Decatur, GA 30030";
         qThreeEvent.organizer= demoMemberHP;
+        qThreeEvent.organization= quakersOrg;
         events.save(qThreeEvent);
 
         Post qOnePost = new Post();
@@ -368,6 +369,7 @@ public class CommunityJsonController {
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
+        Organization organization = (Organization) session.getAttribute("organization");
         PostContainer postContainer = new PostContainer();
         post = new Post(post.date, post.title, post.body);
         try {
@@ -375,8 +377,9 @@ public class CommunityJsonController {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author, post.organization);
+                post = new Post(post.date, post.title, post.body, post.author);
                 post.setMember(author);
+                post.setOrganization(organization);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
                 System.out.println("post id = " + post.id);
@@ -778,6 +781,29 @@ public class CommunityJsonController {
             }
         }catch (Exception ex){
             myResponse.setErrorMessage("An exception occurred in getting posts by organization");
+            ex.printStackTrace();
+        }
+        return myResponse;
+    }
+
+
+    @RequestMapping (path= "/membersOrgs.json", method = RequestMethod.POST)
+    public AnotherOrganizationContainer getAllPosts(HttpSession session, @RequestBody Member member){
+        AnotherOrganizationContainer myResponse = new AnotherOrganizationContainer();
+        try {
+            ArrayList<OrganizationMember> membersByOrg = new ArrayList<>();
+            membersByOrg= organizationMembers.findByMemberEmail(member.getEmail());
+            ArrayList<Organization> alOfMembersToReturn = new ArrayList<>();
+            if (membersByOrg == null){
+                myResponse.setErrorMessage("This member has no organizations");
+            } else {
+                for(OrganizationMember currentOrgMember: membersByOrg){
+                    alOfMembersToReturn.add(currentOrgMember.getOrganization());
+                }
+                    myResponse.setResponseOrganization(alOfMembersToReturn);
+            }
+        }catch (Exception ex){
+            myResponse.setErrorMessage("An exception occurred in organizations by member.");
             ex.printStackTrace();
         }
         return myResponse;
