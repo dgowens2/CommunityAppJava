@@ -366,26 +366,27 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(HttpSession session, @RequestBody Post post) {
+    public PostContainer createPost(HttpSession session, @RequestBody RetrievalPostContainer postContainerRet) {
 //        Member member = (Member) session.getAttribute("member");
-        Member author = (Member) session.getAttribute("member");  //changed member to author
-        System.out.println(author.firstName);
-        Organization organization = (Organization) session.getAttribute("organization");
+//        Member author = (Member) session.getAttribute("member");  //changed member to author
+//        System.out.println(author.firstName);
+//        Organization organization = (Organization) session.getAttribute("organization");
 //        System.out.println("Organization: " + organization.name);
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body);
+        Post thisPost = new Post(postContainer.responsePost.date, postContainer.responsePost.title, postContainer.responsePost.body);
         try {
-            if (post == null) {
+            if (thisPost == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body);
-                post.setMember(author);
-                post.setOrganization(organization);
+               thisPost = new Post(postContainerRet.retPost.date, postContainerRet.retPost.title, postContainerRet.retPost.body);
+                thisPost.setMember(postContainerRet.getMember());
+               thisPost.setOrganization(postContainerRet.getThisOrganization());
+//              post.setOrganization(organization);
 //                System.out.println("Organization: " + organization.name);
-                posts.save(post);
-                postContainer.setPostList(getAllPostsByAuthor(author));
-                System.out.println("post id = " + post.id);
+                posts.save(thisPost);
+                postContainer.setPostList(getAllPostsByAuthor(postContainerRet.getMember()));
+//                System.out.println("post id = " + post.id);
             }
         } catch (Exception ex){
             postContainer.setErrorMessage("An exception occurred creating a post");
