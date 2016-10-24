@@ -369,6 +369,7 @@ public class CommunityJsonController {
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
+        Organization organization = (Organization) session.getAttribute("organization");
         PostContainer postContainer = new PostContainer();
         post = new Post(post.date, post.title, post.body);
         try {
@@ -376,8 +377,9 @@ public class CommunityJsonController {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author, post.organization);
+                post = new Post(post.date, post.title, post.body, post.author);
                 post.setMember(author);
+                post.setOrganization(organization);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
                 System.out.println("post id = " + post.id);

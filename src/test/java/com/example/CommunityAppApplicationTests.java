@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -1397,7 +1396,6 @@ public class CommunityAppApplicationTests {
 		Post twoPost = new Post();
 		Post threePost = new Post();
 		Post fourPost = new Post();
-
 		Post postFive = new Post();
 
 		ArrayList<Post> retPosts = new ArrayList<>();
@@ -1436,9 +1434,6 @@ public class CommunityAppApplicationTests {
 			firstorgMember = new OrganizationMember(firstTestOrg, firstTestMember);
 			organizationmembers.save(firstorgMember);
 
-			secondOrgMember = new OrganizationMember(secondTestOrg, secondTestMember);
-			organizationmembers.save(secondOrgMember);
-
 			onePost.date = "today";
 			onePost.title = "Title 1";
 			onePost.body = "This is my body";
@@ -1456,14 +1451,14 @@ public class CommunityAppApplicationTests {
 			threePost.date = "today";
 			threePost.title = "Title 3";
 			threePost.body = "This is my third body";
-			threePost.author = secondTestMember;
+			threePost.author = firstTestMember;
 			threePost.organization = secondTestOrg;
 			posts.save(threePost);
 
 			fourPost.date = "today";
 			fourPost.title = "Title 4";
 			fourPost.body = "This is my fourth body";
-			fourPost.author = secondTestMember;
+			fourPost.author = firstTestMember;
 			fourPost.organization = secondTestOrg;
 			posts.save(fourPost);
 
@@ -1483,7 +1478,6 @@ public class CommunityAppApplicationTests {
 			}
 			int postListsize = retPosts.size();
 			assertEquals(3, postListsize);
-
 
 		} finally {
 			posts.delete(onePost);
@@ -1813,6 +1807,7 @@ public class CommunityAppApplicationTests {
 			members.delete(thisMember);
 
 		}
+
 	}
 
 	@Test
@@ -1875,13 +1870,6 @@ public class CommunityAppApplicationTests {
 
 
 	}
-
-
-
-
-
-
-
 
 }
 
