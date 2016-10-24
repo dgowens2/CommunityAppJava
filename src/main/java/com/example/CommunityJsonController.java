@@ -369,20 +369,18 @@ public class CommunityJsonController {
     public PostContainer createPost(HttpSession session, @RequestBody Post post) {
 //        Member member = (Member) session.getAttribute("member");
         Member author = (Member) session.getAttribute("member");  //changed member to author
-        System.out.println(author.firstName);
-        Organization organization = (Organization) session.getAttribute("organization");
-        System.out.println("Organization: " + organization.name);
+        Organization organization = new Organization();
         PostContainer postContainer = new PostContainer();
-        post = new Post(post.date, post.title, post.body);
+//        post = new Post(post.date, post.title, post.body);
         try {
             if (post == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-                post = new Post(post.date, post.title, post.body, post.author);
+                post = new Post(post.date, post.title, post.body, post.author, post.organization);
                 post.setMember(author);
                 post.setOrganization(organization);
-                System.out.println("Organization: " + organization.name);
+//                System.out.println("Organization: " + organization.name);
                 posts.save(post);
                 postContainer.setPostList(getAllPostsByAuthor(author));
                 System.out.println("post id = " + post.id);
