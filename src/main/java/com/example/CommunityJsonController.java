@@ -294,6 +294,7 @@ public class CommunityJsonController {
         Post postOutsideTP = new Post();
         postOutsideTP.title= "Difficulty Level";
         postOutsideTP.body= "Please choose your difficulty level for the next meet on Friday. If you need assistance, please let me know and we can guage your level.";
+        postOutsideTP.date= "2016-10-28T12:00:01Z";
         postOutsideTP.author= demoMemberTH;
         postOutsideTP.organization= chessOrg;
         posts.save(postOutsideTP);
