@@ -32,22 +32,6 @@ public class Post {
     public Post() {
     }
 
-    public Member getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Member author) {
-        this.author = author;
-    }
-
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
-
     public Post(String date, String title, String body, Member author, Organization organization) {
         this.date = date;
         this.title = title;
@@ -60,6 +44,13 @@ public class Post {
         this.date = date;
         this.title = title;
         this.body = body;
+    }
+
+    public Post(String date, String title, String body, Member author) {
+        this.date = date;
+        this.title = title;
+        this.body = body;
+        this.author = author;
     }
 
     public int getId() {

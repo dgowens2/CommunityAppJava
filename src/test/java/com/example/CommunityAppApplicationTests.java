@@ -331,11 +331,18 @@ public class CommunityAppApplicationTests {
 
 	@Test
 	public void testCreatePost() {
+		Organization myOrg = new Organization();
 		Post testPost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
 		ArrayList<Post> dbPosts = new ArrayList<Post>();
+		ArrayList<Post> dbPostsPartTwo = new ArrayList<Post>();
 		Member tester = new Member();
 
 		try {
+			myOrg.name= "Trick or Treat";
+			organizations.save(myOrg);
+
 			tester.firstName = "Tupelo";
 			tester.lastName = "MS";
 			tester.email = "twf@gmail.com";
@@ -343,17 +350,41 @@ public class CommunityAppApplicationTests {
 			tester.streetAddress = "543 TIY Drive, Atlanta, GA 30102";
 			members.save(tester);
 
-			testPost.date = "2/3/14 ~ 2:10 AM";
+			testPost.date = "2014-02-03T02:13:12Z";
 			testPost.title = "Goodies";
 			testPost.body = "Not my goodies";
 			testPost.author = tester;
+			testPost.organization= myOrg;
 			posts.save(testPost);
-			dbPosts = posts.findByAuthor(tester);
 
+			twoPost.date= "2011-05-03T04:23:12Z";
+			twoPost.title= "Dear Diary";
+			twoPost.body= "Today was a long day";
+			twoPost.author= tester;
+			twoPost.organization= myOrg;
+			posts.save(twoPost);
+
+			threePost.date= "2011-05-03T01:23:12Z";
+			threePost.title= "Dear Diary";
+			threePost.body= "Today was a long day";
+			threePost.author= tester;
+			threePost.organization= myOrg;
+			posts.save(threePost);
+
+
+			dbPosts = posts.findByAuthor(tester);
 			assertNotNull(dbPosts);
+
+			dbPostsPartTwo = posts.findByAuthorOrderByDateAsc(tester);
+			for (Post currentPost: dbPostsPartTwo){
+				System.out.println(currentPost.getDate());
+			}
 
 		} finally {
 			posts.delete(testPost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			organizations.delete(myOrg);
 			members.delete(tester);
 
 		}
@@ -937,6 +968,8 @@ public class CommunityAppApplicationTests {
 		Event secondTestEvent = new Event();
 		ArrayList<Event> dbEvents = new ArrayList<>();
 		ArrayList<Event> dbEventsNone = new ArrayList<>();
+		ArrayList<Event> dbEventsOrdered = new ArrayList<>();
+
 
 		try {
 			testMember.firstName = "Hirum";
@@ -956,14 +989,14 @@ public class CommunityAppApplicationTests {
 
 			testEvent.organizer = secondTestMember;
 
-			testEvent.date ="9/9/2017 ~ 15:30";
+			testEvent.date ="2017-09-09T16:15:12Z";
 			testEvent.name = "Charity Rides for children";
 			testEvent.information= "Two day for children";
 			testEvent.location ="Dragon Tail";
 			events.save(testEvent);
 
 			secondTestEvent.organizer = secondTestMember;
-			secondTestEvent.date ="5/24/2017 ~ 13:00";
+			secondTestEvent.date ="2016-05-24T14:13:12Z";
 			secondTestEvent.name = "County Fair at the Square";
 			secondTestEvent.information= "Fun for the whole family";
 			secondTestEvent.location ="Charming Square";
@@ -974,6 +1007,12 @@ public class CommunityAppApplicationTests {
 
 			dbEvents = events.findByOrganizer(secondTestMember);
 			assertEquals(2, dbEvents.size());
+
+			dbEventsOrdered= events.findByOrganizerOrderByDateAsc(secondTestMember);
+			for (Event currentEvent: dbEventsOrdered){
+				System.out.println(currentEvent.getDate());
+			}
+
 
 
 		} finally {
@@ -1339,6 +1378,498 @@ public class CommunityAppApplicationTests {
 		}
 	}
 
+	@Test
+	public void testViewPostsAcrossOrgs() {
+		Organization firstTestOrg = new Organization();
+		Organization secondTestOrg = new Organization();
+		Organization bothOrg = new Organization();
+
+		Member firstTestMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember firstorgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+
+		OrganizationMember bothOrgRomeo = new OrganizationMember();
+		OrganizationMember bothOrgJuliet = new OrganizationMember();
+
+		Post onePost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
+		Post fourPost = new Post();
+		Post postFive = new Post();
+
+		ArrayList<Post> retPosts = new ArrayList<>();
+
+		try {
+			firstTestMember.firstName = "Romeo";
+			firstTestMember.lastName = "Montague";
+			firstTestMember.email = "rm@play.com";
+			firstTestMember.password = "password";
+			firstTestMember.streetAddress = "Fair Verona";
+			firstTestMember.photoURL = "what is internet?";
+			members.save(firstTestMember);
+
+			secondTestMember.firstName = "Juliet";
+			secondTestMember.lastName = "Capulet";
+			secondTestMember.email = "jc@play.com";
+			secondTestMember.password = "password";
+			secondTestMember.streetAddress = "Fair Verona";
+			secondTestMember.photoURL = "yes, what is internet?";
+			members.save(secondTestMember);
+
+			firstTestOrg.name = "The Montagues";
+			organizations.save(firstTestOrg);
+
+			secondTestOrg.name = "The Capulets";
+			organizations.save(secondTestOrg);
+
+			bothOrg.name = "Star Crossed Lovers";
+			organizations.save(bothOrg);
+
+			bothOrgJuliet= new OrganizationMember(bothOrg, secondTestMember);
+			organizationmembers.save(bothOrgJuliet);
+			bothOrgRomeo = new OrganizationMember(bothOrg, firstTestMember);
+			organizationmembers.save(bothOrgRomeo);
+
+			firstorgMember = new OrganizationMember(firstTestOrg, firstTestMember);
+			organizationmembers.save(firstorgMember);
+
+			onePost.date = "today";
+			onePost.title = "Title 1";
+			onePost.body = "This is my body";
+			onePost.author = firstTestMember;
+			onePost.organization = firstTestOrg;
+			posts.save(onePost);
+
+			twoPost.date = "today";
+			twoPost.title = "Title 2";
+			twoPost.body = "This is my second body";
+			twoPost.author = firstTestMember;
+			twoPost.organization = firstTestOrg;
+			posts.save(twoPost);
+
+			threePost.date = "today";
+			threePost.title = "Title 3";
+			threePost.body = "This is my third body";
+			threePost.author = firstTestMember;
+			threePost.organization = secondTestOrg;
+			posts.save(threePost);
+
+			fourPost.date = "today";
+			fourPost.title = "Title 4";
+			fourPost.body = "This is my fourth body";
+			fourPost.author = firstTestMember;
+			fourPost.organization = secondTestOrg;
+			posts.save(fourPost);
+
+			postFive.title= "Deny";
+			postFive.body= "thy father";
+			postFive.author= firstTestMember;
+			postFive.organization= bothOrg;
+			postFive.date= "3/4/2015";
+			posts.save(postFive);
+
+			int index = 0;
+			ArrayList<OrganizationMember> orgMembers =organizationmembers.findByMemberId(secondTestMember.getId());
+			for (OrganizationMember currentOrgMember: orgMembers) {
+				retPosts.addAll(posts.findByOrganization(currentOrgMember.organization)); //changing this to be ordered...
+				System.out.println(index);
+				index++;
+			}
+			int postListsize = retPosts.size();
+			assertEquals(3, postListsize);
+
+		} finally {
+			posts.delete(onePost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			posts.delete(fourPost);
+			posts.delete(postFive);
+			organizationmembers.delete(firstorgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(bothOrgJuliet);
+			organizationmembers.delete(bothOrgRomeo);
+			organizations.delete(firstTestOrg);
+			organizations.delete(secondTestOrg);
+			organizations.delete(bothOrg);
+			members.delete(firstTestMember);
+			members.delete(secondTestMember);
+		}
+	}
+
+	@Test
+	public void testPostsByAllMembersOrgsOrdered() {
+		Organization secondOrg = new Organization();
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+		Post onePost = new Post();
+		Post twoPost = new Post();
+		Post threePost = new Post();
+		Post sameDateDifferentTime = new Post();
+		Post sameMonthDifferentDate = new Post();
+
+		try{
+			secondOrg.name= "Jamrock";
+			organizations.save(secondOrg);
+
+			testMember.firstName = "Jessica";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "roads@yahoo.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			onePost.title = "Live Code Session";
+			onePost.date = "1994-10-22T14:23:12Z";
+			onePost.body ="Come sail away with me";
+			onePost.author = testMember;
+			onePost.organization = secondOrg;
+			posts.save(onePost);
+
+			secondTestMember.firstName = "Cherry";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "jaxa@yahoo.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			twoPost.author = testMember;
+			twoPost.date = "2016-10-22T12:23:12Z";
+			twoPost.title = "Brice's Adventure";
+			twoPost.body="Car accidents hurt";
+			twoPost.organization = secondOrg;
+			posts.save(twoPost);
+
+			threePost.author = secondTestMember;
+			threePost.date = "2018-03-01T03:45:12Z";
+			threePost.title = "Solve the puzzle";
+			threePost.body="Naming conventions are sometimes hard";
+			threePost.organization = secondOrg;
+			posts.save(threePost);
+
+			sameDateDifferentTime.title = "Same date dif time";
+			sameDateDifferentTime.author= testMember;
+			sameDateDifferentTime.organization= secondOrg;
+			sameDateDifferentTime.body= "so we meet again";
+			sameDateDifferentTime.date= "2016-05-25T21:55:12Z";
+			posts.save(sameDateDifferentTime);
+
+			sameMonthDifferentDate.title= "Fizz";
+			sameMonthDifferentDate.body= "Buzz";
+			sameMonthDifferentDate.organization= secondOrg;
+			sameMonthDifferentDate.author= testMember;
+			sameMonthDifferentDate.date= "2016-01-02T03:45:12Z";
+			posts.save(sameMonthDifferentDate);
+
+
+			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+			organizationmembers.save(secondOrgMemberTest);
+
+
+			ArrayList<Post> orgPosts= posts.findByOrganizationOrderByDateAsc(secondOrg);
+//no assert here b/c I'm not sure what to assert...
+			for (Post currentPost: orgPosts) {
+				System.out.println(currentPost.getDate());
+			}
+
+		}finally {
+			posts.delete(onePost);
+			posts.delete(twoPost);
+			posts.delete(threePost);
+			posts.delete(sameDateDifferentTime);
+			posts.delete(sameMonthDifferentDate);
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(secondOrgMemberTest);
+			organizations.delete(secondOrg);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
+
+	@Test
+	public void testEventsByAllMembersOrgsOrdered() {
+		Organization secondOrg = new Organization();
+		Member testMember = new Member();
+		Member secondTestMember = new Member();
+		OrganizationMember orgMember = new OrganizationMember();
+		OrganizationMember secondOrgMember = new OrganizationMember();
+		OrganizationMember secondOrgMemberTest = new OrganizationMember();
+		Event oneEvent = new Event();
+		Event twoEvent= new Event();
+		Event threeEvent = new Event();
+		Event sameDateDifferentTime = new Event();
+		Event sameMonthDifferentDate = new Event();
+
+		try{
+			secondOrg.name= "Familiar";
+			organizations.save(secondOrg);
+
+			testMember.firstName = "Jessica";
+			testMember.lastName = "Wilcox";
+			testMember.streetAddress = "539 Fells Creek Rd ..";
+			testMember.email= "roads@yahoo.com";
+			testMember.password = "newroad";
+			members.save(testMember);
+
+			secondTestMember.firstName = "Cherry";
+			secondTestMember.lastName = "Teller";
+			secondTestMember.streetAddress = "877 Fells Creek Rd ..";
+			secondTestMember.email= "jaxa@yahoo.com";
+			secondTestMember.password = "redwoodorginal";
+			members.save(secondTestMember);
+
+			oneEvent.date = "2016-07-13T05:55:12Z";
+			oneEvent.name = "Shop til you drop";
+			oneEvent.location = "Game Show Studio";
+			oneEvent.information = "Play the game!";
+			oneEvent.organizer= testMember;
+			oneEvent.organization = secondOrg;
+			events.save(oneEvent);
+
+
+//			oneEvent.name= "Shop til you drop";
+//			oneEvent.date= "2016-07-13T05:55:12Z";
+//			oneEvent.location= "Game Show Studio";
+//			oneEvent.information= "Play the game! ";
+//			oneEvent.organizer= testMember;
+//			oneEvent.organization= secondOrg;
+//			events.save(oneEvent);
+
+			twoEvent.name= "Wheel of Fortune";
+			twoEvent.date= "1990-01-25T09:08:12Z";
+			twoEvent.location= "A different Studio";
+			twoEvent.information= "Spin the wheel and guess the names";
+			twoEvent.organizer= testMember;
+			twoEvent.organization= secondOrg;
+			events.save(twoEvent);
+
+			threeEvent.name= "Press your Luck";
+			threeEvent.date= "2017-01-25T21:55:12Z";
+			threeEvent.location= "Studio B";
+			threeEvent.information= "Big Money no whammies!";
+			threeEvent.organizer= testMember;
+			threeEvent.organization= secondOrg;
+			events.save(threeEvent);
+
+			sameDateDifferentTime.name= "NewlyWed Game";
+			sameDateDifferentTime.date= "2017-01-25T10:30:12Z";
+			sameDateDifferentTime.location= "Studio H";
+			sameDateDifferentTime.information= "See how well you know your spouse";
+			sameDateDifferentTime.organizer= testMember;
+			sameDateDifferentTime.organization= secondOrg;
+			events.save(sameDateDifferentTime);
+
+			sameMonthDifferentDate.name= "Family Feud";
+			sameMonthDifferentDate.date= "2017-01-01T12:55:12Z";
+			sameMonthDifferentDate.location= "Studio ATL";
+			sameMonthDifferentDate.information= "Guess things in categories with your family";
+			sameMonthDifferentDate.organizer= secondTestMember;
+			sameMonthDifferentDate.organization= secondOrg;
+			events.save(sameMonthDifferentDate);
+
+			secondOrgMember = new OrganizationMember(secondOrg, secondTestMember);
+			organizationmembers.save(secondOrgMember);
+
+			secondOrgMemberTest = new OrganizationMember(secondOrg, testMember);
+			organizationmembers.save(secondOrgMemberTest);
+
+			ArrayList<Event> orgEvents= events.findByOrganizationOrderByDateAsc(secondOrg);
+//no assert here b/c I'm not sure what to assert...
+			for (Event currentEvent: orgEvents) {
+				System.out.println(currentEvent.getDate());
+			}
+
+		}finally {
+			events.delete(oneEvent);
+			events.delete(twoEvent);
+			events.delete(threeEvent);
+			events.delete(sameDateDifferentTime);
+			events.delete(sameMonthDifferentDate);
+			organizationmembers.delete(orgMember);
+			organizationmembers.delete(secondOrgMember);
+			organizationmembers.delete(secondOrgMemberTest);
+			organizations.delete(secondOrg);
+			members.delete(testMember);
+			members.delete(secondTestMember);
+		}
+	}
+
+	@Test
+	public void testFindMembersByOrg(){
+		Member memberOne = new Member();
+		Member memberTwo = new Member();
+		Member memberThree = new Member();
+
+		Organization oneOrg = new Organization();
+		Organization twoOrg = new Organization();
+
+		OrganizationMember orgMemberOne = new OrganizationMember();
+		OrganizationMember orgMemberTwo = new OrganizationMember();
+		OrganizationMember orgMemberThree = new OrganizationMember();
+
+		try{
+
+			memberOne.firstName= "Frank";
+			memberOne.lastName= "Nike";
+			memberOne.streetAddress= "192 Ocean Way....";
+			memberOne.photoURL= "google.com";
+			memberOne.email= "nikes@frank.com";
+			memberOne.password= "rings";
+			members.save(memberOne);
+
+			memberTwo.firstName= "Alfred";
+			memberTwo.lastName= "Enoch";
+			memberTwo.email= "ae@law.com";
+			memberTwo.photoURL= "my photo";
+			memberTwo.streetAddress=" 900 Mur way ";
+			memberTwo.password= "password";
+			members.save(memberTwo);
+
+			memberThree.firstName= "Roman";
+			memberThree.lastName= "Rev";
+			memberThree.photoURL= "this is a photo url";
+			memberThree.streetAddress= " 85 Letty Way ";
+			memberThree.password= "pass";
+			memberThree.email= "romanr@gmail.com";
+			members.save(memberThree);
+
+			oneOrg.name= "NaanStop";
+			organizations.save(oneOrg);
+
+			twoOrg.name= "Greene's";
+			organizations.save(twoOrg);
+
+			orgMemberOne= new OrganizationMember(oneOrg, memberOne);
+			organizationmembers.save(orgMemberOne);
+
+			orgMemberTwo= new OrganizationMember(oneOrg, memberTwo);
+			organizationmembers.save(orgMemberTwo);
+
+			orgMemberThree = new OrganizationMember(oneOrg, memberThree);
+			organizationmembers.save(orgMemberThree);
+
+			ArrayList<OrganizationMember> listOMembers = new ArrayList<>();
+			listOMembers = organizationmembers.findMembersByOrganization(twoOrg);
+			assertEquals (listOMembers.size(), 0);
+
+			ArrayList<OrganizationMember> listOfRealMembers = new ArrayList<>();
+			listOfRealMembers = organizationmembers.findMembersByOrganization(oneOrg);
+			assertNotNull (listOfRealMembers);
+
+		} finally {
+			organizationmembers.delete(orgMemberOne);
+			organizationmembers.delete(orgMemberTwo);
+			organizationmembers.delete(orgMemberThree);
+			organizations.delete(oneOrg);
+			organizations.delete(twoOrg);
+			members.delete(memberOne);
+			members.delete(memberTwo);
+			members.delete(memberThree);
+
+		}
+
+	}
+
+	@Test
+	public void testEditMemberProfile(){
+		Member thisMember = new Member();
+		Member dbMember = new Member();
+		Member anotherDbMember = new Member();
+
+		try{
+			thisMember.firstName= "Morty";
+			thisMember.lastName= "Miguel";
+			thisMember.streetAddress= "";
+			thisMember.email= "mort@gmail.com";
+			thisMember.password= "mortality";
+			thisMember.photoURL= " default";
+			members.save(thisMember);
+
+
+			dbMember= members.findFirstByEmail(thisMember.getEmail());
+			assertEquals(dbMember.firstName, "Morty");
+
+			dbMember.password= "ichangeditwoooo";
+			members.save(dbMember);
+
+			anotherDbMember= members.findFirstByEmail("mort@gmail.com");
+
+			assertEquals(anotherDbMember.id, dbMember.id, thisMember.id);
+
+		} finally {
+			members.delete(thisMember);
+
+		}
+
+	}
+
+	@Test
+	public void testMembersOrgs() {
+		Member theMember = new Member();
+		Organization firstOrg = new Organization();
+		Organization secondOrg = new Organization();
+		Organization thirdOrg = new Organization();
+		OrganizationMember firstOM = new OrganizationMember();
+		OrganizationMember secondOM = new OrganizationMember();
+		OrganizationMember thirdOM = new OrganizationMember();
+
+		try {
+			theMember.firstName = "Tara";
+			theMember.lastName = "McLatey";
+			theMember.email= "tm@gmail.com";
+			theMember.password= "mypass13";
+			theMember.streetAddress= "115 MLK";
+			members.save(theMember);
+
+			firstOrg.name= "Toyko Joe's";
+			organizations.save(firstOrg);
+
+			secondOrg.name= "Coyote's";
+			organizations.save(secondOrg);
+
+			thirdOrg.name= "Cat Cafe";
+			organizations.save(thirdOrg);
+
+			firstOM= new OrganizationMember(firstOrg, theMember);
+			organizationmembers.save(firstOM);
+
+			secondOM = new OrganizationMember(secondOrg, theMember);
+			organizationmembers.save(secondOM);
+
+			thirdOM= new OrganizationMember(thirdOrg, theMember);
+			organizationmembers.save(thirdOM);
+
+
+			ArrayList<OrganizationMember> membersByOrg = new ArrayList<>();
+			membersByOrg = organizationmembers.findByMemberEmail(theMember.getEmail());
+			ArrayList<Organization> alOfMembersToReturn = new ArrayList<>();
+			for (OrganizationMember currentOrgMember : membersByOrg) {
+				alOfMembersToReturn.add(currentOrgMember.getOrganization());
+			}
+
+			int sizeOfAL = alOfMembersToReturn.size();
+
+			assertEquals(sizeOfAL, 3);
+
+		} finally {
+			organizationmembers.delete(firstOM);
+			organizationmembers.delete(secondOM);
+			organizationmembers.delete(thirdOM);
+			members.delete(theMember);
+			organizations.delete(firstOrg);
+			organizations.delete(secondOrg);
+			organizations.delete(thirdOrg);
+		}
+
+
+	}
 
 }
 

@@ -30,6 +30,9 @@ public class Member {
     @Column (nullable = false)
     String streetAddress;
 
+    @Column
+    String photoURL;
+
     public int getId() {
         return id;
     }
@@ -78,16 +81,24 @@ public class Member {
         this.streetAddress = streetAddress;
     }
 
-    public Member (String email, String firstName, String lastName, String password, String streetAddress){
+    public Member(){
+
+    }
+
+    public Member(String firstName, String lastName, String email, String password, String streetAddress, String photoURL) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.streetAddress = streetAddress;
-
+        this.photoURL = photoURL;
     }
 
-    public Member(){
+    public String getPhotoURL() {
+        return photoURL;
+    }
 
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 }
