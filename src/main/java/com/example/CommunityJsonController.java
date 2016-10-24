@@ -273,6 +273,30 @@ public class CommunityJsonController {
         qThreePost.author= demoMemberHP;
         qThreePost.organization= quakersOrg;
         posts.save(qThreePost);
+
+        Post postOutsideHP = new Post();
+        postOutsideHP.title= "Streches";
+        postOutsideHP.body= "Please stretch before the meet next week, remember the regiment we went over in practice.";
+        postOutsideHP.date= "2016-10-27T15:00:01Z";
+        postOutsideHP.author= demoMemberHP;
+        postOutsideHP.organization= swimmerOrg;
+        posts.save(postOutsideHP);
+
+        Event eventOutsideWS = new Event();
+        eventOutsideWS.name= "New Book";
+        eventOutsideWS.date= "2016-11-06T11:30:01Z";
+        eventOutsideWS.information= "Please read Life After the Fresh Prince for our next meeting.";
+        eventOutsideWS.location= "100 Peachtree St NW, Atlanta, GA 30303";
+        eventOutsideWS.organizer= demoMemberWS;
+        eventOutsideWS.organization= bookOrg;
+        events.save(eventOutsideWS);
+
+        Post postOutsideTP = new Post();
+        postOutsideTP.title= "Difficulty Level";
+        postOutsideTP.body= "Please choose your difficulty level for the next meet on Friday. If you need assistance, please let me know and we can guage your level.";
+        postOutsideTP.author= demoMemberTH;
+        postOutsideTP.organization= chessOrg;
+        posts.save(postOutsideTP);
     }
 
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)

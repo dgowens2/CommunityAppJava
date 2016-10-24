@@ -46,6 +46,7 @@ public class Post {
         this.body = body;
     }
 
+
     public Post(String date, String title, String body, Member author) {
         this.date = date;
         this.title = title;
