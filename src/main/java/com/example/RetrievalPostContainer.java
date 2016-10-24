@@ -9,7 +9,23 @@ public class RetrievalPostContainer {
 
     Post retPost;
     Organization thisOrganization;
+    Member member;
 
+    public Post getRetPost() {
+        return retPost;
+    }
+
+    public void setRetPost(Post retPost) {
+        this.retPost = retPost;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
 
     public RetrievalPostContainer() {
     }
