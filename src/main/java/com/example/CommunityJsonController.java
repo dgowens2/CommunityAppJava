@@ -365,7 +365,7 @@ public class CommunityJsonController {
                     organizationMembers.save(welcomeMember);
 
                     myResponse.responseMember = member;
-                    session.setAttribute("member", member);
+//                    session.setAttribute("member", member);
                     //later they would create an org
                 }
             } else {
