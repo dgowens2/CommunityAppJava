@@ -67,7 +67,7 @@ public class CommunityJsonController {
         demoMemberRBT.email = "rebecca.m.bearden@gmail.com";
         demoMemberRBT.password = "password";
         demoMemberRBT.streetAddress = "1600 Penn Ave";
-        demoMemberRBT.photoURL = "https://s9.postimg.org/47zz5c4ez/Rebecca.jpg";
+        demoMemberRBT.photoURL = "https://res.cloudinary.com/codezero/image/upload/v1477499090/Rebecca_resjp9.jpg";
         members.save(demoMemberRBT);
 
         OrganizationMember newOrgMember = new OrganizationMember(techOrg, demoMemberRBT);
@@ -82,7 +82,7 @@ public class CommunityJsonController {
         demoMemberDG.streetAddress = "382 Penn Ave";
         demoMemberDG.email= "dgowens@gmail.com";
         demoMemberDG.password= "candycorn";
-        demoMemberDG.photoURL= "https://s9.postimg.org/k4yr21wt7/Donald.jpg";
+        demoMemberDG.photoURL= "https://res.cloudinary.com/codezero/image/upload/v1477499091/Donald_jdcv33.jpg";
         members.save(demoMemberDG);
 
         OrganizationMember secondOrgMember = new OrganizationMember(techOrg, demoMemberDG);
@@ -97,7 +97,7 @@ public class CommunityJsonController {
         demoMemberDE.streetAddress = "485 Penn Ave";
         demoMemberDE.email= "dan.esrey@gmail.com";
         demoMemberDE.password= "97thpercentile";
-        demoMemberDE.photoURL= "https://s9.postimg.org/w5k72s47v/Daniel_E.jpg";
+        demoMemberDE.photoURL= "https://res.cloudinary.com/codezero/image/upload/v1477499090/Daniel_E_givqvt.jpg";
         members.save(demoMemberDE);
 
         OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
