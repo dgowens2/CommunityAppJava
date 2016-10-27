@@ -317,7 +317,7 @@ public class CommunityJsonController {
             } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
                 System.out.println(newMember.firstName + " " + newMember.lastName + " is logging in");
                 if (newMember.photoURL == null) {
-                    newMember.setPhotoURL("dummy photo URL");
+                    newMember.setPhotoURL("https://res.cloudinary.com/codezero/image/upload/v1477588544/default-member-avatar_dxqzjv.jpg");
                 }
                 session.setAttribute("member", newMember);
                 myResponse.responseMember = newMember;
@@ -344,7 +344,7 @@ public class CommunityJsonController {
                         Organization organization = currentInvite.getOrganization();
                         member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
                         if (member.photoURL == null) {
-                            member.setPhotoURL("dummy photo URL");
+                            member.setPhotoURL("https://res.cloudinary.com/codezero/image/upload/v1477588544/default-member-avatar_dxqzjv.jpg");
                         }
                         members.save(member);
                         OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
@@ -356,7 +356,7 @@ public class CommunityJsonController {
                 } else {
                     member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
                     if (member.photoURL == null) {
-                        member.setPhotoURL("dummy photo URL");
+                        member.setPhotoURL("https://res.cloudinary.com/codezero/image/upload/v1477588544/default-member-avatar_dxqzjv.jpg");
                     }
                     members.save(member);
                     Organization welOrg = organizations.findByName("Welcome Organization");
