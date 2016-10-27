@@ -665,8 +665,9 @@ public class CommunityJsonController {
                 myResponse.setErrorMessage("Invited email was null");
                 System.out.println("Invited email was null");
             } else {
-            myResponse.setSuccessMessage("Invitation sent successfully");
-                System.out.println("Invitation sent successfully to: " + invitedEmail);
+//                Invitation newInvitation = new Invitation(member, invitedEmail.toString(), )
+                myResponse.setSuccessMessage("Invitation sent successfully");
+                System.out.println("Invitation sent successfully to: " + invitedEmail.toString() + "from " + member.getFirstName());
             }
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");
