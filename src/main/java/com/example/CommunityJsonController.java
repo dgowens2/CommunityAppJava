@@ -657,17 +657,20 @@ public class CommunityJsonController {
 
 
     @RequestMapping(path = "/sendInvitation.json", method = RequestMethod.POST)
-    public InvitationContainer evite(HttpSession session, @RequestBody String invitedEmail) throws Exception {
+    public InvitationContainer evite(HttpSession session, @RequestBody Invitation incomingInvitation) throws Exception {
         InvitationContainer myResponse = new InvitationContainer();
         Member member = (Member) session.getAttribute("member");
         try{
-            if (invitedEmail == null){
+            if (incomingInvitation.invitedEmail == null){
                 myResponse.setErrorMessage("Invited email was null");
                 System.out.println("Invited email was null");
             } else {
-//                Invitation newInvitation = new Invitation(member, invitedEmail.toString(), )
+                Invitation newInvitation = new Invitation(member, incomingInvitation.invitedEmail, incomingInvitation.organization);
+                System.out.println("Invitation sent successfully to: " + newInvitation.invitedEmail + " from " + member.getFirstName());
+                System.out.println("Organization for newly created invitation = " + newInvitation.getOrganization());
+                newInvitation.setInvitingMember(member);
+                invitations.save(newInvitation);
                 myResponse.setSuccessMessage("Invitation sent successfully");
-                System.out.println("Invitation sent successfully to: " + invitedEmail.toString() + "from " + member.getFirstName());
             }
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");
