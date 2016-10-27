@@ -67,7 +67,7 @@ public class CommunityJsonController {
         demoMemberRBT.email = "rebecca.m.bearden@gmail.com";
         demoMemberRBT.password = "password";
         demoMemberRBT.streetAddress = "1600 Penn Ave";
-        demoMemberRBT.photoURL = "https://s9.postimg.org/47zz5c4ez/Rebecca.jpg";
+        demoMemberRBT.photoURL = "https://res.cloudinary.com/codezero/image/upload/v1477499090/Rebecca_resjp9.jpg";
         members.save(demoMemberRBT);
 
         OrganizationMember newOrgMember = new OrganizationMember(techOrg, demoMemberRBT);
@@ -82,7 +82,7 @@ public class CommunityJsonController {
         demoMemberDG.streetAddress = "382 Penn Ave";
         demoMemberDG.email= "dgowens@gmail.com";
         demoMemberDG.password= "candycorn";
-        demoMemberDG.photoURL= "https://s9.postimg.org/k4yr21wt7/Donald.jpg";
+        demoMemberDG.photoURL= "https://res.cloudinary.com/codezero/image/upload/v1477499091/Donald_jdcv33.jpg";
         members.save(demoMemberDG);
 
         OrganizationMember secondOrgMember = new OrganizationMember(techOrg, demoMemberDG);
@@ -97,7 +97,7 @@ public class CommunityJsonController {
         demoMemberDE.streetAddress = "485 Penn Ave";
         demoMemberDE.email= "dan.esrey@gmail.com";
         demoMemberDE.password= "97thpercentile";
-        demoMemberDE.photoURL= "https://s9.postimg.org/w5k72s47v/Daniel_E.jpg";
+        demoMemberDE.photoURL= "https://res.cloudinary.com/codezero/image/upload/v1477499090/Daniel_E_givqvt.jpg";
         members.save(demoMemberDE);
 
         OrganizationMember thirdOrgMember = new OrganizationMember(techOrg, demoMemberDE);
@@ -273,6 +273,31 @@ public class CommunityJsonController {
         qThreePost.author= demoMemberHP;
         qThreePost.organization= quakersOrg;
         posts.save(qThreePost);
+
+        Post postOutsideHP = new Post();
+        postOutsideHP.title= "Streches";
+        postOutsideHP.body= "Please stretch before the meet next week, remember the regiment we went over in practice.";
+        postOutsideHP.date= "2016-10-27T15:00:01Z";
+        postOutsideHP.author= demoMemberHP;
+        postOutsideHP.organization= swimmerOrg;
+        posts.save(postOutsideHP);
+
+        Event eventOutsideWS = new Event();
+        eventOutsideWS.name= "New Book";
+        eventOutsideWS.date= "2016-11-06T11:30:01Z";
+        eventOutsideWS.information= "Please read Life After the Fresh Prince for our next meeting.";
+        eventOutsideWS.location= "100 Peachtree St NW, Atlanta, GA 30303";
+        eventOutsideWS.organizer= demoMemberWS;
+        eventOutsideWS.organization= bookOrg;
+        events.save(eventOutsideWS);
+
+        Post postOutsideTP = new Post();
+        postOutsideTP.title= "Difficulty Level";
+        postOutsideTP.body= "Please choose your difficulty level for the next meet on Friday. If you need assistance, please let me know and we can guage your level.";
+        postOutsideTP.date= "2016-10-28T12:00:01Z";
+        postOutsideTP.author= demoMemberTH;
+        postOutsideTP.organization= chessOrg;
+        posts.save(postOutsideTP);
     }
 
     @RequestMapping(path = "/login.json", method = RequestMethod.POST)
@@ -366,27 +391,22 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createPost.json", method = RequestMethod.POST)
-    public PostContainer createPost(HttpSession session, @RequestBody RetrievalPostContainer postContainerRet) {
-//        Member member = (Member) session.getAttribute("member");
-//        Member author = (Member) session.getAttribute("member");  //changed member to author
-//        System.out.println(author.firstName);
-//        Organization organization = (Organization) session.getAttribute("organization");
-//        System.out.println("Organization: " + organization.name);
+    public PostContainer createPost(HttpSession session, @RequestBody Post incomingPost) {
+        Member author = (Member) session.getAttribute("member");  //changed member to author
+        System.out.println("Organization in post = " + incomingPost.organization);
         PostContainer postContainer = new PostContainer();
-        Post thisPost = new Post(postContainer.responsePost.date, postContainer.responsePost.title, postContainer.responsePost.body);
         try {
-            if (thisPost == null) {
+            if (incomingPost == null) {
                 postContainer.setErrorMessage("Post was empty and therefore cannot be saved");
 
             } else {
-               thisPost = new Post(postContainerRet.retPost.date, postContainerRet.retPost.title, postContainerRet.retPost.body);
-                thisPost.setMember(postContainerRet.getMember());
-               thisPost.setOrganization(postContainerRet.getThisOrganization());
-//              post.setOrganization(organization);
-//                System.out.println("Organization: " + organization.name);
-                posts.save(thisPost);
-                postContainer.setPostList(getAllPostsByAuthor(postContainerRet.getMember()));
-//                System.out.println("post id = " + post.id);
+                Post newPost = new Post(incomingPost.date, incomingPost.title,
+                                        incomingPost.body, incomingPost.author, incomingPost.organization);
+                System.out.println("Organization in newly created post = " + newPost.getOrganization());
+                newPost.setMember(author);
+                posts.save(newPost);
+                postContainer.setPostList(getAllPostsByAuthor(author));
+                System.out.println("post id = " + newPost.id);
             }
         } catch (Exception ex){
             postContainer.setErrorMessage("An exception occurred creating a post");
@@ -497,21 +517,21 @@ public class CommunityJsonController {
     }
 
     @RequestMapping(path = "/createEvent.json", method = RequestMethod.POST)
-    public EventContainer createEvent(HttpSession session, @RequestBody Event thisEvent) {
+    public EventContainer createEvent(HttpSession session, @RequestBody Event incomingEvent) {
         Member member = (Member) session.getAttribute("member");
+        System.out.println("Organization in event = " + incomingEvent.organization);
         EventContainer myResponse = new EventContainer();
-        thisEvent = new Event(thisEvent.name, thisEvent.date, thisEvent.location, thisEvent.information);
-
         try{
-            if(thisEvent == null) {
+            if(incomingEvent == null) {
                myResponse.setErrorMessage("Retrieved a null event");
 
             } else {
-                thisEvent = new Event(thisEvent.name,thisEvent.date, thisEvent.location, thisEvent.information, thisEvent.organizer, thisEvent.organization);
-                thisEvent.setOrganizer(member);
-                events.save(thisEvent);
-
+                Event newEvent = new Event(incomingEvent.name,incomingEvent.date, incomingEvent.location, incomingEvent.information, incomingEvent.organizer, incomingEvent.organization);
+                System.out.println("Organization in newly created event = " + newEvent.getOrganization());
+                newEvent.setOrganizer(member);
+                events.save(newEvent);
                 System.out.println("Creating event");
+                System.out.println("event id = " + newEvent.id);
                 myResponse.setEventList(getAllEvents());
                 System.out.println("Returning list of events");
             }
@@ -643,8 +663,10 @@ public class CommunityJsonController {
         try{
             if (invitedEmail == null){
                 myResponse.setErrorMessage("Invited email was null");
+                System.out.println("Invited email was null");
             } else {
             myResponse.setSuccessMessage("Invitation sent successfully");
+                System.out.println("Invitation sent successfully to: " + invitedEmail);
             }
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");

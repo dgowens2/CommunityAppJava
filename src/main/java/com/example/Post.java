@@ -46,11 +46,12 @@ public class Post {
         this.body = body;
     }
 
-    public Post(String date, String title, String body, Organization organization) {
+
+    public Post(String date, String title, String body, Member author) {
         this.date = date;
         this.title = title;
         this.body = body;
-        this.organization = organization;
+        this.author = author;
     }
 
     public int getId() {
