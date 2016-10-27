@@ -40,6 +40,9 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
     public void demoData(HttpSession session) throws Exception {
+        Organization introOrg = new Organization();
+        introOrg.name= "Welcome Organization";
+        organizations.save(introOrg);
 
         Organization techOrg = new Organization();
         techOrg.name= "All Things Tech";
@@ -348,6 +351,7 @@ public class CommunityJsonController {
                         organizationMemberAssociation.setOrganization(organization);
                         organizationMembers.save(organizationMemberAssociation);
                         myResponse.responseMember = member;
+
                     }
                 } else {
                     member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
@@ -355,6 +359,11 @@ public class CommunityJsonController {
                         member.setPhotoURL("dummy photo URL");
                     }
                     members.save(member);
+                    Organization welOrg = organizations.findByName("Welcome Organization");
+
+                    OrganizationMember welcomeMember = new OrganizationMember(welOrg, member);
+                    organizationMembers.save(welcomeMember);
+
                     myResponse.responseMember = member;
                     session.setAttribute("member", member);
                     //later they would create an org
@@ -453,6 +462,38 @@ public class CommunityJsonController {
                     postList.add(currentPost);
                     postContainer.setPostList(postList);
                     System.out.println("post id = " + postList.indexOf(currentPost));
+                }
+            }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            postContainer.setErrorMessage("An exception occurred creating a post list");
+            ex.printStackTrace();
+        }
+        return postContainer;
+    }
+
+    @RequestMapping(path = "/postsListByMemberForOnlyCertainOrgs.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsByAuthorWithForCertainOrgs(HttpSession session, @RequestBody Member member) {
+        PostContainer postContainer = new PostContainer();
+        Organization organization = (Organization) session.getAttribute("organization");
+        System.out.println("Looking for posts from: " + member.firstName + " " + member.lastName);
+
+        try {
+            member = members.findFirstByEmail(member.email);
+            Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(member);
+            Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
+            if (allPostsSize == 0) {
+                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+            } else {
+                List<Post> postList = new ArrayList<>();
+                for (Post currentPost : allPosts) {
+                    if (currentPost.getOrganization()== organization) {
+                        postList.add(currentPost);
+                        postContainer.setPostList(postList);
+                        System.out.println("post id = " + postList.indexOf(currentPost));
+                    } else {
+                        System.out.println("Wrong org not saving to post list.");
+                    }
                 }
             }
             System.out.println("after iterable");
