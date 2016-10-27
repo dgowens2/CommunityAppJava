@@ -663,8 +663,10 @@ public class CommunityJsonController {
         try{
             if (invitedEmail == null){
                 myResponse.setErrorMessage("Invited email was null");
+                System.out.println("Invited email was null");
             } else {
             myResponse.setSuccessMessage("Invitation sent successfully");
+                System.out.println("Invitation sent successfully to: " + invitedEmail);
             }
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");
