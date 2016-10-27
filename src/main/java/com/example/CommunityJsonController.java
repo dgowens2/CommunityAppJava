@@ -40,6 +40,9 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
     public void demoData(HttpSession session) throws Exception {
+        Organization introOrg = new Organization();
+        introOrg.name= "Welcome Organization";
+        organizations.save(introOrg);
 
         Organization techOrg = new Organization();
         techOrg.name= "All Things Tech";
@@ -348,6 +351,7 @@ public class CommunityJsonController {
                         organizationMemberAssociation.setOrganization(organization);
                         organizationMembers.save(organizationMemberAssociation);
                         myResponse.responseMember = member;
+
                     }
                 } else {
                     member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
@@ -355,6 +359,9 @@ public class CommunityJsonController {
                         member.setPhotoURL("dummy photo URL");
                     }
                     members.save(member);
+                    Organization welOrg = organizations.findByName("Welcome Organization");
+                    OrganizationMember welcomeMember = new OrganizationMember(welOrg, member);
+                    organizationMembers.save(welcomeMember);
                     myResponse.responseMember = member;
                     session.setAttribute("member", member);
                     //later they would create an org
