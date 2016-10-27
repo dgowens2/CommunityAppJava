@@ -360,8 +360,10 @@ public class CommunityJsonController {
                     }
                     members.save(member);
                     Organization welOrg = organizations.findByName("Welcome Organization");
+
                     OrganizationMember welcomeMember = new OrganizationMember(welOrg, member);
                     organizationMembers.save(welcomeMember);
+
                     myResponse.responseMember = member;
                     session.setAttribute("member", member);
                     //later they would create an org
