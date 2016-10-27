@@ -699,6 +699,7 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/sendInvitation.json", method = RequestMethod.POST)
     public InvitationContainer evite(HttpSession session, @RequestBody Invitation incomingInvitation) throws Exception {
+        System.out.println(incomingInvitation + " " + incomingInvitation.invitedEmail + " " + incomingInvitation.getOrganization().getName());
         InvitationContainer myResponse = new InvitationContainer();
         Member member = (Member) session.getAttribute("member");
         try{
