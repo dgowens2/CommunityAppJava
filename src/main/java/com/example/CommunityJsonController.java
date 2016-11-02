@@ -40,6 +40,9 @@ public class CommunityJsonController {
 
     @RequestMapping(path = "/createDemoData.json", method = RequestMethod.GET)
     public void demoData(HttpSession session) throws Exception {
+        Organization introOrg = new Organization();
+        introOrg.name= "Welcome Organization";
+        organizations.save(introOrg);
 
         Organization techOrg = new Organization();
         techOrg.name= "All Things Tech";
@@ -314,7 +317,7 @@ public class CommunityJsonController {
             } else if (newMember != null && newMember.password.equals(newMember.getPassword())) {
                 System.out.println(newMember.firstName + " " + newMember.lastName + " is logging in");
                 if (newMember.photoURL == null) {
-                    newMember.setPhotoURL("dummy photo URL");
+                    newMember.setPhotoURL("https://res.cloudinary.com/codezero/image/upload/v1477588544/default-member-avatar_dxqzjv.jpg");
                 }
                 session.setAttribute("member", newMember);
                 myResponse.responseMember = newMember;
@@ -341,22 +344,28 @@ public class CommunityJsonController {
                         Organization organization = currentInvite.getOrganization();
                         member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
                         if (member.photoURL == null) {
-                            member.setPhotoURL("dummy photo URL");
+                            member.setPhotoURL("https://res.cloudinary.com/codezero/image/upload/v1477588544/default-member-avatar_dxqzjv.jpg");
                         }
                         members.save(member);
                         OrganizationMember organizationMemberAssociation = new OrganizationMember(organization, member);
                         organizationMemberAssociation.setOrganization(organization);
                         organizationMembers.save(organizationMemberAssociation);
                         myResponse.responseMember = member;
+
                     }
                 } else {
                     member = new Member(member.firstName, member.lastName, member.email, member.password, member.streetAddress, member.photoURL);
                     if (member.photoURL == null) {
-                        member.setPhotoURL("dummy photo URL");
+                        member.setPhotoURL("https://res.cloudinary.com/codezero/image/upload/v1477588544/default-member-avatar_dxqzjv.jpg");
                     }
                     members.save(member);
+                    Organization welOrg = organizations.findByName("Welcome Organization");
+
+                    OrganizationMember welcomeMember = new OrganizationMember(welOrg, member);
+                    organizationMembers.save(welcomeMember);
+
                     myResponse.responseMember = member;
-                    session.setAttribute("member", member);
+//                    session.setAttribute("member", member);
                     //later they would create an org
                 }
             } else {
@@ -453,6 +462,38 @@ public class CommunityJsonController {
                     postList.add(currentPost);
                     postContainer.setPostList(postList);
                     System.out.println("post id = " + postList.indexOf(currentPost));
+                }
+            }
+            System.out.println("after iterable");
+        } catch (Exception ex) {
+            postContainer.setErrorMessage("An exception occurred creating a post list");
+            ex.printStackTrace();
+        }
+        return postContainer;
+    }
+
+    @RequestMapping(path = "/postsListByMemberForOnlyCertainOrgs.json", method = RequestMethod.POST)
+    public PostContainer getAllPostsByAuthorWithForCertainOrgs(HttpSession session, @RequestBody Member member) {
+        PostContainer postContainer = new PostContainer();
+        Organization organization = (Organization) session.getAttribute("organization");
+        System.out.println("Looking for posts from: " + member.firstName + " " + member.lastName);
+
+        try {
+            member = members.findFirstByEmail(member.email);
+            Iterable<Post> allPosts = posts.findByAuthorOrderByDateAsc(member);
+            Long allPostsSize = allPosts.spliterator().getExactSizeIfKnown();
+            if (allPostsSize == 0) {
+                postContainer.setErrorMessage("Post list was empty and therefore cannot be saved");
+            } else {
+                List<Post> postList = new ArrayList<>();
+                for (Post currentPost : allPosts) {
+                    if (currentPost.getOrganization()== organization) {
+                        postList.add(currentPost);
+                        postContainer.setPostList(postList);
+                        System.out.println("post id = " + postList.indexOf(currentPost));
+                    } else {
+                        System.out.println("Wrong org not saving to post list.");
+                    }
                 }
             }
             System.out.println("after iterable");
@@ -657,14 +698,21 @@ public class CommunityJsonController {
 
 
     @RequestMapping(path = "/sendInvitation.json", method = RequestMethod.POST)
-    public InvitationContainer evite(HttpSession session, @RequestBody String invitedEmail) throws Exception {
+    public InvitationContainer evite(HttpSession session, @RequestBody Invitation incomingInvitation) throws Exception {
+        System.out.println(incomingInvitation + " " + incomingInvitation.getInvitedEmail() + " " + incomingInvitation.getOrganization().getName());
         InvitationContainer myResponse = new InvitationContainer();
         Member member = (Member) session.getAttribute("member");
         try{
-            if (invitedEmail == null){
+            if (incomingInvitation.invitedEmail == null){
                 myResponse.setErrorMessage("Invited email was null");
+                System.out.println("Invited email was null");
             } else {
-            myResponse.setSuccessMessage("Invitation sent successfully");
+                Invitation newInvitation = new Invitation(member, incomingInvitation.invitedEmail, incomingInvitation.organization);
+                System.out.println("Invitation sent successfully to: " + newInvitation.invitedEmail + " from " + member.getFirstName());
+                System.out.println("Organization for newly created invitation = " + newInvitation.getOrganization());
+                newInvitation.setInvitingMember(member);
+                invitations.save(newInvitation);
+                myResponse.setSuccessMessage("Invitation sent successfully");
             }
         } catch (Exception ex) {
             myResponse.setErrorMessage("An error occurred while trying to send an invite");
