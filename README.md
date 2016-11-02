@@ -1,2 +1,4 @@
 # CommunityAppJava
-Community App is a local social networking app that we created with a Java backend and iOS frontend. This app is made to let you be a part of an organization and see events as well as posts associated with it. 
+Community is an invitation-only social networking app with a Java back-end and iOS front-end. This app allows the user be invited into organizations and see events as well as posts associated with the organizations that they are a member of. 
+
+The Java back-end is a set of web services that connect a relational Postgres database to the iOS front-end.
